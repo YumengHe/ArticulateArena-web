@@ -120,7 +120,6 @@
       <!-- Paper video (narrated overview; built by video/build_video.py + video/narrate.py in the main repo) -->
       <div class="columns is-centered has-text-centered">
         <div class="column">
-          <h2 class="title is-3">Video</h2>
           <div class="publication-video">
             <video controls preload="metadata" playsinline poster="./static/images/video_poster.jpg">
               <source src="./video.mp4" type="video/mp4">
@@ -230,43 +229,6 @@
     </div>
   </section>
 
-  <!-- Related Work Section -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3" style="text-align: center;">Related Work</h2>
-      <div class="content has-text-justified" style="margin: 0 auto 1.5rem auto;">
-        <p>
-          Kinematic evaluation metrics reported by existing articulated-object reconstruction
-          methods. A check mark denotes a component the method scores, and <sup>†</sup> marks a
-          component scored for revolute joints only. A dash indicates that the method does not
-          directly evaluate the corresponding kinematic property. Geometry-only metrics such as
-          Chamfer distance and F-score are outside the scope of this table.
-        </p>
-      </div>
-      <div class="related-work-container">
-        <table class="table protocols-table">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Type</th>
-              <th>Axis</th>
-              <th>Origin</th>
-              <th>Limit</th>
-              <th>Success rate</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Ditto</td><td>–</td><td>✓</td><td>✓<sup>†</sup></td><td>–</td><td>–</td></tr>
-            <tr><td>PARIS</td><td>–</td><td>✓</td><td>✓<sup>†</sup></td><td>–</td><td>–</td></tr>
-            <tr><td>URDFormer</td><td>✓</td><td>✓</td><td>✓</td><td>–</td><td>–</td></tr>
-            <tr><td>Real2Code</td><td>✓</td><td>✓</td><td>✓<sup>†</sup></td><td>–</td><td>–</td></tr>
-            <tr><td>Articulate-Anything</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
-            <tr><td>SPARK</td><td>✓</td><td>✓</td><td>✓</td><td>–</td><td>–</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
 
 <style>
     /* Title logo */
@@ -448,62 +410,6 @@
         }
         .error-demo-item h4 { font-size: 0.95em; }
         .demo-params { font-size: 0.8em; }
-    }
-
-    /* Related Work table: fit width, no horizontal scroll */
-    /* Paper Table 5 (tab:protocols) layout: booktabs rules, centered marks. */
-    .table.protocols-table {
-        max-width: 780px;
-        margin: 0 auto;
-        background: transparent;
-    }
-    .table.protocols-table th,
-    .table.protocols-table td {
-        border: none;
-        padding: 9px 16px;
-        vertical-align: middle;
-    }
-    .table.protocols-table thead th {
-        border-top: 2px solid #24292f;
-        border-bottom: 1px solid #24292f;
-        color: #24292f;
-    }
-    .table.protocols-table tbody tr:last-child td {
-        border-bottom: 2px solid #24292f;
-    }
-    .table.protocols-table th:not(:first-child),
-    .table.protocols-table td:not(:first-child) {
-        text-align: center;
-    }
-    .related-work-container {
-        margin: 0 auto;
-        max-width: 980px;
-    }
-    .related-work-table {
-        table-layout: fixed;
-        width: 100%;
-        font-size: 0.9rem;
-        line-height: 1.35;
-    }
-    .related-work-table th,
-    .related-work-table td {
-        vertical-align: top;
-        overflow-wrap: break-word;
-        word-break: break-word;
-    }
-    .related-work-table th:nth-child(1),
-    .related-work-table td:nth-child(1) {
-        width: 20%;
-        font-weight: 600;
-    }
-    .related-work-table th:nth-child(2),
-    .related-work-table td:nth-child(2) {
-        width: 15%;
-        white-space: nowrap;
-    }
-    .related-work-table th:nth-child(3),
-    .related-work-table td:nth-child(3) {
-        width: 65%;
     }
 
     .compare-paper-container {
@@ -1788,10 +1694,6 @@
         .case-render-label { padding: 8px; }
         .case-render-cell { padding: 7px; }
     }
-    .table.protocols-table thead th,
-    .table.protocols-table tbody tr:last-child td { border-color: var(--aa-ink); }
-    .table.protocols-table { background: transparent; }
-    .table.protocols-table td, .table.protocols-table th { background: transparent; }
 </style>
 
 <!-- Demonstration of Errors data (loaded as a global so it also works when opening index.html directly via file://) -->
