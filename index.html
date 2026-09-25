@@ -117,17 +117,18 @@
           </div>
         </div>
       </div>
-      <!-- Paper video -->
-      <!-- <div class="columns is-centered has-text-centered">
+      <!-- Paper video (narrated overview; built by video/build_video.py + video/narrate.py in the main repo) -->
+      <div class="columns is-centered has-text-centered">
         <div class="column">
+          <h2 class="title is-3">Video</h2>
           <div class="publication-video">
-            <video controls autoplay muted loop playsinline style="width: 100%;">
+            <video controls preload="metadata" playsinline poster="./static/images/video_poster.jpg">
               <source src="./video.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
           </div>
         </div>
-      </div> -->
+      </div>
 
     </div>
   </section>
@@ -659,6 +660,16 @@
       text-align: left;
       margin-top: 20px;
       line-height: 1.6;
+  }
+
+  /* Paper video: fill the template's 16:9 rounded box like its iframe rule does */
+  .publication-video video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
   }
 
   .video-comparison-section {
