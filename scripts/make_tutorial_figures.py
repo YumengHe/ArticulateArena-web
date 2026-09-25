@@ -56,6 +56,7 @@ plt.rcParams.update({
     "font.family": "serif",
     "font.serif": ["Times New Roman", "Liberation Serif", "DejaVu Serif"],
     "mathtext.fontset": "stix",
+    "pdf.fonttype": 42,
     "axes.edgecolor": INK,
     "axes.labelcolor": INK,
     "xtick.color": INK,
