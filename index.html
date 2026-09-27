@@ -104,29 +104,29 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-              Modern methods reconstruct or generate simulation-ready articulated objects,
-              predicting not only their geometry but also how their parts are connected and allowed
-              to move. Evaluating the geometry is straightforward, but evaluating the predicted
-              articulation is not, because articulation specifies a motion rather than a shape, and
-              there is no agreed distance between two motions. More specifically, existing protocols
-              score joint type, axis direction, origin, and motion limits separately, although these
-              parameters jointly describe a single physical motion, and the same motion can be
-              written as different parameter values. As a result, a joint can score maximally wrong
-              against an equivalent encoding of itself, and several component errors are
-              ill-conditioned or undefined exactly where predictions become accurate. We propose
-              <strong>ArticulateArena</strong>, a representation-invariant counterpart of Chamfer
-              distance for articulation that compares the motions one-DOF joints induce rather than
-              the parameters that encode them. It represents each joint by the unordered pair of its
-              Lie-algebra endpoint twists, and we prove that the resulting quotient distance is a
-              metric. It unifies fixed, revolute, prismatic, and helical joints, brings continuous
-              joints into the same score through a compactification, and reads as the RMS motion of
-              the moving part in meters when weighted by its mass distribution. A motion-aware tree
-              edit distance lifts the metric to full kinematic trees, pricing structural errors such
-              as spurious or missing joints in the same motion units as joint errors, and the metric
-              axioms hold at both levels. Alongside the metric we release
-              <strong>ArticulateArena-20K</strong>, a new suite of 19,650 articulated objects with
-              verified kinematics, and we re-evaluate published reconstruction methods on it under
-              the new metric.
+              Modern methods reconstruct or generate simulation-ready articulated objects, predicting
+              not only their geometry but also how their parts are connected and allowed to move.
+              Evaluating the geometry is straightforward, but evaluating the predicted articulation is
+              not, because articulation specifies a motion rather than a shape, and there is no agreed
+              distance between two motions. More specifically, existing protocols score joint type,
+              axis direction, origin, and motion limits separately, although these parameters jointly
+              describe a single physical motion, and the same motion can be written as different
+              parameter values. As a result, a joint can score maximally wrong against an equivalent
+              encoding of itself, and several component errors are ill-conditioned or undefined
+              exactly where predictions become accurate. We propose <strong>ArticulateArena</strong>,
+              a representation-invariant counterpart of Chamfer distance for articulation that
+              compares the motions one-DOF joints induce rather than the parameters that encode them.
+              It represents each joint by the unordered pair of its Lie-algebra endpoint twists, and
+              we prove that the resulting quotient distance is a metric. It unifies fixed, revolute,
+              prismatic, and helical joints, brings continuous joints into the same score through a
+              compactification, and reads as the RMS motion of the moving part in meters when weighted
+              by its mass distribution. A motion-aware tree edit distance lifts the metric to full
+              kinematic trees, pricing structural errors such as spurious or missing joints in the
+              same motion units as joint errors, and for a fixed inner product it remains a metric on
+              trees up to relabeling. Alongside the metric we release
+              <strong>ArticulateArena-20K</strong>, a new suite of 19,977 articulated objects with
+              verified kinematics, and we re-evaluate published reconstruction methods on it under the
+              new metric.
             </p>
           </div>
         </div>
