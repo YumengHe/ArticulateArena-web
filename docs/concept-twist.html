@@ -336,6 +336,95 @@
       font-size: 0.92rem;
     }
 
+    /* ---------- interactive quickstart ---------- */
+    .qs { margin: 1.4rem 0 1.6rem; }
+
+    .qs-options {
+      display: grid;
+      gap: 0.55rem;
+      padding: 0.9rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--hairline);
+      border-radius: 8px 8px 0 0;
+      border-bottom: none;
+    }
+
+    .qs-row { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+
+    .qs-label {
+      flex: 0 0 4.2rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .qs-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .qs-pills button {
+      font: inherit;
+      font-size: 0.84rem;
+      line-height: 1.3;
+      padding: 0.28rem 0.75rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .qs-pills button:hover { color: var(--ink); border-color: var(--ink-3); }
+
+    .qs-pills button.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .qs-pills button sub, .qs-pills button sup { font-size: 0.72em; }
+
+    .qs-codewrap {
+      border: 1px solid var(--code-border);
+      border-radius: 0 0 8px 8px;
+      background: var(--code-bg);
+    }
+
+    .qs-codebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 1.15rem 0.4rem;
+      border-bottom: 1px solid var(--code-border);
+      font-size: 0.74rem;
+      color: var(--ink-3);
+    }
+
+    .qs-filename { font-family: var(--mono); }
+
+    .qs-copy {
+      font: inherit;
+      font-size: 0.74rem;
+      padding: 0.15rem 0.6rem;
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+    }
+
+    .qs-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+    .qs-codewrap pre { margin: 0; border: none; border-radius: 0 0 8px 8px; background: none; }
+
+    .qs-note { font-size: 0.9rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+
+    @media (max-width: 600px) {
+      .qs-label { flex-basis: 100%; }
+    }
+
     footer.docs-footer {
       margin-top: 4rem;
       padding-top: 1.2rem;

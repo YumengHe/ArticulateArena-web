@@ -336,6 +336,95 @@
       font-size: 0.92rem;
     }
 
+    /* ---------- interactive quickstart ---------- */
+    .qs { margin: 1.4rem 0 1.6rem; }
+
+    .qs-options {
+      display: grid;
+      gap: 0.55rem;
+      padding: 0.9rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--hairline);
+      border-radius: 8px 8px 0 0;
+      border-bottom: none;
+    }
+
+    .qs-row { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+
+    .qs-label {
+      flex: 0 0 4.2rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .qs-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .qs-pills button {
+      font: inherit;
+      font-size: 0.84rem;
+      line-height: 1.3;
+      padding: 0.28rem 0.75rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .qs-pills button:hover { color: var(--ink); border-color: var(--ink-3); }
+
+    .qs-pills button.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .qs-pills button sub, .qs-pills button sup { font-size: 0.72em; }
+
+    .qs-codewrap {
+      border: 1px solid var(--code-border);
+      border-radius: 0 0 8px 8px;
+      background: var(--code-bg);
+    }
+
+    .qs-codebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 1.15rem 0.4rem;
+      border-bottom: 1px solid var(--code-border);
+      font-size: 0.74rem;
+      color: var(--ink-3);
+    }
+
+    .qs-filename { font-family: var(--mono); }
+
+    .qs-copy {
+      font: inherit;
+      font-size: 0.74rem;
+      padding: 0.15rem 0.6rem;
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+    }
+
+    .qs-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+    .qs-codewrap pre { margin: 0; border: none; border-radius: 0 0 8px 8px; background: none; }
+
+    .qs-note { font-size: 0.9rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+
+    @media (max-width: 600px) {
+      .qs-label { flex-basis: 100%; }
+    }
+
     footer.docs-footer {
       margin-top: 4rem;
       padding-top: 1.2rem;
@@ -400,28 +489,99 @@
       <p class="eyebrow">Section 3</p>
       <h1 class="page-title">Quickstart</h1>
 
-        <p>Build endpoint pairs for two joints, choose an <span class="math">se(3)</span> norm, and evaluate
-          <code>joint_metric</code>. The distance is <code>0</code> exactly when the two joints induce the same
-          motion:</p>
-      <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
-      <span class="kw">from</span> articulatearena.new_equation.representation <span class="kw">import</span> make_endpoint_pair
-      <span class="kw">from</span> articulatearena.new_equation.inner_product <span class="kw">import</span> make_split_norm
-      <span class="kw">from</span> articulatearena.new_equation.E <span class="kw">import</span> joint_metric
+        <p>Pick what you have and what you want to measure. The snippet updates to a complete, runnable
+          program, and every combination is executed against the sample data before it is published.</p>
 
-      xi = np.array([0., 0., 1., 0., 0., 0.])   <span class="cm"># unit screw axis (omega; nu)</span>
-      gt   = make_endpoint_pair(xi, 0.0, 1.0)    <span class="cm"># joint limits [a, b]</span>
-      pred = make_endpoint_pair(xi, 0.0, 1.0)
+        <div class="qs" id="quickstart">
+          <div class="qs-options">
+            <div class="qs-row">
+              <span class="qs-label">Input</span>
+              <div class="qs-pills" data-dim="input"><button type="button" data-value="hand">Twists by hand</button><button type="button" data-value="urdf">URDF joints</button></div>
+            </div>
+            <div class="qs-row">
+              <span class="qs-label">Norm</span>
+              <div class="qs-pills" data-dim="norm"><button type="button" data-value="alpha">E<sub>α</sub>, split norm</button><button type="button" data-value="B">E<sub>B</sub>, kinetic-energy norm</button></div>
+            </div>
+            <div class="qs-row">
+              <span class="qs-label">Measure</span>
+              <div class="qs-pills" data-dim="scope"><button type="button" data-value="joint">One joint: E</button><button type="button" data-value="phi">Continuous joints: E<sup>ϕ</sup></button><button type="button" data-value="tree">Whole object: E<sup>tree</sup></button></div>
+            </div>
+          </div>
+          <div class="qs-codewrap">
+            <div class="qs-codebar"><span class="qs-filename">quickstart.py</span><button type="button" class="qs-copy" id="qs-copy">Copy</button></div>
+      <pre><code id="qs-code"></code></pre>
+          </div>
+          <p class="qs-note" id="qs-note"></p>
+        </div>
 
-      norm = make_split_norm(alpha=1.0)          <span class="cm"># the norm is injected, never hardcoded</span>
-      E = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)
-      print(E)   <span class="cm"># 0.0 when prediction == ground truth</span></code></pre>
-        <p>To score real URDF joints, load them through the reader layer instead of constructing twists by
-          hand:</p>
-      <pre><code><span class="kw">from</span> articulatearena.read.urdf_loader <span class="kw">import</span> load_joint
-      <span class="kw">from</span> articulatearena.new_equation.representation <span class="kw">import</span> joint_to_endpoint_pair
+        <p>The distance is <code>0</code> exactly when the two sides induce the same motion, and it is a true metric:
+          symmetric, with the triangle inequality, and invariant to the sign of the axis and to which limit is called
+          lower. <span class="math">E<sub>α</sub></span> is dimensionless, <span class="math">E<sub>B</sub></span> is in
+          meters, <span class="math">E<sup>ϕ</sup></span> is dimensionless and bounded, and
+          <span class="math">E<sup>tree</sup></span> sums joint costs over an optimal matching. The
+          <a href="concepts.html">core concepts</a> pages explain each choice with a figure, and the
+          <a href="api.html">API reference</a> lists every function.</p>
 
-      joint = load_joint(<span class="st">"sample_data/45168/mobility.urdf"</span>, <span class="st">"joint_0"</span>)
-      pair  = joint_to_endpoint_pair(joint)      <span class="cm"># unordered {a*xi, b*xi}</span></code></pre>
+      <script>
+      (function () {
+        var SNIPPETS = {
+       "hand-alpha-joint": "import numpy as np\nfrom articulatearena import (\n    joint_metric,\n    make_endpoint_pair,\n    make_split_norm,\n)\n\nxi = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0])   # unit screw twist (omega; nu), a hinge about z\ngt = make_endpoint_pair(xi, 0.0, 1.0)             # joint limits [a, b] in radians\npred = make_endpoint_pair(xi, 0.0, 1.2)           # the prediction opens 0.2 rad too far\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\nE = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)\nprint(E)   # 0 exactly when the two joints induce the same motion\n",
+       "hand-alpha-phi": "import math\nimport numpy as np\nfrom articulatearena import (\n    compactified_joint_metric,\n    continuous_joint_repr,\n    joint_metric,\n    make_endpoint_pair,\n    make_split_norm,\n    radial_compactify,\n)\n\nxi = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0])   # unit screw twist (omega; nu), a hinge about z\ngt = make_endpoint_pair(xi, 0.0, 1.0)             # joint limits [a, b] in radians\npred = make_endpoint_pair(xi, 0.0, 1.2)           # the prediction opens 0.2 rad too far\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\nkappa = math.pi   # compactification scale, benchmark default\n\n# Two bounded joints: E after mapping all four endpoints into the unit ball.\nE_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)\n\n# A continuous joint has no finite endpoints. It enters as its antipodal\n# boundary pair, and the bounded joint is compactified to meet it.\nu_c, v_c = continuous_joint_repr(xi, norm)       # a hinge with no limits, same axis\ngt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]\nE_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)\nprint(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))\n",
+       "hand-alpha-tree": "import numpy as np\nfrom articulatearena import (\n    assignment_tree_distance,\n    exact_tree_distance,\n    joint_metric,\n    make_endpoint_pair,\n    make_split_norm,\n)\n\nxi = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0])   # unit screw twist (omega; nu), a hinge about z\ngt = make_endpoint_pair(xi, 0.0, 1.0)             # joint limits [a, b] in radians\npred = make_endpoint_pair(xi, 0.0, 1.2)           # the prediction opens 0.2 rad too far\n\nxi2 = np.array([0.0, 0.0, 0.0, 1.0, 0.0, 0.0])  # a drawer sliding along x (prismatic: omega = 0)\ngt2 = make_endpoint_pair(xi2, 0.0, 0.4)           # limits in meters\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\n# Endpoint pairs of every moving joint, all expressed in one common frame.\ngt_pairs = [(gt.u.data, gt.v.data), (gt2.u.data, gt2.v.data)]\npred_pairs = [(pred.u.data, pred.v.data)]        # the prediction missed the drawer\n\n# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),\n# the cost of contracting it to the fixed joint J_0 = {0, 0}.\nD = assignment_tree_distance(gt_pairs, pred_pairs, norm)\n\n# Exact tree edit distance over (parent, child, pair) edges. `certified` is True\n# when the relaxation already found an isomorphism of the trees (the common case).\ngt_edges = [(\"base\", \"door\", gt_pairs[0]), (\"base\", \"drawer\", gt_pairs[1])]\npred_edges = [(\"base\", \"door\", pred_pairs[0])]\nD_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)\nprint(D, D_exact, certified)\n",
+       "hand-B-joint": "import numpy as np\nfrom articulatearena import (\n    LinkInertia,\n    joint_metric,\n    make_endpoint_pair,\n    make_kinetic_energy_norm,\n)\n\nxi = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0])   # unit screw twist (omega; nu), a hinge about z\ngt = make_endpoint_pair(xi, 0.0, 1.0)             # joint limits [a, b] in radians\npred = make_endpoint_pair(xi, 0.0, 1.2)           # the prediction opens 0.2 rad too far\n\n# (m, c, I) of the moving link, in the same frame as the twists.\n# E_B then has units of meters: the RMS displacement of the link.\nlink = LinkInertia(mass=1.0, com=np.array([0.3, 0.0, 0.0]), inertia=np.diag([0.1, 0.2, 0.2]))\nnorm = make_kinetic_energy_norm(link)\n\nE = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)\nprint(E)   # 0 exactly when the two joints induce the same motion\n",
+       "hand-B-phi": "import math\nimport numpy as np\nfrom articulatearena import (\n    LinkInertia,\n    compactified_joint_metric,\n    continuous_joint_repr,\n    joint_metric,\n    make_endpoint_pair,\n    make_kinetic_energy_norm,\n    radial_compactify,\n)\n\nxi = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0])   # unit screw twist (omega; nu), a hinge about z\ngt = make_endpoint_pair(xi, 0.0, 1.0)             # joint limits [a, b] in radians\npred = make_endpoint_pair(xi, 0.0, 1.2)           # the prediction opens 0.2 rad too far\n\n# (m, c, I) of the moving link, in the same frame as the twists.\n# E_B then has units of meters: the RMS displacement of the link.\nlink = LinkInertia(mass=1.0, com=np.array([0.3, 0.0, 0.0]), inertia=np.diag([0.1, 0.2, 0.2]))\nnorm = make_kinetic_energy_norm(link)\n\nkappa = math.pi   # compactification scale, benchmark default\n\n# Two bounded joints: E after mapping all four endpoints into the unit ball.\nE_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)\n\n# A continuous joint has no finite endpoints. It enters as its antipodal\n# boundary pair, and the bounded joint is compactified to meet it.\nu_c, v_c = continuous_joint_repr(xi, norm)       # a hinge with no limits, same axis\ngt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]\nE_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)\nprint(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))\n",
+       "hand-B-tree": "import numpy as np\nfrom articulatearena import (\n    LinkInertia,\n    assignment_tree_distance,\n    exact_tree_distance,\n    joint_metric,\n    make_endpoint_pair,\n    make_kinetic_energy_norm,\n)\n\nxi = np.array([0.0, 0.0, 1.0, 0.0, 0.0, 0.0])   # unit screw twist (omega; nu), a hinge about z\ngt = make_endpoint_pair(xi, 0.0, 1.0)             # joint limits [a, b] in radians\npred = make_endpoint_pair(xi, 0.0, 1.2)           # the prediction opens 0.2 rad too far\n\nxi2 = np.array([0.0, 0.0, 0.0, 1.0, 0.0, 0.0])  # a drawer sliding along x (prismatic: omega = 0)\ngt2 = make_endpoint_pair(xi2, 0.0, 0.4)           # limits in meters\n\n# (m, c, I) of the moving link, in the same frame as the twists.\n# E_B then has units of meters: the RMS displacement of the link.\nlink = LinkInertia(mass=1.0, com=np.array([0.3, 0.0, 0.0]), inertia=np.diag([0.1, 0.2, 0.2]))\nnorm = make_kinetic_energy_norm(link)\n\n# Endpoint pairs of every moving joint, all expressed in one common frame.\ngt_pairs = [(gt.u.data, gt.v.data), (gt2.u.data, gt2.v.data)]\npred_pairs = [(pred.u.data, pred.v.data)]        # the prediction missed the drawer\n\n# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),\n# the cost of contracting it to the fixed joint J_0 = {0, 0}.\nD = assignment_tree_distance(gt_pairs, pred_pairs, norm)\n\n# Exact tree edit distance over (parent, child, pair) edges. `certified` is True\n# when the relaxation already found an isomorphism of the trees (the common case).\ngt_edges = [(\"base\", \"door\", gt_pairs[0]), (\"base\", \"drawer\", gt_pairs[1])]\npred_edges = [(\"base\", \"door\", pred_pairs[0])]\nD_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)\nprint(D, D_exact, certified)\n",
+       "urdf-alpha-joint": "import numpy as np\nfrom articulatearena import (\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_split_norm,\n)\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\nE = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)\nprint(E)   # 0 exactly when the two joints induce the same motion\n",
+       "urdf-alpha-phi": "import math\nimport numpy as np\nfrom articulatearena import (\n    compactified_joint_metric,\n    continuous_joint_repr,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_split_norm,\n    radial_compactify,\n)\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\nkappa = math.pi   # compactification scale, benchmark default\n\n# Two bounded joints: E after mapping all four endpoints into the unit ball.\nE_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)\n\n# A continuous joint has no finite endpoints. It enters as its antipodal\n# boundary pair, and the bounded joint is compactified to meet it.\ncont = load_joint(\"prediction.urdf\", \"lid\")          # a continuous joint: limits are +-inf\nu_c, v_c = continuous_joint_repr(cont.xi_hat.data, norm)\ngt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]\nE_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)\nprint(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))\n",
+       "urdf-alpha-tree": "import numpy as np\nfrom articulatearena import (\n    assignment_tree_distance,\n    exact_tree_distance,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_split_norm,\n)\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# Every moving joint of each object (fixed joints carry no motion and are left out).\ngt_joints = [load_joint(\"ground_truth.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\npred_joints = [load_joint(\"prediction.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\n# Endpoint pairs of every moving joint, all expressed in one common frame.\nto_pair = lambda j: (joint_to_endpoint_pair(j).u.data, joint_to_endpoint_pair(j).v.data)\ngt_pairs = [to_pair(j) for j in gt_joints]\npred_pairs = [to_pair(j) for j in pred_joints]\n\n# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),\n# the cost of contracting it to the fixed joint J_0 = {0, 0}.\nD = assignment_tree_distance(gt_pairs, pred_pairs, norm)\n\n# Exact tree edit distance over (parent, child, pair) edges. `certified` is True\n# when the relaxation already found an isomorphism of the trees (the common case).\n# load_joint returns the joint alone, so name the links of each edge yourself\n# (the parent and child attributes of the URDF <joint> elements).\ngt_edges = [(\"base\", \"link_0\", gt_pairs[0]), (\"base\", \"link_1\", gt_pairs[1])]\npred_edges = [(\"base\", \"link_0\", pred_pairs[0]), (\"base\", \"link_1\", pred_pairs[1])]\nD_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)\nprint(D, D_exact, certified)\n",
+       "urdf-B-joint": "import numpy as np\nfrom articulatearena import (\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_kinetic_energy_norm,\n)\n# mesh-derived inertia needs the optional extra: pip install \"articulatearena[mesh]\"\nfrom articulatearena.read.inertia_loader import load_joint_child_inertia\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# (m, c, I) of the ground-truth child link, computed from its meshes\n# as a uniform solid. E_B then has units of meters.\nlink = load_joint_child_inertia(\"ground_truth.urdf\", \"joint_0\")\nnorm = make_kinetic_energy_norm(link)\n\nE = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)\nprint(E)   # 0 exactly when the two joints induce the same motion\n",
+       "urdf-B-phi": "import math\nimport numpy as np\nfrom articulatearena import (\n    compactified_joint_metric,\n    continuous_joint_repr,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_kinetic_energy_norm,\n    radial_compactify,\n)\n# mesh-derived inertia needs the optional extra: pip install \"articulatearena[mesh]\"\nfrom articulatearena.read.inertia_loader import load_joint_child_inertia\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# (m, c, I) of the ground-truth child link, computed from its meshes\n# as a uniform solid. E_B then has units of meters.\nlink = load_joint_child_inertia(\"ground_truth.urdf\", \"joint_0\")\nnorm = make_kinetic_energy_norm(link)\n\nkappa = math.pi   # compactification scale, benchmark default\n\n# Two bounded joints: E after mapping all four endpoints into the unit ball.\nE_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)\n\n# A continuous joint has no finite endpoints. It enters as its antipodal\n# boundary pair, and the bounded joint is compactified to meet it.\ncont = load_joint(\"prediction.urdf\", \"lid\")          # a continuous joint: limits are +-inf\nu_c, v_c = continuous_joint_repr(cont.xi_hat.data, norm)\ngt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]\nE_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)\nprint(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))\n",
+       "urdf-B-tree": "import numpy as np\nfrom articulatearena import (\n    assignment_tree_distance,\n    exact_tree_distance,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_kinetic_energy_norm,\n)\n# mesh-derived inertia needs the optional extra: pip install \"articulatearena[mesh]\"\nfrom articulatearena.read.inertia_loader import load_joint_child_inertia\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# Every moving joint of each object (fixed joints carry no motion and are left out).\ngt_joints = [load_joint(\"ground_truth.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\npred_joints = [load_joint(\"prediction.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\n\n# (m, c, I) of the ground-truth child link, computed from its meshes\n# as a uniform solid. E_B then has units of meters.\nlink = load_joint_child_inertia(\"ground_truth.urdf\", \"joint_0\")\nnorm = make_kinetic_energy_norm(link)\n\n# Endpoint pairs of every moving joint, all expressed in one common frame.\nto_pair = lambda j: (joint_to_endpoint_pair(j).u.data, joint_to_endpoint_pair(j).v.data)\ngt_pairs = [to_pair(j) for j in gt_joints]\npred_pairs = [to_pair(j) for j in pred_joints]\n\n# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),\n# the cost of contracting it to the fixed joint J_0 = {0, 0}.\nD = assignment_tree_distance(gt_pairs, pred_pairs, norm)\n\n# Exact tree edit distance over (parent, child, pair) edges. `certified` is True\n# when the relaxation already found an isomorphism of the trees (the common case).\n# load_joint returns the joint alone, so name the links of each edge yourself\n# (the parent and child attributes of the URDF <joint> elements).\ngt_edges = [(\"base\", \"link_0\", gt_pairs[0]), (\"base\", \"link_1\", gt_pairs[1])]\npred_edges = [(\"base\", \"link_0\", pred_pairs[0]), (\"base\", \"link_1\", pred_pairs[1])]\nD_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)\nprint(D, D_exact, certified)\n"
+      };
+        var NOTES = {"joint": "<strong>E</strong> compares one predicted joint with one ground-truth joint through their endpoint twists.", "phi": "<strong>E<sup>ϕ</sup></strong> maps every endpoint into the unit ball with the radial map ϕ, so continuous joints and bounded joints share one bounded score.", "tree": "<strong>E<sup>tree</sup></strong> lifts E to whole kinematic trees: joints are matched optimally and surplus joints pay their own motion.", "alpha": "The split norm needs only <code>alpha</code>, so it works without meshes or masses.", "B": "The kinetic-energy norm weighs each twist by the moving link, which is what the paper's E<sub>B</sub> column reports.", "urdf": "<code>load_joint</code> reads one named joint. Continuous joints load with infinite limits."};
+        var state = { input: "hand", norm: "alpha", scope: "joint" };
+        var code = document.getElementById("qs-code");
+        var note = document.getElementById("qs-note");
+
+        function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+        function highlight(src) {
+          // Comments and strings first, keywords on the remainder.
+          return esc(src).split("\n").map(function (line) {
+            var m = line.match(/^(.*?)(#.*)$/);
+            var body = m ? m[1] : line, cm = m ? m[2] : "";
+            body = body.replace(/(&quot;|")(.*?)(\1)/g, function (all) { return '<span class="st">' + all + "</span>"; });
+            body = body.replace(/\b(import|from|as|for|in|lambda|print)\b/g, '<span class="kw">$1</span>');
+            return body + (cm ? '<span class="cm">' + cm + "</span>" : "");
+          }).join("\n");
+        }
+        function render() {
+          var key = state.input + "-" + state.norm + "-" + state.scope;
+          code.innerHTML = highlight(SNIPPETS[key]);
+          note.innerHTML = NOTES[state.scope] + " " + NOTES[state.norm] + (state.input === "urdf" ? " " + NOTES.urdf : "");
+          document.querySelectorAll(".qs-pills").forEach(function (row) {
+            var dim = row.getAttribute("data-dim");
+            row.querySelectorAll("button").forEach(function (b) {
+              b.classList.toggle("active", b.getAttribute("data-value") === state[dim]);
+            });
+          });
+        }
+        document.querySelectorAll(".qs-pills button").forEach(function (b) {
+          b.addEventListener("click", function () {
+            state[b.parentNode.getAttribute("data-dim")] = b.getAttribute("data-value");
+            render();
+          });
+        });
+        document.getElementById("qs-copy").addEventListener("click", function () {
+          var key = state.input + "-" + state.norm + "-" + state.scope;
+          var btn = this;
+          navigator.clipboard.writeText(SNIPPETS[key]).then(function () {
+            btn.textContent = "Copied";
+            setTimeout(function () { btn.textContent = "Copy"; }, 1400);
+          });
+        });
+        render();
+      })();
+      </script>
 
       <nav class="page-nav">
         <a class="prev" href="installation.html"><span class="label">Previous</span>← Installation</a>
