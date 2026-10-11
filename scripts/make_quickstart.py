@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Generate docs_src/quickstart.html: an interactive quickstart.
 
-Three option rows (input, norm, scope) select one of twelve code snippets.
+Two option rows (norm, scope) select one of six code snippets, all reading
+joints from URDF files.
 The snippets are assembled here from shared pieces, so that every
 combination can be executed against the sample data before it is published:
 
     python scripts/make_quickstart.py --verify /path/to/ArticulateMetrics
 
-writes the fragment and, with --verify, runs all twelve snippets with the
+writes the fragment and, with --verify, runs all six snippets with the
 placeholder URDF paths replaced by files under sample_data/. Rebuild the pages
 afterwards with scripts/build_docs.py.
 """
@@ -26,7 +27,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "docs_src" / "quickstart.html"
 
-INPUTS = [("hand", "Twists by hand"), ("urdf", "URDF joints")]
 NORMS = [("alpha", "E<sub>α</sub>, split norm"), ("B", "E<sub>B</sub>, kinetic-energy norm")]
 SCOPES = [("joint", "One joint: E"), ("phi", "Continuous joints: E<sup>ϕ</sup>"), ("tree", "Whole object: E<sup>tree</sup>")]
 
@@ -186,38 +186,35 @@ def verify(repo: Path) -> None:
     }
     env = dict(os.environ, PYTHONPATH=str(repo / "src"))
     failures = []
-    for i, _ in INPUTS:
-        for n, _ in NORMS:
-            for s, _ in SCOPES:
-                code = snippet(i, n, s)
-                for k, v in sub.items():
-                    code = code.replace(k, v)
-                with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as fh:
-                    fh.write(code)
-                    path = fh.name
-                r = subprocess.run([sys.executable, path], cwd=repo, env=env, capture_output=True, text=True)
-                tag = f"{i}-{n}-{s}"
-                if r.returncode != 0:
-                    failures.append(tag)
-                    print(f"FAIL {tag}\n{r.stderr[-800:]}")
-                else:
-                    print(f"ok   {tag}: {r.stdout.strip()}")
-                os.unlink(path)
+    for n, _ in NORMS:
+        for s, _ in SCOPES:
+            code = snippet("urdf", n, s)
+            for k, v in sub.items():
+                code = code.replace(k, v)
+            with tempfile.NamedTemporaryFile("w", suffix=".py", delete=False) as fh:
+                fh.write(code)
+                path = fh.name
+            r = subprocess.run([sys.executable, path], cwd=repo, env=env, capture_output=True, text=True)
+            tag = f"{n}-{s}"
+            if r.returncode != 0:
+                failures.append(tag)
+                print(f"FAIL {tag}\n{r.stderr[-800:]}")
+            else:
+                print(f"ok   {tag}: {r.stdout.strip()}")
+            os.unlink(path)
     if failures:
         sys.exit(f"{len(failures)} snippet(s) failed: {failures}")
 
 
 # ---------------------------------------------------------------- fragment
 
-FRAGMENT = """  <p>Pick what you have and what you want to measure. The snippet updates to a complete, runnable
-    program, and every combination is executed against the sample data before it is published.</p>
+FRAGMENT = """  <p>Pick the norm and what you want to measure. The snippet updates to a complete, runnable program that
+    reads joints from URDF files, and every combination is executed against the sample data before it is
+    published. To score joints from another format, build the endpoint pairs with <code>screw_twist</code> and
+    <code>make_endpoint_pair</code> instead of <code>load_joint</code> (see the <a href="api.html">API reference</a>).</p>
 
   <div class="qs" id="quickstart">
     <div class="qs-options">
-      <div class="qs-row">
-        <span class="qs-label">Input</span>
-        <div class="qs-pills" data-dim="input">{inputs}</div>
-      </div>
       <div class="qs-row">
         <span class="qs-label">Norm</span>
         <div class="qs-pills" data-dim="norm">{norms}</div>
@@ -246,7 +243,7 @@ FRAGMENT = """  <p>Pick what you have and what you want to measure. The snippet 
 (function () {{
   var SNIPPETS = {snippets};
   var NOTES = {notes};
-  var state = {{ input: "hand", norm: "alpha", scope: "joint" }};
+  var state = {{ norm: "alpha", scope: "joint" }};
   var code = document.getElementById("qs-code");
   var note = document.getElementById("qs-note");
 
@@ -262,9 +259,9 @@ FRAGMENT = """  <p>Pick what you have and what you want to measure. The snippet 
     }}).join("\\n");
   }}
   function render() {{
-    var key = state.input + "-" + state.norm + "-" + state.scope;
+    var key = state.norm + "-" + state.scope;
     code.innerHTML = highlight(SNIPPETS[key]);
-    note.innerHTML = NOTES[state.scope] + " " + NOTES[state.norm] + (state.input === "urdf" ? " " + NOTES.urdf : "");
+    note.innerHTML = NOTES[state.scope] + " " + NOTES[state.norm] + " " + NOTES.urdf;
     document.querySelectorAll(".qs-pills").forEach(function (row) {{
       var dim = row.getAttribute("data-dim");
       row.querySelectorAll("button").forEach(function (b) {{
@@ -279,7 +276,7 @@ FRAGMENT = """  <p>Pick what you have and what you want to measure. The snippet 
     }});
   }});
   document.getElementById("qs-copy").addEventListener("click", function () {{
-    var key = state.input + "-" + state.norm + "-" + state.scope;
+    var key = state.norm + "-" + state.scope;
     var btn = this;
     navigator.clipboard.writeText(SNIPPETS[key]).then(function () {{
       btn.textContent = "Copied";
@@ -311,9 +308,9 @@ def main() -> None:
     args = ap.parse_args()
     if args.verify:
         verify(args.verify.resolve())
-    snippets = {f"{i}-{n}-{s}": snippet(i, n, s) for i, _ in INPUTS for n, _ in NORMS for s, _ in SCOPES}
+    snippets = {f"{n}-{s}": snippet("urdf", n, s) for n, _ in NORMS for s, _ in SCOPES}
     frag = FRAGMENT.format(
-        inputs=pills(INPUTS), norms=pills(NORMS), scopes=pills(SCOPES),
+        norms=pills(NORMS), scopes=pills(SCOPES),
         snippets=json.dumps(snippets, indent=1, ensure_ascii=False),
         notes=json.dumps(NOTES, ensure_ascii=False),
     )
