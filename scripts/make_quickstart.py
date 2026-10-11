@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "docs_src" / "quickstart.html"
 
-NORMS = [("alpha", "E<sub>α</sub>, split norm"), ("B", "E<sub>B</sub>, kinetic-energy norm")]
+NORMS = [("alpha", "E<sub>α</sub> split norm"), ("B", "E<sub>B</sub> kinetic-energy norm")]
 SCOPES = [("joint", "One joint: E"), ("phi", "Continuous joints: E<sup>ϕ</sup>"), ("tree", "Whole object: E<sup>tree</sup>")]
 
 # ---------------------------------------------------------------- pieces
