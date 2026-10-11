@@ -336,6 +336,33 @@
       font-size: 0.92rem;
     }
 
+    /* ---------- concept list on the Core concepts page ---------- */
+    ol.concept-list {
+      list-style: none;
+      margin: 0.8rem 0 1.6rem;
+      padding: 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    ol.concept-list li { border-bottom: 1px solid var(--hairline); }
+
+    ol.concept-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 0.9rem;
+      padding: 0.55rem 0.2rem;
+      color: var(--ink);
+    }
+
+    ol.concept-list a:hover { color: var(--accent); text-decoration: none; }
+
+    ol.concept-list .num {
+      flex: 0 0 2.2rem;
+      font-size: 0.78rem;
+      color: var(--ink-3);
+      letter-spacing: 0.05em;
+    }
+
     /* ---------- interactive quickstart ---------- */
     .qs { margin: 1.4rem 0 1.6rem; }
 
@@ -468,14 +495,6 @@
       <a href="installation.html">Installation</a>
       <a href="quickstart.html">Quickstart</a>
       <a class="active" href="concepts.html">Core concepts</a>
-      <a class="sub" href="concept-twist.html">A joint is a twist</a>
-      <a class="sub" href="concept-endpoint.html">The endpoint pair</a>
-      <a class="sub" href="concept-quotient.html">The metric E and the swap</a>
-      <a class="sub" href="concept-gauge.html">Wrap and gauge symmetries</a>
-      <a class="sub" href="concept-norms.html">Which norm: E<sub>α</sub> vs E<sub>B</sub></a>
-      <a class="sub" href="concept-compact.html">Continuous joints and E<sup>ϕ</sup></a>
-      <a class="sub" href="concept-tree.html">Trees: E<sup>tree</sup> and the relaxation</a>
-      <a class="sub" href="concept-decoder.html">Reading the table headers</a>
       <a href="api.html">API reference</a>
       <a href="cli.html">Command-line usage</a>
     </nav>
@@ -496,7 +515,19 @@
           throughout.
         </p>
 
-        <h2 id="notation">4.0&ensp;Notation cheat sheet</h2>
+        <p>The concepts build on each other, so they are best read in order:</p>
+            <ol class="concept-list">
+        <li><a href="concept-twist.html"><span class="num">4.1</span><span class="t">A joint is a twist</span></a></li>
+        <li><a href="concept-endpoint.html"><span class="num">4.2</span><span class="t">The endpoint pair</span></a></li>
+        <li><a href="concept-quotient.html"><span class="num">4.3</span><span class="t">The metric E and the ℤ₂ swap</span></a></li>
+        <li><a href="concept-gauge.html"><span class="num">4.4</span><span class="t">Wrap and gauge symmetries</span></a></li>
+        <li><a href="concept-norms.html"><span class="num">4.5</span><span class="t">Which norm: E<sub>α</sub> versus E<sub>B</sub></span></a></li>
+        <li><a href="concept-compact.html"><span class="num">4.6</span><span class="t">Continuous joints and the compactification E<sup>ϕ</sup></span></a></li>
+        <li><a href="concept-tree.html"><span class="num">4.7</span><span class="t">Trees: E<sup>tree</sup> and the assignment relaxation</span></a></li>
+        <li><a href="concept-decoder.html"><span class="num">4.8</span><span class="t">Reading the table headers</span></a></li>
+      </ol>
+
+      <h2 id="notation">4.0&ensp;Notation cheat sheet</h2>
         <table class="notation">
           <thead><tr><th>Symbol</th><th>Meaning</th><th>In code</th></tr></thead>
           <tbody>

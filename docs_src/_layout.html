@@ -336,6 +336,33 @@
       font-size: 0.92rem;
     }
 
+    /* ---------- concept list on the Core concepts page ---------- */
+    ol.concept-list {
+      list-style: none;
+      margin: 0.8rem 0 1.6rem;
+      padding: 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    ol.concept-list li { border-bottom: 1px solid var(--hairline); }
+
+    ol.concept-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 0.9rem;
+      padding: 0.55rem 0.2rem;
+      color: var(--ink);
+    }
+
+    ol.concept-list a:hover { color: var(--accent); text-decoration: none; }
+
+    ol.concept-list .num {
+      flex: 0 0 2.2rem;
+      font-size: 0.78rem;
+      color: var(--ink-3);
+      letter-spacing: 0.05em;
+    }
+
     /* ---------- interactive quickstart ---------- */
     .qs { margin: 1.4rem 0 1.6rem; }
 

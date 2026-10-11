@@ -48,16 +48,24 @@ def plain(text: str) -> str:
 
 
 def nav_html(current: str) -> str:
+    """Top-level entries only; a concept page keeps "Core concepts" highlighted."""
+    current_group = "concepts" if current.startswith("concept-") else current
     lines = []
     for slug, _eyebrow, _title, label, is_sub in PAGES:
-        classes = []
         if is_sub:
-            classes.append("sub")
-        if slug == current:
-            classes.append("active")
-        cls = f' class="{" ".join(classes)}"' if classes else ""
+            continue
+        cls = ' class="active"' if slug == current_group else ""
         lines.append(f'      <a{cls} href="{slug}.html">{label}</a>')
     return "\n".join(lines)
+
+
+def concept_list_html() -> str:
+    """The list of concept pages shown on the Core concepts landing page."""
+    items = [
+        f'        <li><a href="{slug}.html"><span class="num">{eyebrow}</span><span class="t">{title}</span></a></li>'
+        for slug, eyebrow, title, _label, is_sub in PAGES if is_sub
+    ]
+    return '      <ol class="concept-list">\n' + "\n".join(items) + "\n      </ol>"
 
 
 def page_nav(i: int) -> str:
@@ -95,6 +103,8 @@ def main() -> None:
     for i, (slug, eyebrow, title, _label, _sub) in enumerate(PAGES):
         fragment = (SRC / f"{FRAGMENT.get(slug, slug)}.html").read_text(encoding="utf-8")
         content = "\n".join("      " + line if line.strip() else line for line in fragment.rstrip("\n").split("\n"))
+        if slug == "concepts":
+            content = content.replace("{{concept_list}}", concept_list_html())
         page = (
             layout.replace("{{title}}", plain(title))
             .replace("{{nav}}", nav_html(slug))
