@@ -1,0 +1,34 @@
+  <figure class="tut">
+    <img src="../static/tutorial/revolute_wrap.png" alt="The 2 pi orbit of revolute limits and E against a shift of both limits">
+    <figcaption>Left: every interval on the 2π orbit is the same motion. The optional wrap keeps the one whose midpoint lies in [−π, π). Right: shifting both limits of a GT [0, π/2] by θ. The default (raw limits) keeps growing. With the wrap switched on, a full turn returns E to zero, and the seam at θ = 135° is where the midpoint crosses π.</figcaption>
+  </figure>
+  <p>
+    A revolute exponential is <span class="math">2π</span>-periodic, so shifting both limits by
+    <span class="math">2πk</span> rewrites the same motion over the same anchor. The definition of
+    <span class="math">E</span> uses the limits exactly as stored, so such a pair of encodings is
+    charged the shift. As an <em>optional</em> preprocessing step, <code>wrap_revolute_limits</code>
+    shifts a revolute joint's limits by the common <span class="math">2πk</span> that places the
+    midpoint <span class="math">½(l⁻ + l⁺)</span> in <span class="math">[−π, π)</span>, and
+    <code>joint_to_endpoint_pair(joint, wrap_revolute=True)</code> applies it before forming the pair.
+    Only revolute joints can be wrapped: a prismatic shift translates and a helical shift also
+    translates, so for them <span class="math">k = 0</span> is forced.
+  </p>
+  <div class="confusion">
+    <strong>Off by default.</strong> Nothing in the library or the benchmark wraps unless asked. The stored
+    limits are the data the metric judges, and the stored state pins the anchor, so a full-turn shift is
+    treated like any other re-encoding the file could have avoided.
+    <br><strong>The wrap has a seam.</strong> Picking one representative per orbit is a choice of fundamental
+    domain, and at its boundary (midpoint exactly <span class="math">±π</span>) the representative jumps.
+    With the wrap on, <span class="math">E</span> is invariant under the full-turn shift but is
+    discontinuous there, which is the other reason it stays optional.
+  </div>
+  <figure class="tut">
+    <img src="../static/tutorial/prismatic_gauge.png" alt="Two prismatic joints with different drawn origins have identical twists">
+    <figcaption>Left: a slider drawn from two different origins is the same twist, E = 0. Right: the same construction for a hinge changes the moment o × a, so the pivot line moved and E is not zero.</figcaption>
+  </figure>
+  <p>
+    A prismatic twist is <span class="math">(0, a)</span> and contains no origin at all, so moving the
+    drawn origin is pure gauge and the metric returns zero. The prior origin score charges
+    <span class="math">‖o₁ − o₂‖</span> for it. For a revolute joint the origin matters through the moment,
+    which is the physically right behavior: a hinge on a different line moves the door differently.
+  </p>

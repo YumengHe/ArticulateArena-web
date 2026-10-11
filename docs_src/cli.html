@@ -1,0 +1,18 @@
+  <p>The repository entry point evaluates a prediction/ground-truth case end to end. It loads the config, runs
+    the pure metric functions, and writes a report:</p>
+<pre><code><span class="pr">$</span> python scripts/run.py --config configs/default.yaml
+<span class="cm"># → Report written to out/metrics_report.json</span></code></pre>
+  <p><code>configs/default.yaml</code> groups the knobs that the paper treats as caller-supplied:</p>
+  <table>
+    <thead><tr><th>Group</th><th>Keys</th></tr></thead>
+    <tbody>
+      <tr><td><code>inner_product</code></td><td><code>form</code> (split / kinetic / riemannian), <code>split_norm_alpha</code>, <code>riemannian_metric</code>.</td></tr>
+      <tr><td><code>compactification</code></td><td><code>kappa</code> (benchmark: π), <code>phi_at_zero</code>.</td></tr>
+      <tr><td><code>skeleton</code></td><td><code>lambda_topology</code>, <code>topology_penalty</code>, <code>tree_edit_distance</code>.</td></tr>
+      <tr><td><code>aggregation</code>, <code>geometry</code></td><td>Aggregation form, smoothing ε, geometric weighting.</td></tr>
+      <tr><td><code>prediction</code>, <code>ground_truth</code></td><td>URDF path + joint name of each side of the case.</td></tr>
+    </tbody>
+  </table>
+  <p>Auxiliary scripts: <code>scripts/generate_error_cases.py</code> synthesizes controlled error cases from
+    a URDF, <code>scripts/run_previous_metrics.py</code> scores the same cases with the baseline component
+    metrics, and <code>examples/run_real_cases.py</code> evaluates real PartNet-Mobility objects.</p>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draw the tutorial figures of docs.html, one figure per concept.
+"""Draw the tutorial figures of the documentation (docs/concept-*.html), one figure per concept.
 
 Every number in these figures is computed with the articulatearena library
 (installed in the conda env), so the pictures stay consistent with the code:

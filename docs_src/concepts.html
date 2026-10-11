@@ -1,0 +1,25 @@
+  <p>
+    This section is the long version of the paper's Section 3, written for ourselves. Each concept gets its
+    own figure, drawn by <code>scripts/make_tutorial_figures.py</code> with every number computed by the
+    library, and a short list of the confusions it is meant to clear up. The paper's notation is kept
+    throughout.
+  </p>
+
+  <h2 id="notation">4.0&ensp;Notation cheat sheet</h2>
+  <table class="notation">
+    <thead><tr><th>Symbol</th><th>Meaning</th><th>In code</th></tr></thead>
+    <tbody>
+      <tr><td><span class="math">ξ = (ω, v)</span></td><td>A twist, an element of <span class="math">se(3) ≅ ℝ⁶</span>: rotational part <span class="math">ω</span>, translational part <span class="math">v</span>. Joints use a <em>unit</em> screw: <span class="math">‖ω‖ = 1</span> if it rotates, else <span class="math">‖v‖ = 1</span>.</td><td><code>Twist</code>, <code>Joint.xi_hat</code></td></tr>
+      <tr><td><span class="math">a, o, h</span></td><td>Axis direction, a point on the axis (the origin), and the pitch (meters per radian). These are the URDF parameters that the twist absorbs.</td><td><code>screw_twist(a, o, type, h)</code></td></tr>
+      <tr><td><span class="math">q</span></td><td>The joint coordinate: radians for revolute and helical, meters for prismatic. <span class="math">q = 0</span> is the stored URDF state (the anchor <span class="math">g₀</span>).</td><td>sweep parameter</td></tr>
+      <tr><td><span class="math">l⁻, l⁺</span></td><td>The motion limits, values of <span class="math">q</span>. <span class="math">±∞</span> for a continuous joint.</td><td><code>Joint.a</code>, <code>Joint.b</code></td></tr>
+      <tr><td><span class="math">J = (ξ, [l⁻, l⁺])</span></td><td>A one-DOF joint: what it moves along and how far.</td><td><code>Joint</code></td></tr>
+      <tr><td><span class="math">z<sup>±</sup> = l<sup>±</sup> ξ</span></td><td>The two endpoint twists. Together they form the unordered pair <span class="math">{z⁻, z⁺}</span> that the metric compares.</td><td><code>EndpointPair.u/.v</code></td></tr>
+      <tr><td><span class="math">J₀ = {0, 0}</span></td><td>The fixed (welded) joint, both endpoints at the origin. <span class="math">E(J, J₀)</span> is the motion a joint carries.</td><td><code>cost_to_fixed</code></td></tr>
+      <tr><td><span class="math">E</span></td><td>The quotient metric on endpoint pairs. A subscript names the norm inside it, a superscript names an extension.</td><td><code>joint_metric</code></td></tr>
+      <tr><td><span class="math">‖·‖<sub>α</sub>, E<sub>α</sub></span></td><td>Split norm <span class="math">‖Δω‖² + α²‖Δv‖²</span> with an inverse length <span class="math">α</span>. Dimensionless. Benchmark default <span class="math">α = 1</span>.</td><td><code>make_split_norm(alpha)</code></td></tr>
+      <tr><td><span class="math">‖·‖<sub>B</sub>, E<sub>B</sub></span></td><td>Kinetic-energy norm of the moving link <span class="math">B</span> (mass <span class="math">m</span>, center of mass <span class="math">c</span>, inertia <span class="math">I</span>). In meters.</td><td><code>make_kinetic_energy_norm(inertia)</code></td></tr>
+      <tr><td><span class="math">ϕ, κ, E<sup>ϕ</sup></span></td><td>Radial compactification into the unit ball with scale <span class="math">κ</span> (default <span class="math">π</span>), and <span class="math">E</span> evaluated after it. Handles continuous joints.</td><td><code>radial_compactify</code>, <code>compactified_joint_metric</code></td></tr>
+      <tr><td><span class="math">E<sup>tree</sup></span></td><td>The metric lifted to whole kinematic trees as an edit distance whose costs are all <span class="math">E</span> values.</td><td><code>exact_tree_distance</code>, <code>assignment_tree_distance</code></td></tr>
+    </tbody>
+  </table>

@@ -1,0 +1,34 @@
+  <figure class="tut">
+    <img src="../static/tutorial/compactification.png" alt="The tanh radial map, the unit ball with finite and continuous joints, and E phi against a growing range">
+    <figcaption>Left: the radius after ϕ as a function of the endpoint norm, for three κ. Middle: inside the ball a finite joint [−L, L]ξ grows toward the boundary, where the continuous joint {±ξ/‖ξ‖} lives. Right: E<sup>ϕ</sup> between a finite prediction and a continuous ground truth decays to zero as the range grows, matching the closed form.</figcaption>
+  </figure>
+  <p>
+    A continuous joint has <span class="math">l<sup>±</sup> = ±∞</span>, so its endpoint twists are at
+    infinity and the flat distance is undefined. The radial map
+    <span class="math">ϕ(z) = tanh(‖z‖/κ) z/‖z‖</span> pulls all of <span class="math">se(3)</span> into the
+    open unit ball and sends the continuous joint to the antipodal boundary pair
+    <span class="math">{±ξ/‖ξ‖}</span>, the axis direction up to sign. Then
+    <span class="math">E<sup>ϕ</sup>(J₁, J₂) = E({ϕ(z₁⁻), ϕ(z₁⁺)}, {ϕ(z₂⁻), ϕ(z₂⁺)})</span>. Against a
+    continuous ground truth with unit screw, a finite prediction <span class="math">[−L, L]</span> on the
+    same screw scores <span class="math">√2 (1 − tanh(L‖ξ‖/κ))</span>: it starts at
+    <span class="math">√2</span>, the distance from the welded joint, and decays to zero. A continuous
+    joint is literally the limit of a growing range, with no formula switch.
+  </p>
+  <div class="confusion">
+    <strong>ϕ uses the same norm as E.</strong> The <span class="math">‖z‖</span> inside
+    <span class="math">ϕ</span> is whichever norm the subscript names, so there is an
+    <span class="math">E<sub>α</sub><sup>ϕ</sup></span> and an <span class="math">E<sub>B</sub><sup>ϕ</sup></span>.
+    Both are dimensionless because the division by <span class="math">‖z‖</span> inside
+    <span class="math">ϕ</span> cancels the units and <span class="math">κ</span> carries the unit of the
+    norm. <span class="math">E<sub>B</sub><sup>ϕ</sup></span> keeps the body-aware weighting but loses the
+    meter reading.
+    <br><strong>What κ does.</strong> It is a pure horizontal dilation of every curve, with half decay near
+    <span class="math">L‖ξ‖ ≈ 0.55 κ</span>. The default <span class="math">κ = π</span> keeps ranges up to a
+    full turn in the responsive part of tanh, and on the benchmark's finite ground-truth joints none
+    saturate (95th percentile radius 0.78 at worst).
+    <br><strong>Finite joints may also be compactified.</strong> The map is defined on all of
+    <span class="math">se(3)</span>, so <span class="math">E<sup>ϕ</sup></span> is the one score that covers
+    every joint type at once. That is why the benchmark's common column is
+    <span class="math">E<sub>α</sub><sup>ϕ</sup></span>. Raw <span class="math">E<sub>B</sub></span> is
+    reported only on pairs whose limits are both finite.
+  </div>

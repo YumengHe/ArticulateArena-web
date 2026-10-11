@@ -1,0 +1,23 @@
+  <figure class="tut">
+    <img src="../static/tutorial/endpoint_pair.png" alt="Two joints drawn as segments through the origin of twist space">
+    <figcaption>A 2-D slice of twist space. Each joint is the segment from z⁻ = l⁻ξ to z⁺ = l⁺ξ. The origin is the fixed joint J₀, and the distance from J₀ to a joint is the motion that joint carries.</figcaption>
+  </figure>
+  <p>
+    Multiply the unit twist by the two limits and the joint becomes a pair of points in
+    <span class="math">se(3)</span>, <span class="math">{z⁻, z⁺} = {l⁻ ξ, l⁺ ξ}</span>. The direction of the
+    segment is the screw, its length is the range, its position along the line is where the range sits
+    relative to the anchor. Nothing about the joint is lost and nothing about it is duplicated. The segment
+    passes through the origin whenever <span class="math">l⁻ ≤ 0 ≤ l⁺</span>, that is, whenever the stored
+    state is inside the range. The fixed joint is the degenerate segment <span class="math">{0, 0}</span>.
+  </p>
+  <div class="confusion">
+    <strong>Limits are first-class data.</strong> The prior template folds the limits into the axis through a
+    motion vector <span class="math">a (l⁺ − l⁻)</span>, which keeps the range width but forgets where the
+    range sits and which way it points. The endpoint pair keeps both.
+    <br><strong>Why an unordered pair.</strong> Nothing physical distinguishes the two ends of a segment.
+    Ordering them would make the metric depend on which limit is called lower, which is exactly the
+    sign convention the next section removes.
+    <br><strong>E(J, J₀) is the "size" of a joint.</strong> Under the split norm it is
+    <span class="math">√((l⁻)² + (l⁺)²)</span> times a fixed factor, and under the kinetic-energy norm it is
+    the RMS material displacement over the range. The tree metric prices structural edits with it.
+  </div>

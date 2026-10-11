@@ -1,0 +1,46 @@
+  <figure class="tut">
+    <img src="../static/tutorial/tree_edit.png" alt="A storyboard of the three edit operations turning a predicted tree into the ground truth">
+    <figcaption>The three edits: contract an edge (merge its two links), substitute the joint on an edge, expand a link into two joined by a new joint. Every cost is an E value, and the welded joint J₀ is the reference for contraction and expansion.</figcaption>
+  </figure>
+  <p>
+    An object is a tree with links as nodes and joints on the edges, and the same object admits many
+    trees: parts can be relabeled, the base re-chosen, a handle welded to a drawer or split off. The tree
+    metric is the cheapest sequence of edits from one tree to the other,
+    <span class="math">E<sup>tree</sup>(T₁, T₂) = inf<sub>π</sub> Σ<sub>o∈π</sub> c(o)</span>, with
+    substitution costing <span class="math">E(J, J′)</span> and contraction or expansion costing
+    <span class="math">E(J, J₀)</span>. A spurious joint that barely moves costs
+    <span class="math">ε‖ξ‖</span>, not a constant penalty, so topology errors and joint errors are priced in
+    the same motion currency and the metric is continuous through the welded boundary. Exactly fixed edges
+    are contracted first (<code>contract_small_edges</code>) because they are representation noise.
+  </p>
+  <figure class="tut">
+    <img src="../static/tutorial/tree_relaxation.png" alt="A path and a star with the same joint multiset, where the relaxation and the exact distance differ">
+    <figcaption>The two trees carry the same three joints, so the assignment relaxation pairs them one-to-one at zero cost. No tree isomorphism realizes that pairing, so the exact edit distance is positive.</figcaption>
+  </figure>
+  <p>
+    Any edit sequence can be reordered into contract, then substitute along a tree isomorphism, then
+    expand. The exact distance is therefore a minimum over matchings of the edge sets that <em>extend to an
+    isomorphism</em> of the contracted trees. Dropping that realizability condition gives the
+    <em>assignment relaxation</em>: a Hungarian matching over the joint multisets with
+    <span class="math">E(J, J₀)</span> as the unmatched cost (<code>assignment_tree_distance</code>). It is
+    always a lower bound, it is polynomial for any input, and it needs only the multiset of predicted
+    joints. Whenever its optimal matching happens to be realizable, checked in linear time by
+    <code>matching_realizable</code>, the relaxation <em>certifies</em> the exact value.
+    <code>exact_tree_distance</code> returns <code>(distance, certified)</code> and falls back to a small
+    constrained search otherwise.
+  </p>
+  <div class="confusion">
+    <strong>Exact versus relaxed, in numbers.</strong> On the tree ablation the certificate settles 91 % of
+    random corruptions, exact and relaxed agree on 92 %, they agree on every structured sweep, and their
+    rankings correlate at τ = 0.994. The paper states the protocol with the relaxation because unordered
+    tree edit distance is NP-hard in the worst case and because some methods emit joints without a
+    usable tree. The reported tree score is the exact one wherever a tree is available.
+    <br><strong>Why not a constant topology penalty λ.</strong> It jumps by λ the moment a joint appears, is
+    capped at 2λ once unmatching becomes cheaper than matching, and the forced-matching variant escapes
+    the cap only by breaking the triangle inequality. Motion-priced edits have no knob and none of these
+    failures.
+    <br><strong>The per-link weighting and the metric proof.</strong> With one fixed inner product
+    <span class="math">E<sup>tree</sup></span> is a metric on representation-equivalence classes. With the
+    kinetic-energy norm instantiated per ground-truth link, contraction and expansion change which body
+    weighs which joint, so that variant is used as a score without the metric claim.
+  </div>

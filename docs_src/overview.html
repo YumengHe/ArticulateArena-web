@@ -1,0 +1,25 @@
+  <p>
+    <code>articulatearena</code> implements a principled distance between articulated-kinematics
+    predictions and ground truth. A one-DOF joint
+    <span class="math">J = (ξ, [l⁻, l⁺])</span> with unit screw twist <span class="math">ξ ∈ se(3)</span>
+    and limits <span class="math">l⁻, l⁺</span> is represented by its unordered pair of
+    <em>endpoint twists</em> <span class="math">{z⁻, z⁺} = {l⁻ξ, l⁺ξ}</span>. The joint metric is the
+    quotient distance of flat <span class="math">se(3) × se(3)</span> under the swap:
+  </p>
+  <p class="display-math">
+    E(J₁, J₂) = min{ ‖z₁⁻ − z₂⁻‖² + ‖z₁⁺ − z₂⁺‖²,&ensp;‖z₁⁻ − z₂⁺‖² + ‖z₁⁺ − z₂⁻‖² }<sup>1/2</sup>,
+  </p>
+  <p>
+    where <span class="math">‖·‖</span> is an injected <span class="math">se(3)</span> norm. A subscript
+    names that choice, <span class="math">E<sub>α</sub></span> under the split norm and
+    <span class="math">E<sub>B</sub></span> under the kinetic-energy norm, and superscripts mark the
+    extensions <span class="math">E<sup>ϕ</sup></span> (compactified) and
+    <span class="math">E<sup>tree</sup></span> (tree lift). The package
+    provides the metric itself, a smooth training surrogate, the radial compactification that extends the
+    metric continuously to unbounded (continuous) joints, and two object-level lifts: an optimal-assignment
+    skeleton distance and a motion-aware tree edit distance with a certified assignment relaxation.
+  </p>
+  <p>
+    All functions are pure: norms, weights, and tolerances are passed in by the caller and never hardcoded.
+    The library depends only on <code>numpy</code>, <code>scipy</code>, and <code>pyyaml</code>.
+  </p>

@@ -1,0 +1,40 @@
+  <p>
+    The formula for <span class="math">E</span> only asks for a norm on twist differences
+    <span class="math">Δz = (Δω, Δv)</span> that comes from an inner product. Two are offered, and the
+    subscript on <span class="math">E</span> says which one is inside.
+  </p>
+  <figure class="tut">
+    <img src="../static/tutorial/inner_products.png" alt="A fifteen degree axis error scored on rods of different length under both norms">
+    <figcaption>The same 15° axis error on a short and a long link. The split norm scores it identically for every link. The kinetic-energy norm scores it by the material that actually moves.</figcaption>
+  </figure>
+  <p>
+    The <em>split norm</em> <span class="math">‖Δz‖<sub>α</sub>² = ‖Δω‖² + α²‖Δv‖²</span> weighs rotation
+    against translation through one inverse length <span class="math">α</span>. It needs no geometry, is
+    dimensionless, and compares every joint of every object by one rule. The <em>kinetic-energy norm</em>
+    <span class="math">‖Δz‖<sub>B</sub>² = (1/m) Δωᵀ I Δω + ‖Δv + Δω × c‖²</span> lets the moving link set
+    the scale: <span class="math">m</span>, <span class="math">c</span>, and <span class="math">I</span>
+    are the mass, center of mass, and inertia of the ground-truth child link. Under it
+    <span class="math">E<sub>B</sub></span> is in meters and equals the RMS linearized motion of the link's
+    material.
+  </p>
+  <figure class="tut">
+    <img src="../static/tutorial/material_motion.png" alt="Displacement field of a door under the true hinge and a shifted hinge, and E_B against the hinge offset">
+    <figcaption>Left: a door opened by 60° about the true hinge and about a hinge offset by 0.18 m. The red arrows are where each material point ends up differently. Right: E<sub>B</sub> tracks the RMS of those displacements as the offset grows. The small gap is the linearization.</figcaption>
+  </figure>
+  <div class="confusion">
+    <strong>When the two norms agree.</strong> On purely translational differences
+    (<span class="math">Δω = 0</span>) and <span class="math">α = 1</span> they coincide exactly, which is
+    why the prismatic panels of the ablations overlap. They separate where rotation enters.
+    <br><strong>α is a size assumption.</strong> For a centered link with isotropic inertia and gyration radius
+    <span class="math">r</span>, the kinetic norm equals <span class="math">r²</span> times the split norm at
+    <span class="math">α = 1/r</span>. A global <span class="math">α</span> therefore assumes every link has
+    the same size <span class="math">1/α</span>. The object-scale ablation shows the consequence:
+    <span class="math">E<sub>B</sub>(s) = s E<sub>B</sub>(1)</span> under a uniform scaling
+    <span class="math">s</span>, while <span class="math">E<sub>α</sub></span> is flat on angular errors.
+    <br><strong>E<sub>B</sub> is still a metric.</strong> The body <span class="math">B</span> is fixed by the
+    ground truth before any prediction is seen and is the same for every method on that joint, so the
+    norm is one fixed inner-product norm and the quotient argument applies verbatim. Different ground-truth
+    joints carry different norms, which is the intended physical weighting.
+    <br><strong>Units.</strong> <span class="math">E<sub>α</sub></span> is a pure number,
+    <span class="math">E<sub>B</sub></span> is meters. Never compare their heights, only their shapes.
+  </div>

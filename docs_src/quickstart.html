@@ -1,0 +1,22 @@
+  <p>Build endpoint pairs for two joints, choose an <span class="math">se(3)</span> norm, and evaluate
+    <code>joint_metric</code>. The distance is <code>0</code> exactly when the two joints induce the same
+    motion:</p>
+<pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> articulatearena.new_equation.representation <span class="kw">import</span> make_endpoint_pair
+<span class="kw">from</span> articulatearena.new_equation.inner_product <span class="kw">import</span> make_split_norm
+<span class="kw">from</span> articulatearena.new_equation.E <span class="kw">import</span> joint_metric
+
+xi = np.array([0., 0., 1., 0., 0., 0.])   <span class="cm"># unit screw axis (omega; nu)</span>
+gt   = make_endpoint_pair(xi, 0.0, 1.0)    <span class="cm"># joint limits [a, b]</span>
+pred = make_endpoint_pair(xi, 0.0, 1.0)
+
+norm = make_split_norm(alpha=1.0)          <span class="cm"># the norm is injected, never hardcoded</span>
+E = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)
+print(E)   <span class="cm"># 0.0 when prediction == ground truth</span></code></pre>
+  <p>To score real URDF joints, load them through the reader layer instead of constructing twists by
+    hand:</p>
+<pre><code><span class="kw">from</span> articulatearena.read.urdf_loader <span class="kw">import</span> load_joint
+<span class="kw">from</span> articulatearena.new_equation.representation <span class="kw">import</span> joint_to_endpoint_pair
+
+joint = load_joint(<span class="st">"sample_data/45168/mobility.urdf"</span>, <span class="st">"joint_0"</span>)
+pair  = joint_to_endpoint_pair(joint)      <span class="cm"># unordered {a*xi, b*xi}</span></code></pre>

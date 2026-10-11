@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wrap and gauge symmetries · Articulate Arena Documentation</title>
+  <meta name="description" content="Usage documentation for articulatearena, the reference implementation of the quotient metric E on articulated joints.">
+  <link rel="stylesheet" href="../static/css/google-fonts-local.css">
+  <link rel="icon" type="image/svg+xml" href="../static/images/articulatearena-icon.svg">
+  <link rel="apple-touch-icon" href="../static/images/icon.png">
+
+<style>
+    :root {
+      --paper: #fefdfb;
+      --panel: #f9f8f5;
+      --ink: #1f1e1b;
+      --ink-2: #55524b;
+      --ink-3: #8a867d;
+      --hairline: #e8e5de;
+      --accent: #9a7422;
+      --accent-soft: #f0e7d4;
+      --code-bg: #f7f6f2;
+      --code-border: #e9e6df;
+      --serif: Georgia, 'Times New Roman', 'Songti SC', serif;
+      --sans: 'Noto Sans', -apple-system, 'Segoe UI', sans-serif;
+      --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+      --sidebar-w: 272px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      /* The sidebar stays at the left edge; the text column is centered in the
+         remaining width, so a wide screen does not push everything to the left. */
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: var(--sidebar-w);
+      padding: 2.2rem 1.6rem 2rem 2rem;
+      background: var(--panel);
+      border-right: 1px solid var(--hairline);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.6rem;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand img { width: 30px; height: 30px; }
+
+    .brand .name {
+      font-family: var(--serif);
+      font-size: 1.16rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+
+    .brand .version {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-3);
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      padding: 0.05rem 0.5rem;
+      background: var(--paper);
+    }
+
+    .sidebar .tagline {
+      margin: 0.9rem 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.86rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .toc-label {
+      margin: 1.8rem 0 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    nav.toc { border-left: 1px solid var(--hairline); }
+
+    nav.toc a {
+      display: block;
+      padding: 0.32rem 0 0.32rem 0.9rem;
+      margin-left: -1px;
+      border-left: 2px solid transparent;
+      color: var(--ink-2);
+      text-decoration: none;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    nav.toc a:hover { color: var(--ink); }
+
+    nav.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    nav.toc a.sub {
+      padding-left: 1.9rem;
+      font-size: 0.8rem;
+    }
+
+    .sidebar .backlink {
+      display: inline-block;
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: var(--ink-3);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--ink-3);
+    }
+
+    .sidebar .backlink:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ---------- content ---------- */
+    .content {
+      min-width: 0;
+      padding: 3.4rem 3.4rem 5rem;
+    }
+
+    .content-inner { max-width: 48rem; margin: 0 auto; }
+
+    h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.25; }
+
+    h1 {
+      font-size: 2.15rem;
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    h1.page-title {
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    nav.page-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 3.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--hairline);
+    }
+
+    nav.page-nav a {
+      display: block;
+      max-width: 48%;
+      font-size: 0.9rem;
+      color: var(--ink-2);
+    }
+
+    nav.page-nav a:hover { color: var(--accent); text-decoration: none; }
+    nav.page-nav a.next { margin-left: auto; text-align: right; }
+
+    nav.page-nav .label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.15rem;
+    }
+
+    .subtitle-line {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-2);
+      font-size: 1.06rem;
+      margin: 0 0 2.6rem;
+    }
+
+    section { padding-top: 1.2rem; }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 2.4rem 0 0.9rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    h2 .sec-no {
+      color: var(--ink-3);
+      font-size: 0.95rem;
+      font-family: var(--sans);
+      font-weight: 400;
+      margin-right: 0.65rem;
+      letter-spacing: 0.05em;
+    }
+
+    h3 { font-size: 1.12rem; margin: 1.8rem 0 0.5rem; }
+
+    p { margin: 0.7rem 0; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    em.math, span.math { font-family: var(--serif); font-style: italic; white-space: nowrap; }
+    span.math sub, span.math sup { font-style: normal; font-size: 0.72em; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.84em;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 4px;
+      padding: 0.08em 0.35em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 0.95rem 1.15rem;
+      overflow-x: auto;
+      line-height: 1.55;
+      margin: 0.9rem 0 1.2rem;
+    }
+
+    pre code { background: none; border: none; padding: 0; font-size: 0.83rem; color: var(--ink); }
+
+    pre .cm { color: var(--ink-3); }           /* comment */
+    pre .kw { color: #7a5a1e; font-weight: 600; } /* keyword */
+    pre .st { color: #5b6e3a; }                /* string */
+    pre .pr { color: var(--ink-3); }           /* prompt $ */
+
+    .display-math {
+      font-family: var(--serif);
+      font-style: italic;
+      text-align: center;
+      margin: 1.25rem 0;
+      font-size: 1.08rem;
+      color: var(--ink);
+    }
+
+    .display-math sub, .display-math sup { font-style: normal; font-size: 0.7em; }
+
+    /* ---------- tables ---------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.9rem 0 1.4rem;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      border-bottom: 1.5px solid var(--ink-2);
+      padding: 0.45rem 0.9rem 0.45rem 0;
+    }
+
+    td {
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.5rem 0.9rem 0.5rem 0;
+      vertical-align: top;
+    }
+
+    /* Long call signatures wrap at spaces; keep the column from swallowing the row. */
+    td:first-child { max-width: 24rem; }
+
+    figure.tut { margin: 1.1rem 0 1.5rem; }
+    figure.tut img {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      background: #fff;
+    }
+    figure.tut figcaption {
+      margin-top: 0.45rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.86rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+    .confusion {
+      border-left: 3px solid var(--ink-3);
+      padding: 0.15rem 0 0.15rem 1rem;
+      margin: 0.9rem 0;
+      color: var(--ink-2);
+      font-size: 0.94rem;
+    }
+    .confusion strong { color: var(--ink); }
+    table.notation td:first-child { white-space: nowrap; max-width: none; }
+
+    .note {
+      background: var(--accent-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 0.7rem 1rem;
+      margin: 1.1rem 0;
+      font-size: 0.92rem;
+    }
+
+    footer.docs-footer {
+      margin-top: 4rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--hairline);
+      color: var(--ink-3);
+      font-size: 0.82rem;
+    }
+
+    /* ---------- narrow screens ---------- */
+    @media (max-width: 900px) {
+      body { display: block; }
+      .sidebar {
+        position: static;
+        width: auto;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--hairline);
+        padding: 1.4rem 1.4rem 1.2rem;
+      }
+      nav.toc { display: flex; flex-wrap: wrap; gap: 0 1rem; border-left: none; }
+      nav.toc a, nav.toc a.active { border-left: none; padding: 0.15rem 0; }
+      nav.toc a.sub { display: none; }
+      .content { padding: 2rem 1.3rem 3rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <a class="brand" href="./index.html">
+      <img src="../static/images/articulatearena-icon.svg" alt="">
+      <span class="name">Articulate Arena</span>
+      <span class="version">v0.1.0</span>
+    </a>
+    <p class="tagline">A quotient metric on articulated kinematics via Lie-algebra endpoint twists.</p>
+
+    <p class="toc-label">Contents</p>
+    <nav class="toc" id="toc">
+      <a href="index.html">Overview</a>
+      <a href="installation.html">Installation</a>
+      <a href="quickstart.html">Quickstart</a>
+      <a href="concepts.html">Core concepts</a>
+      <a class="sub" href="concept-twist.html">A joint is a twist</a>
+      <a class="sub" href="concept-endpoint.html">The endpoint pair</a>
+      <a class="sub" href="concept-quotient.html">The metric E and the swap</a>
+      <a class="sub active" href="concept-gauge.html">Wrap and gauge symmetries</a>
+      <a class="sub" href="concept-norms.html">Which norm: E<sub>α</sub> vs E<sub>B</sub></a>
+      <a class="sub" href="concept-compact.html">Continuous joints and E<sup>ϕ</sup></a>
+      <a class="sub" href="concept-tree.html">Trees: E<sup>tree</sup> and the relaxation</a>
+      <a class="sub" href="concept-decoder.html">Reading the table headers</a>
+      <a href="api.html">API reference</a>
+      <a href="cli.html">Command-line usage</a>
+    </nav>
+
+    <a class="backlink" href="../index.html">← Project page</a>
+  </aside>
+
+  <main class="content">
+    <div class="content-inner">
+
+      <p class="eyebrow">4.4</p>
+      <h1 class="page-title">Wrap and gauge symmetries</h1>
+
+        <figure class="tut">
+          <img src="../static/tutorial/revolute_wrap.png" alt="The 2 pi orbit of revolute limits and E against a shift of both limits">
+          <figcaption>Left: every interval on the 2π orbit is the same motion. The optional wrap keeps the one whose midpoint lies in [−π, π). Right: shifting both limits of a GT [0, π/2] by θ. The default (raw limits) keeps growing. With the wrap switched on, a full turn returns E to zero, and the seam at θ = 135° is where the midpoint crosses π.</figcaption>
+        </figure>
+        <p>
+          A revolute exponential is <span class="math">2π</span>-periodic, so shifting both limits by
+          <span class="math">2πk</span> rewrites the same motion over the same anchor. The definition of
+          <span class="math">E</span> uses the limits exactly as stored, so such a pair of encodings is
+          charged the shift. As an <em>optional</em> preprocessing step, <code>wrap_revolute_limits</code>
+          shifts a revolute joint's limits by the common <span class="math">2πk</span> that places the
+          midpoint <span class="math">½(l⁻ + l⁺)</span> in <span class="math">[−π, π)</span>, and
+          <code>joint_to_endpoint_pair(joint, wrap_revolute=True)</code> applies it before forming the pair.
+          Only revolute joints can be wrapped: a prismatic shift translates and a helical shift also
+          translates, so for them <span class="math">k = 0</span> is forced.
+        </p>
+        <div class="confusion">
+          <strong>Off by default.</strong> Nothing in the library or the benchmark wraps unless asked. The stored
+          limits are the data the metric judges, and the stored state pins the anchor, so a full-turn shift is
+          treated like any other re-encoding the file could have avoided.
+          <br><strong>The wrap has a seam.</strong> Picking one representative per orbit is a choice of fundamental
+          domain, and at its boundary (midpoint exactly <span class="math">±π</span>) the representative jumps.
+          With the wrap on, <span class="math">E</span> is invariant under the full-turn shift but is
+          discontinuous there, which is the other reason it stays optional.
+        </div>
+        <figure class="tut">
+          <img src="../static/tutorial/prismatic_gauge.png" alt="Two prismatic joints with different drawn origins have identical twists">
+          <figcaption>Left: a slider drawn from two different origins is the same twist, E = 0. Right: the same construction for a hinge changes the moment o × a, so the pivot line moved and E is not zero.</figcaption>
+        </figure>
+        <p>
+          A prismatic twist is <span class="math">(0, a)</span> and contains no origin at all, so moving the
+          drawn origin is pure gauge and the metric returns zero. The prior origin score charges
+          <span class="math">‖o₁ − o₂‖</span> for it. For a revolute joint the origin matters through the moment,
+          which is the physically right behavior: a hinge on a different line moves the door differently.
+        </p>
+
+      <nav class="page-nav">
+        <a class="prev" href="concept-quotient.html"><span class="label">Previous</span>← The metric E and the ℤ₂ swap</a>
+        <a class="next" href="concept-norms.html"><span class="label">Next</span>Which norm: E<sub>α</sub> versus E<sub>B</sub> →</a>
+      </nav>
+
+      <footer class="docs-footer">
+        Articulate Arena · <a href="../index.html">project page</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a>
+      </footer>
+
+    </div>
+  </main>
+
+</body>
+</html>

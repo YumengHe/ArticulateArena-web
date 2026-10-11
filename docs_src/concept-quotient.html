@@ -1,0 +1,29 @@
+  <figure class="tut">
+    <img src="../static/tutorial/swap_quotient.png" alt="The direct and the swapped pairing of two endpoint pairs, and the axis flip">
+    <figcaption>E takes the cheaper of the two ways to pair up the endpoints (left, middle). Flipping the screw and negating the limits redraws the same segment (right), so the quotient makes the axis sign irrelevant.</figcaption>
+  </figure>
+  <p>
+    Two unordered pairs can be matched in two ways, direct (<span class="math">z₁⁻ ↔ z₂⁻</span>,
+    <span class="math">z₁⁺ ↔ z₂⁺</span>) or swapped. Each way has a flat distance in
+    <span class="math">se(3) × se(3)</span>, the square root of the two squared endpoint differences, and
+  </p>
+  <p class="display-math">
+    E(J₁, J₂) = min{ ‖z₁⁻ − z₂⁻‖² + ‖z₁⁺ − z₂⁺‖²,&ensp;‖z₁⁻ − z₂⁺‖² + ‖z₁⁺ − z₂⁻‖² }<sup>1/2</sup>.
+  </p>
+  <p>
+    This is the quotient distance of a flat space by the group ℤ₂ acting as the swap, and a quotient by a
+    finite group of isometries is again a metric. That single fact gives the triangle inequality, which no
+    hand-built combination of component errors has.
+  </p>
+  <div class="confusion">
+    <strong>What the swap buys.</strong> Reversing the screw orientation maps
+    <span class="math">(ξ, [l⁻, l⁺])</span> to <span class="math">(−ξ, [−l⁺, −l⁻])</span>. The two endpoint
+    twists are unchanged as a set, only their labels trade places, so the swapped pairing scores zero
+    against the original. The axis-sign ambiguity that breaks the prior limit score is removed
+    structurally, not patched.
+    <br><strong>Squares then a root, not a sum of norms.</strong> The two endpoint differences are combined in
+    quadrature. This is what makes <span class="math">E</span> the flat distance of the product space and
+    what makes <span class="math">E<sub>B</sub></span> an RMS quantity later.
+    <br><strong>Where E is not smooth.</strong> Only on the tie locus where the two pairings cost the same.
+    For training, <code>training_loss</code> replaces the min by a smooth swap-invariant surrogate.
+  </div>

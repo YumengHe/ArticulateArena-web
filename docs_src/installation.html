@@ -1,0 +1,10 @@
+  <p><code>articulatearena</code> is on <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a>. It requires
+    Python ≥ 3.10 and depends only on <code>numpy</code>, <code>scipy</code>, and <code>pyyaml</code>:</p>
+<pre><code><span class="pr">$</span> pip install articulatearena</code></pre>
+  <p>The install also provides the <code>articulatearena</code> command described under
+    <a href="cli.html">Command-line usage</a>. The optional <code>mesh</code> extra
+    (<code>pip install "articulatearena[mesh]"</code>) adds <code>trimesh</code> for mesh-derived link
+    inertia, which the kinetic-energy norm needs when the URDF carries no inertial data.</p>
+  <p>To work from a source checkout instead, run <code>pip install -e .</code> at the repository root. The
+    editable install registers the same import name, and the bundled scripts also run without installation,
+    as they place the package directory on <code>sys.path</code> themselves.</p>

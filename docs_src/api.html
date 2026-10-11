@@ -1,0 +1,121 @@
+  <p>Public functions and classes, by module. All array arguments are NumPy <code>float64</code>, and
+    twists are shape (6,) in the paper's convention <span class="math">ξ = (ω, v)</span>.</p>
+
+  <h3>Types · <code>articulatearena.types</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>Twist</code></td><td>Immutable shape-(6,) twist wrapper, raw array via <code>.data</code>.</td></tr>
+      <tr><td><code>EndpointPair</code></td><td>Unordered pair <code>{u, v}</code> of endpoint twists.</td></tr>
+      <tr><td><code>Joint</code></td><td>Unit screw twist <code>xi_hat</code>, limits <code>a</code>, <code>b</code> (±inf for continuous), and <code>joint_type</code>.</td></tr>
+      <tr><td><code>LinkInertia</code></td><td>Mass, center of mass, and 3×3 rotational inertia of a link.</td></tr>
+      <tr><td><code>InnerProduct</code></td><td>Protocol: callable from a shape-(6,) twist to its squared norm.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Representation · <code>new_equation.representation</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>screw_twist(axis_dir, point, joint_type, pitch=0)</code></td>
+        <td>Unit screw twist of a one-DOF joint from a world-frame axis and a point on it.</td></tr>
+      <tr><td><code>make_endpoint_pair(xi_hat, a, b)</code></td>
+        <td>The unordered endpoint pair <span class="math">{a·ξ, b·ξ}</span> (code names the limits
+          <code>a</code>, <code>b</code> = paper's <span class="math">l⁻, l⁺</span>).</td></tr>
+      <tr><td><code>joint_to_endpoint_pair(joint)</code></td>
+        <td>Endpoint pair of a typed <code>Joint</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Joint metric · <code>new_equation.E</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>joint_metric(u1, v1, u2, v2, inner_product)</code></td>
+        <td>The quotient metric <span class="math">E</span>, the ℤ₂-swap minimum over endpoint pairings.</td></tr>
+      <tr><td><code>training_loss(u1, v1, u2, v2, inner_product, epsilon=1e-9)</code></td>
+        <td>Smooth swap-invariant surrogate for <span class="math">E²</span> (differentiable objective).</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Norms · <code>new_equation.inner_product</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>make_split_norm(alpha)</code></td><td>Split norm <span class="math">‖Δω‖² + α²‖Δv‖²</span>.</td></tr>
+      <tr><td><code>make_kinetic_energy_norm(inertia)</code></td><td>Kinetic-energy norm from a <code>LinkInertia</code>.</td></tr>
+      <tr><td><code>make_riemannian_norm(metric)</code></td><td>Norm from a user-supplied SPD 6×6 matrix.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Continuous joints · <code>new_equation.continuous</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>radial_compactify(u, kappa, inner_product=None)</code></td><td>Radial map ϕ into the open unit ball.</td></tr>
+      <tr><td><code>continuous_joint_repr(xi_hat, inner_product=None)</code></td><td>Boundary endpoint pair of an unbounded joint.</td></tr>
+      <tr><td><code>compactified_joint_metric(u1, v1, u2, v2, inner_product, kappa)</code></td><td><span class="math">E∘ϕ</span>, the compactified metric.</td></tr>
+      <tr><td><code>interval_term(a1, a2)</code></td><td>Extended-real distance between limit values.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Tree metric · <code>new_equation.tree</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>cost_to_fixed(pair, inner_product)</code></td><td>Contraction/expansion cost <span class="math">E(J, J₀)</span>.</td></tr>
+      <tr><td><code>assignment_tree_distance(pairs1, pairs2, inner_product, unmatched_cost=None)</code></td>
+        <td>Assignment relaxation over joint multisets (Hungarian, padded matrix).</td></tr>
+      <tr><td><code>contract_small_edges(edges, inner_product, tol=1e-12)</code></td>
+        <td>Contract exactly-fixed (zero-motion) edges of a labeled tree.</td></tr>
+      <tr><td><code>assignment_matching(pairs1, pairs2, inner_product)</code></td>
+        <td>Relaxation value together with its optimal matching.</td></tr>
+      <tr><td><code>matching_realizable(edges1, edges2, matching)</code></td>
+        <td>Linear-time check that a matching extends to an isomorphism of the contracted trees.</td></tr>
+      <tr><td><code>exact_tree_distance(edges1, edges2, inner_product)</code></td>
+        <td>Exact motion-aware tree edit distance. Returns <code>(distance, certified)</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Skeleton distance · <code>new_equation.skeleton</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>topology_penalty(num_unmatched, num_relation_mismatches, lambda_topology, relation_weight=1)</code></td>
+        <td>Constant-λ penalty for surplus joints and relation mismatches.</td></tr>
+      <tr><td><code>skeleton_distance(cost_matrix, lambda_topology, ...)</code></td>
+        <td>Assigned <span class="math">E</span> cost plus topology penalty. Returns <code>(row_ind, col_ind, total)</code>.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Material motion · <code>new_equation.material_motion</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>se3_exp(xi_hat, theta)</code></td><td>Rigid transform exp(θ ξ̂).</td></tr>
+      <tr><td><code>config_discrepancy(...)</code>, <code>finite_joint_discrepancy(...)</code></td>
+        <td>RMS displacement discrepancy of material points swept along two joints (used to calibrate <span class="math">E</span> against physical motion).</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Background math · <code>general_equation</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>exp_map.exp_map(xi_hat, q=1)</code></td><td>se(3) exponential map.</td></tr>
+      <tr><td><code>assignment.assign(cost_matrix)</code></td><td>Hungarian optimal assignment.</td></tr>
+      <tr><td><code>tree_edit.tree_edit_distance(...)</code></td><td>Classical ordered tree edit distance (Zhang-Shasha) on <code>TreeNode</code>s.</td></tr>
+      <tr><td><code>configuration.configuration_difference(...)</code></td><td>L² configuration difference (Park 1995).</td></tr>
+    </tbody>
+  </table>
+
+  <h3>I/O · <code>read</code> and <code>write</code></h3>
+  <table>
+    <tbody>
+      <tr><td><code>read.config_loader.load_config(path=None)</code></td>
+        <td>Flatten a grouped YAML config into the <code>Config</code> dataclass. Defaults to <code>configs/default.yaml</code>.</td></tr>
+      <tr><td><code>read.urdf_loader.load_joint(urdf_path, joint_name)</code></td>
+        <td>Typed <code>Joint</code> from a URDF, with the axis resolved to the world frame by forward kinematics.</td></tr>
+      <tr><td><code>read.inertia_loader.load_link_inertia</code>, <code>load_joint_child_inertia</code></td>
+        <td><code>LinkInertia</code> of a link / of a joint's child link, for the kinetic-energy norm.</td></tr>
+      <tr><td><code>read.case_loader.load_case</code>, <code>load_case_joints</code></td>
+        <td>Prediction/ground-truth evaluation case referencing two URDF joints.</td></tr>
+      <tr><td><code>write.report.Report_Generator</code></td>
+        <td>JSON / Markdown evaluation reports.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Baselines · <code>previous_metrics.component_scores</code></h3>
+  <p>Component scores of prior evaluation templates (type, axis, origin, and limit errors with thresholded
+    <code>joint_success</code>), kept for reproducing §3-style baseline numbers.</p>

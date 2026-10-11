@@ -1,0 +1,29 @@
+  <figure class="tut">
+    <img src="../static/tutorial/twist_embeddings.png" alt="The unit screw twist of a revolute, a prismatic, and a helical joint">
+    <figcaption>How the URDF parameters (type, axis a, origin o, pitch h) become one six-vector. Blue is the rotational part ω, red the translational part v drawn at the world origin.</figcaption>
+  </figure>
+  <p>
+    A URDF describes a joint with four separate things: a type, an axis direction <span class="math">a</span>,
+    an origin <span class="math">o</span>, and limits. The first three are really one object, an infinitesimal
+    rigid motion, and that object is the twist <span class="math">ξ = (ω, v)</span>. A revolute joint rotates
+    about the line through <span class="math">o</span> with direction <span class="math">a</span>, which is
+    <span class="math">ξ<sub>rev</sub> = (a, o × a)</span>. A prismatic joint slides along
+    <span class="math">a</span> and has no rotation at all, <span class="math">ξ<sub>pris</sub> = (0, a)</span>.
+    A helical joint adds a translation of <span class="math">h</span> meters per radian along the axis,
+    <span class="math">ξ<sub>hel</sub> = (a, o × a + h a)</span>. Flowing along <span class="math">ξ</span>
+    for <span class="math">q</span> units gives the placement <span class="math">exp(q ξ̂) g₀</span> of the
+    child link, where <span class="math">g₀</span> is the placement stored in the file.
+  </p>
+  <div class="confusion">
+    <strong>Why the moment instead of the origin.</strong> The term <span class="math">o × a</span> is the same
+    for every point <span class="math">o</span> on the axis line, so the twist encodes the line itself and
+    not an arbitrary point picked on it. That is why two annotations of the same hinge with different
+    origin points on the same line produce identical twists.
+    <br><strong>Why "unit".</strong> The twist is normalized so that <span class="math">q</span> carries
+    the physical unit: radians for rotation, meters for translation. The limits are values of
+    <span class="math">q</span> and inherit that unit.
+    <br><strong>The anchor is shared data.</strong> Prediction and ground truth describe the same object in the
+    same stored state, so <span class="math">g₀</span> is not something the kinematic metric judges.
+    Re-zeroing <span class="math">q</span> is not free because it moves the anchor, which the stored meshes
+    pin down.
+  </div>
