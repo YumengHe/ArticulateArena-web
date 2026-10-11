@@ -28,11 +28,22 @@
       --sans: 'Noto Sans', -apple-system, 'Segoe UI', sans-serif;
       --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
       --sidebar-w: 272px;
+      --page-w: 1240px;
     }
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      /* Extend the sidebar panel color to the left edge of wide viewports, so the
+         centered frame does not read as a card floating on the page. */
+      background: linear-gradient(
+        90deg,
+        var(--panel) 0,
+        var(--panel) calc(50% - var(--page-w) / 2 + var(--sidebar-w)),
+        var(--paper) calc(50% - var(--page-w) / 2 + var(--sidebar-w))
+      );
+    }
 
     body {
       margin: 0;
@@ -41,14 +52,20 @@
       font-family: var(--sans);
       font-size: 16px;
       line-height: 1.7;
+      /* Sidebar + content sit in one centered frame, so on a wide screen the
+         page is centered instead of hugging the left edge. */
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      max-width: var(--page-w);
+      margin: 0 auto;
+      min-height: 100vh;
     }
 
     /* ---------- sidebar ---------- */
     .sidebar {
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
-      bottom: 0;
+      height: 100vh;
       width: var(--sidebar-w);
       padding: 2.2rem 1.6rem 2rem 2rem;
       background: var(--panel);
@@ -142,12 +159,11 @@
 
     /* ---------- content ---------- */
     .content {
-      margin-left: var(--sidebar-w);
+      min-width: 0;
       padding: 3.4rem 3.4rem 5rem;
-      max-width: calc(var(--sidebar-w) + 50rem);
     }
 
-    .content-inner { max-width: 44rem; }
+    .content-inner { max-width: 48rem; }
 
     h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.25; }
 
@@ -303,9 +319,12 @@
 
     /* ---------- narrow screens ---------- */
     @media (max-width: 900px) {
+      html { background: var(--paper); }
+      body { display: block; }
       .sidebar {
         position: static;
         width: auto;
+        height: auto;
         border-right: none;
         border-bottom: 1px solid var(--hairline);
         padding: 1.4rem 1.4rem 1.2rem;
@@ -313,7 +332,7 @@
       nav.toc { display: flex; flex-wrap: wrap; gap: 0 1rem; border-left: none; }
       nav.toc a, nav.toc a.active { border-left: none; padding: 0.15rem 0; }
       nav.toc a.sub { display: none; }
-      .content { margin-left: 0; padding: 2rem 1.3rem 3rem; }
+      .content { padding: 2rem 1.3rem 3rem; }
     }
   </style>
 </head>
