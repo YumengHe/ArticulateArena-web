@@ -1,14 +1,12 @@
-/* Original three-stage learning map, isolated from shared documentation styles. */
-#aa-staged-map{color-scheme:light;--p-paper:var(--panel);--p-card:var(--paper);--p-soft:var(--panel);--p-ink:var(--ink);--p-muted:var(--ink-2);--p-line:var(--hairline);--p-wire:var(--ink-3);--p-accent:var(--accent);--p-accent-soft:var(--accent-soft);--p-gold:var(--accent);--p-gold-soft:var(--accent-soft);font:14px/1.55 var(--sans);color:var(--p-ink);background:var(--p-paper);border:1px solid var(--p-line);border-radius:20px;overflow:hidden}
+/* Three-stage learning map within the Overview section hierarchy. */
+#aa-staged-map{color-scheme:light;--p-paper:var(--panel);--p-card:var(--paper);--p-soft:var(--panel);--p-ink:var(--ink);--p-muted:var(--ink-2);--p-line:var(--hairline);--p-wire:var(--ink-3);--p-accent:var(--accent);--p-accent-soft:var(--accent-soft);--p-gold:var(--accent);--p-gold-soft:var(--accent-soft);font:14px/1.55 var(--sans);color:var(--p-ink);background:transparent;border:0;border-radius:0;overflow:visible}
 #aa-staged-map *{box-sizing:border-box}
 #aa-staged-map [hidden]{display:none!important}
 #aa-staged-map button{font:inherit;cursor:pointer;color:inherit}
 #aa-staged-map button:disabled{opacity:.4;cursor:default}
 #aa-staged-map button:focus-visible,#aa-staged-map summary:focus-visible{outline:3px solid var(--p-accent);outline-offset:3px}
 
-#aa-staged-map .am-body{padding:24px}
-#aa-staged-map h2{font:400 30px/1.2 var(--serif);letter-spacing:-.025em;margin:0 0 8px}
-#aa-staged-map .am-intro{font-size:13px;color:var(--p-muted);margin:0 0 22px}
+#aa-staged-map .am-body{padding:0}
 #aa-staged-map .am-stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-bottom:24px}
 #aa-staged-map .am-stage{position:relative;display:flex;flex-direction:column;gap:8px;align-items:flex-start;text-align:left;border:1px solid var(--p-line);border-radius:11px;background:var(--p-card);padding:14px;min-height:114px}
 #aa-staged-map .am-stage:not(:last-child)::after{content:'→';position:absolute;right:-19px;top:43%;color:var(--p-wire);font-size:16px;pointer-events:none}
@@ -54,7 +52,7 @@
 #aa-staged-map .am-flow-legend{font-size:11px;color:var(--p-muted);margin-top:17px}
 #aa-staged-map .am-detail{min-width:0}
 #aa-staged-map .am-detail-kicker{font-size:11px;color:var(--p-accent);letter-spacing:.045em;margin-bottom:8px}
-#aa-staged-map h3{font:400 24px/1.3 var(--serif);letter-spacing:-.02em;margin:0 0 12px}
+#aa-staged-map h3{font:600 24px/1.25 var(--serif);letter-spacing:normal;margin:0 0 12px}
 #aa-staged-map .am-why{font-size:13px;color:var(--p-muted);margin:0 0 15px}
 #aa-staged-map .am-io{border-top:1px solid var(--p-line);padding:11px 0;display:grid;grid-template-columns:41px minmax(0,1fr);gap:10px}
 #aa-staged-map .am-io-label{font-size:11px;color:var(--p-muted);padding-top:2px}
@@ -68,18 +66,17 @@
 #aa-staged-map summary{cursor:pointer;font-weight:500;min-height:30px}
 #aa-staged-map .am-formula{font:400 16px/1.6 var(--serif);white-space:pre-line;margin-top:9px;overflow-wrap:anywhere}
 #aa-staged-map .am-note{font-size:12px;color:var(--p-muted);margin:9px 0 0}
-#aa-staged-map .am-bottom{border-top:1px solid var(--p-line);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#aa-staged-map .am-bottom{border-top:1px solid var(--p-line);padding:14px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 #aa-staged-map .am-where{font-size:11px;color:var(--p-muted)}
 #aa-staged-map .am-actions{display:flex;gap:7px}
 #aa-staged-map .am-action{font-size:12px;border:1px solid var(--p-line);background:var(--p-card);border-radius:6px;padding:8px 11px;min-height:37px}
 #aa-staged-map #learn-next{background:var(--p-ink);color:var(--p-paper);border-color:var(--p-ink)}
-@container(max-width:680px){#aa-staged-map .am-body{padding:20px 16px}#aa-staged-map .am-bottom{padding:15px 16px}#aa-staged-map h2{font-size:26px}#aa-staged-map .am-focus-layout{grid-template-columns:1fr;gap:25px}#aa-staged-map .am-detail{padding-top:20px;border-top:1px solid var(--p-line)}#aa-staged-map .am-stage{min-height:88px;padding:11px;gap:6px}#aa-staged-map .am-stage small{display:none}#aa-staged-map .am-stage strong{font-size:13px}#aa-staged-map .am-stages{gap:18px}#aa-staged-map .am-stage:not(:last-child)::after{right:-16px;font-size:14px}#aa-staged-map .am-focus-sections{max-width:42%;text-align:right}#aa-staged-map .am-example-bar{gap:9px}#aa-staged-map .am-example-label{width:100%}}
+@container(max-width:680px){#aa-staged-map .am-focus-layout{grid-template-columns:1fr;gap:25px}#aa-staged-map .am-detail{padding-top:20px;border-top:1px solid var(--p-line)}#aa-staged-map .am-stage{min-height:88px;padding:11px;gap:6px}#aa-staged-map .am-stage small{display:none}#aa-staged-map .am-stage strong{font-size:13px}#aa-staged-map .am-stages{gap:18px}#aa-staged-map .am-stage:not(:last-child)::after{right:-16px;font-size:14px}#aa-staged-map .am-focus-sections{max-width:42%;text-align:right}#aa-staged-map .am-example-bar{gap:9px}#aa-staged-map .am-example-label{width:100%}}
 @container(max-width:370px){#aa-staged-map .am-stage{padding:10px 8px}#aa-staged-map .am-stage strong{font-size:12px}#aa-staged-map .am-routes,#aa-staged-map .am-branches{column-gap:14px}#aa-staged-map .am-focus-head{gap:8px}}
 @media(pointer:coarse){#aa-staged-map .am-mode,#aa-staged-map .am-action,#aa-staged-map summary{min-height:44px}}
-#aa-staged-map{container-type:inline-size;margin:0;border-radius:14px;font-family:var(--sans);color-scheme:light}
-#aa-staged-map h2,#aa-staged-map h3{border:0;padding:0}
+#aa-staged-map{container-type:inline-size;margin:0;font-family:var(--sans);color-scheme:light}
+#aa-staged-map h3{border:0;padding:0}
 #aa-staged-map section{padding-top:0}
-#aa-staged-map .am-body{padding:26px}
 
 #aa-staged-map .am-stage strong{font-weight:500}
 #aa-staged-map .am-section-link{display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;color:var(--p-accent);font-size:12px;text-decoration:none;border-bottom:1px solid var(--hairline);padding-bottom:3px}
@@ -87,7 +84,7 @@
 #aa-staged-map .am-section-link:focus-visible{outline:3px solid var(--p-accent);outline-offset:4px}
 #aa-staged-map .am-math{background:transparent;border-radius:0;border-left:0;padding-left:0;font-style:normal;white-space:normal}
 #aa-staged-map .am-note{background:transparent;border:0;padding:0;font-style:normal}
-@container(max-width:680px){#aa-staged-map .am-body{padding:20px 16px}#aa-staged-map .am-detail{padding-top:20px}}
+@container(max-width:680px){#aa-staged-map .am-detail{padding-top:20px}}
 @media(prefers-reduced-motion:reduce){#aa-staged-map *{scroll-behavior:auto!important;transition:none!important}}
 
 /* Stage labels, selected-node titles and section references have distinct roles. */

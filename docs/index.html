@@ -477,9 +477,9 @@
       .content { padding: 2rem 1.3rem 3rem; }
     }
   </style>
-  <link rel="stylesheet" href="../static/css/core-concepts.css?v=37449c2b16">
-  <link rel="stylesheet" href="../static/css/core-guides.css?v=2a20260cb0">
-  <link rel="stylesheet" href="../static/css/core-map.css?v=c32fed4d2a">
+  <link rel="stylesheet" href="../static/css/core-concepts.css?v=e16d51ddc0">
+  <link rel="stylesheet" href="../static/css/core-guides.css?v=1c1da4baaa">
+  <link rel="stylesheet" href="../static/css/core-map.css?v=a3544e8d77">
   <script src="../static/js/core-concepts.js?v=a6a276b7bc" defer></script>
   <script src="../static/js/core-guides.js?v=99e78b65ee" defer></script>
   <script src="../static/js/core-map.js?v=1fc5d63742" defer></script>
@@ -542,7 +542,7 @@
       <button type="button" role="tab" id="articulated-object-demo-tab" aria-controls="articulated-object-demo" aria-selected="false" tabindex="-1" data-cc-view="demo">Explore</button>
       </div>
       <div class="cc-lesson-panel" id="articulated-object-explanation" role="tabpanel" aria-labelledby="articulated-object-explanation-tab" tabindex="0">
-      <p class="cc-intro-lede">One cabinet. Parts that move together—and relative to each other. That makes it an <strong>articulated object</strong>.</p>
+      <p class="cc-intro-lede">This cabinet is an <strong>articulated object</strong> with three main parts: the body, drawer, and door. The drawer slides and the door rotates relative to the body.</p>
       <div class="cc-object-intro">
         <figure class="cc-video">
           <div class="cc-video-label"><span class="cc-video-dot" aria-hidden="true"></span>Watch the parts move <span>Looping animation</span></div>
@@ -582,7 +582,7 @@
       <div class="cc-lesson-panel" id="articulated-object-demo" role="tabpanel" aria-labelledby="articulated-object-demo-tab" tabindex="0">
       <div class="aa-guide" id="aa-panel-1" role="group" aria-labelledby="aa-guide-title-1">
         <div class="aa-kicker">Start with the physical object</div>
-        <h3 class="aa-guide-title" id="aa-guide-title-1">One cabinet. Four parts. Three joints.</h3>
+        <h3 class="aa-guide-title" id="aa-guide-title-1">How the cabinet’s parts are connected</h3>
         <p class="aa-intro">An <strong>articulated object</strong> has parts that can move relative to each other. Each rigid part is a <strong>link</strong>; each connection that controls their relative movement is a <strong>joint</strong>.</p>
         <p class="aa-intro">This simplified example adds a turning latch to the drawer, so we can follow a joint attached to another moving part.</p>
         <div class="aa-two">
@@ -603,12 +603,12 @@
         <p>Now imagine a model predicts this cabinet. Its drawer might stop too early, or its latch might be attached to the wrong part. We need to compare both <strong>how each joint moves</strong> and <strong>how the parts connect</strong>.</p>
         <p>The <strong class="cc-map-highlight">map below</strong> follows that comparison from an object to a score. Choose an example first; each stage shows what goes in, what comes out, and where to read the details.</p>
       </div>
-      <section id="concept-map" class="cc-map-section" data-cc-section aria-labelledby="concept-map-title">
+      <section id="concept-map" class="cc-section cc-map-section" data-cc-section aria-labelledby="concept-map-title">
+        <h2 id="concept-map-title"><span class="cc-section-number">The evaluation process</span>Three stages of articulation evaluation</h2>
+        <p class="cc-reading-help">Compare how parts can move, then include how they connect.</p>
       <div id="aa-staged-map" lang="en" aria-label="ArticulateArena learning map in three stages">
 
       <div class="am-body">
-        <h2 id="concept-map-title">Three stages of articulation evaluation</h2>
-        <p class="am-intro">Compare how parts can move, then include how they connect.</p>
         <div class="am-example-bar"><span class="am-example-label">FOLLOW ONE EXAMPLE</span><div class="am-modes" aria-label="Choose an example"><button class="am-mode" id="learn-finite" type="button" aria-pressed="true">Drawer · bounded</button><button class="am-mode" id="learn-infinite" type="button" aria-pressed="false">Wheel · unlimited</button></div></div>
         <nav class="am-stages" aria-label="Choose a stage of the evaluation">
           <button type="button" class="am-stage" id="stage-describe" data-stage="describe" aria-pressed="true" aria-controls="learn-focus"><span class="am-stage-no">Stage 1</span><strong>Describe joints</strong><small>Rule + range → endpoints</small></button>

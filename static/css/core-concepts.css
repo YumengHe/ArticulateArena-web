@@ -1,7 +1,7 @@
 /* Shared by the Overview and Core Concepts learning pages only. */
 .aa-learning-page .content-inner{max-width:58rem}
 .aa-learning-page .content{min-width:0;padding-left:clamp(1.3rem,3.5vw,3.4rem);padding-right:clamp(1.3rem,3.5vw,3.4rem)}
-.aa-learning-page .page-title{font-weight:400;font-size:clamp(2.3rem,4vw,3.3rem);line-height:1.12;letter-spacing:-.035em;max-width:22ch;border:0;padding-bottom:0}
+.aa-learning-page .page-title{font-weight:600;font-size:clamp(2.3rem,4vw,3.3rem);line-height:1.25;letter-spacing:-.01em;max-width:22ch;border:0;padding-bottom:0}
 /* Illustration colors follow the existing tutorial figures; UI uses the site tokens. */
 .aa-learning{--diagram-reference:#5b8db8;--diagram-prediction:#e5b455;--diagram-reference-soft:color-mix(in srgb,var(--diagram-reference) 28%,var(--paper));--diagram-reference-pale:color-mix(in srgb,var(--diagram-reference) 12%,var(--paper));--diagram-prediction-soft:color-mix(in srgb,var(--diagram-prediction) 30%,var(--paper))}
 .aa-learning .cc-lede{font-size:1.14rem;line-height:1.6;max-width:37rem;color:var(--ink);margin:1.1rem 0 .7rem}
@@ -12,24 +12,27 @@
 .aa-learning :where(a,summary,button):focus-visible,.cc-sidebar-toc a:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
 .aa-learning :where(section[id],h2[id]){scroll-margin-top:28px}
 .aa-learning [hidden]{display:none!important}
-.aa-learning .cc-map-section{padding-top:0}
 .aa-learning .cc-section{padding-top:2.5rem;margin-top:3.2rem;border-top:1px solid var(--hairline)}
-.aa-learning .cc-section>h2{font-weight:400;font-size:clamp(1.75rem,2.6vw,2.25rem);line-height:1.2;letter-spacing:-.025em;border:0;padding:0;margin:0 0 1.5rem;max-width:34ch}
+.aa-learning .cc-section>h2{font-weight:600;font-size:clamp(1.75rem,2.6vw,2.25rem);line-height:1.25;letter-spacing:normal;border:0;padding:0;margin:0 0 1.5rem;max-width:34ch}
 .aa-learning .cc-section-number{display:block;font:500 .69rem/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
 .aa-learning .cc-original{max-width:48rem}
 .aa-learning .cc-original>p{line-height:1.85}
 .aa-learning .cc-original table{display:block;overflow-x:auto}
 .aa-learning .cc-original figure.tut{margin-top:1.5rem}
-.aa-learning .cc-original figure.tut figcaption{font:400 .78rem/1.7 var(--sans);color:var(--ink-2);margin-top:.75rem}
-.aa-learning .cc-original .confusion{border:1px solid var(--hairline);border-left:3px solid var(--ink-3);border-radius:0 10px 10px 0;padding:1.1rem 1.25rem;background:var(--panel);margin:1.5rem 0;font-size:.88rem;line-height:1.8}
-.aa-learning .cc-original .confusion p{margin:.6rem 0}
+.aa-learning .cc-original figure.tut figcaption{font:italic 400 .86rem/1.5 var(--serif);color:var(--ink-2);margin-top:.75rem}
+/* Reading notes and Explore questions use the same explanation box. */
+.aa-learning .cc-original .confusion,
+.aa-learning .cc-lesson-panel .aa-guide .aa-details{border:1px solid var(--hairline);border-left:3px solid var(--ink-3);border-radius:0 10px 10px 0;padding:1.1rem 1.25rem;background:var(--panel);margin:1.5rem 0;font-size:.88rem;line-height:1.8}
+.aa-learning .cc-original .confusion p,
+.aa-learning .cc-lesson-panel .aa-guide .aa-details > p{margin:.6rem 0}
 .aa-learning .cc-original .confusion p:first-child{margin-top:0}
-.aa-learning .cc-original .confusion p:last-child{margin-bottom:0}
+.aa-learning .cc-original .confusion p:last-child,
+.aa-learning .cc-lesson-panel .aa-guide .aa-details > :last-child{margin-bottom:0}
 .aa-learning .cc-back-map{display:inline-block;font-size:.76rem;color:var(--accent);margin-top:1.6rem;text-decoration:none}
 .aa-learning .cc-back-map:hover{text-decoration:underline}
 .aa-learning .cc-reference-intro{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--hairline);font-size:.9rem}
 .aa-learning .concept-list{display:grid;grid-template-columns:1fr 1fr;gap:0 1.4rem}
-.aa-learning .cc-table-scroll{overflow-x:auto;margin:1.5rem 0;max-width:100%;border:1px solid var(--hairline);border-radius:8px}
+.aa-learning .cc-table-scroll{overflow-x:auto;margin:1.5rem 0;max-width:100%;border:0;border-radius:0}
 .aa-learning .cc-table-scroll table{margin:0;min-width:650px}
 /* A section has two views; the explanation is always the initial view. */
 .aa-learning .cc-lesson{container-type:inline-size;overflow-anchor:none}
@@ -39,8 +42,8 @@
 .aa-learning .cc-lesson-tabs button:hover:not([aria-selected="true"]){color:var(--accent);background:var(--accent-soft)}
 .aa-learning .cc-lesson-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .aa-learning .cc-lesson-panel:focus-visible{outline:2px solid var(--accent);outline-offset:8px}
-.aa-learning .cc-lesson-panel[id$="-demo"]{border:1px solid var(--hairline);border-radius:12px;background:var(--paper);padding:24px}
-.aa-learning .cc-lesson-panel .aa-guide{padding:0;margin:0;border:0;border-radius:0;background:transparent}
+.aa-learning .cc-lesson-panel[id$="-demo"]{border:0;border-radius:0;background:transparent;padding:0}
+.aa-learning .cc-lesson-panel .aa-guide{padding:0;margin:0;border:0;border-radius:0;background:transparent;overflow:visible}
 .aa-learning .cc-lesson-panel .aa-guide .aa-guide-title{font-size:clamp(1.65rem,2.7vw,2rem)}
 .aa-learning .cc-lesson-panel .aa-guide .aa-kicker{font-size:10px;letter-spacing:.08em}
 .aa-learning .cc-lesson-panel .aa-guide .aa-intro{font-size:.9rem;line-height:1.7}
@@ -85,7 +88,6 @@
   .aa-learning .concept-list{grid-template-columns:1fr}
   .aa-learning .cc-reading-note{gap:.4rem 1rem}
   .aa-learning .cc-reading-note span+span:before{display:none}
-  .aa-learning .cc-lesson-panel[id$="-demo"]{padding:18px 12px}
 }
 @media(max-width:360px){.aa-learning .cc-vocabulary{gap:.5rem}.aa-learning .cc-vocabulary>div{padding:.8rem .65rem}.aa-learning .cc-vocabulary dt{font-size:.75rem}}
 @media(prefers-reduced-motion:reduce){html:has(.aa-learning-page){scroll-behavior:auto}.aa-learning *{transition:none!important;scroll-behavior:auto!important}}
