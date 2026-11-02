@@ -26,7 +26,7 @@
   <script src="./static/js/jquery.min.js"></script>
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/image-slider.js"></script>
-  <script src="./static/js/index.js"></script>
+  <script src="./static/js/index.js?v=2"></script>
 </head>
 
 <body>
@@ -211,7 +211,7 @@
   </section>
 
   <!-- Demonstration of Errors Section -->
-  <section class="section">
+  <section class="section" id="demonstration-of-errors">
     <div class="container is-max-desktop">
       <div class="columns is-centered has-text-centered">
         <div class="column">
@@ -219,12 +219,13 @@
           <div class="content has-text-justified">
             <p>
               The animations below illustrate different articulation errors against the
-              ground-truth motion. More error cases will be added here.
+              ground-truth motion. Red labels identify the modified joint in each example;
+              each score compares that example with Ground Truth.
             </p>
           </div>
         </div>
       </div>
-      <!-- Populated dynamically from static/demo/demo.json -->
+      <!-- Populated dynamically from static/demo/demo.js -->
       <div class="error-demo-grid" id="error-demo-grid"></div>
     </div>
   </section>
@@ -253,6 +254,26 @@
       <div class="case-render-scroll">
         <div class="case-render-table" id="case-render-table"></div>
       </div>
+    </div>
+  </section>
+
+  <section class="section bibtex-section" id="bibtex" aria-labelledby="bibtex-title">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3" id="bibtex-title">BibTeX</h2>
+      <div class="content">
+        <p>If you find our work helpful, please consider citing:</p>
+      </div>
+      <pre class="bibtex-code"><code>@misc{he2026articulatearenametricarticulatedkinematics,
+  title={ArticulateArena: A Metric for Articulated Kinematics},
+  author={Yumeng He and Yongfei She and Huanyu Chen and Chun Yuan and
+          Peihao Li and Joseph Masterjohn and Yin Yang and Ying Jiang and
+          Chenfanfu Jiang},
+  year={2026},
+  eprint={2609.33931},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2609.33931}
+}</code></pre>
     </div>
   </section>
 
@@ -437,6 +458,9 @@
         }
         .error-demo-item h4 { font-size: 0.95em; }
         .demo-params { font-size: 0.8em; }
+    }
+    @media (max-width: 520px) {
+        .error-demo-grid { grid-template-columns: 1fr; }
     }
 
     .compare-paper-container {
@@ -1718,6 +1742,25 @@
             #efece4 16px
         );
     }
+    .bibtex-section { padding-bottom: 4rem; }
+    .bibtex-code {
+        margin: 0;
+        padding: 1.5rem;
+        background: #f2f0eb;
+        color: var(--aa-ink2);
+        border-radius: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.9rem;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+    .bibtex-code code {
+        padding: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+    }
     @media (max-width: 768px) {
         .case-render-table {
             grid-template-columns: 92px repeat(4, 220px);
@@ -1728,7 +1771,7 @@
 </style>
 
 <!-- Demonstration of Errors data (loaded as a global so it also works when opening index.html directly via file://) -->
-<script src="./static/demo/demo.js"></script>
+<script src="./static/demo/demo.js?v=5"></script>
 <script src="./static/case-renders/cases.js"></script>
 
 <script>
@@ -2153,7 +2196,7 @@
         </div>`;
   }
 
-  // Demonstration of Errors: render gif cards from static/demo/demo.js.
+  // Demonstration of Errors: render labeled animation cards from static/demo/demo.js.
   // Edit that file (title / description / order / add entries) to update this section.
   function loadErrorDemos() {
       const grid = document.getElementById('error-demo-grid');
@@ -2177,10 +2220,10 @@
           const params = rows.length ? `<div class="demo-params">${rows.join('')}</div>` : '';
           const media = /\.mp4$/i.test(it.file)
               ? `<video autoplay muted loop playsinline preload="metadata"
-                        poster="static/demo/${esc(it.poster || '')}?v=4" aria-label="${esc(it.title)}">
-                   <source src="static/demo/${esc(it.file)}?v=4" type="video/mp4">
+                        poster="static/demo/${esc(it.poster || '')}?v=5" aria-label="${esc(it.title)}">
+                   <source src="static/demo/${esc(it.file)}?v=5" type="video/mp4">
                  </video>`
-              : `<img src="static/demo/${esc(it.file)}?v=4" alt="${esc(it.title)}" loading="lazy">`;
+              : `<img src="static/demo/${esc(it.file)}?v=5" alt="${esc(it.title)}" loading="lazy">`;
           return `
           <div class="error-demo-item">
             ${media}
