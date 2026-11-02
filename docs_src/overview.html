@@ -1,3 +1,29 @@
+<div id="aa-overview" class="aa-learning">
+  <p class="cc-lede">How well does a predicted object move?</p>
+  <p class="cc-reading-help">ArticulateArena evaluates the motion and connections of articulated objects. Start with a cabinet, follow one example through the concept map, then connect it to the metric below.</p>
+  <nav class="cc-overview-path" aria-label="Overview reading path">
+    <a href="#articulated-object">The object</a><span aria-hidden="true">→</span>
+    <a href="#concept-map">The evaluation</a><span aria-hidden="true">→</span>
+    <a href="#metric-summary">The metric</a>
+  </nav>
+  <noscript><p>The interactive controls need JavaScript. The explanations and links remain available.</p></noscript>
+
+<section id="articulated-object" class="cc-section" data-cc-section aria-labelledby="articulated-object-title">
+  <h2 id="articulated-object-title"><span class="cc-section-number">Start with something familiar</span>What is an articulated object?</h2>
+  <p class="cc-reading-help">Watch the parts move, or choose <strong>Explore</strong> to connect each part to its place in the tree.</p>
+{{core_intro}}
+</section>
+
+<div class="cc-overview-bridge">
+  <p>Now imagine a model predicts this cabinet. Its drawer might stop too early, or its latch might be attached to the wrong part. We need to compare both <strong>how each joint moves</strong> and <strong>how the parts connect</strong>.</p>
+  <p>The <strong class="cc-map-highlight">map below</strong> follows that comparison from an object to a score. Choose an example first; each stage shows what goes in, what comes out, and where to read the details.</p>
+</div>
+{{core_map}}
+
+<section id="metric-summary" class="cc-section" data-cc-section aria-labelledby="metric-summary-title">
+  <h2 id="metric-summary-title"><span class="cc-section-number">From the map to the mathematics</span>The metric behind the map</h2>
+  <p class="cc-reading-help">The map turns a joint’s movement rule and limits into two endpoint vectors. The formula below compares those endpoints in both pairings and keeps the smaller distance: the joint error <span class="math">E</span>.</p>
+  <div class="cc-original">
   <p>
     <code>articulatearena</code> implements a principled distance between articulated-kinematics
     predictions and ground truth. A one-DOF joint
@@ -23,3 +49,10 @@
     All functions are pure: norms, weights, and tolerances are passed in by the caller and never hardcoded.
     The library depends only on <code>numpy</code>, <code>scipy</code>, and <code>pyyaml</code>.
   </p>
+  </div>
+</section>
+<nav class="cc-next-path" aria-label="Continue from the overview">
+  <a href="concepts.html#twist"><span>Understand the method</span><strong>Continue to Core Concepts →</strong><small>Start with a joint’s movement rule, then work through the metric.</small></a>
+  <a href="quickstart.html"><span>Use the library</span><strong>Open the Quickstart →</strong><small>See how the same ideas are represented and evaluated in code.</small></a>
+</nav>
+</div>

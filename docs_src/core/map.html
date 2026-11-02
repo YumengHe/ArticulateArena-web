@@ -1,0 +1,58 @@
+<section id="concept-map" class="cc-map-section" data-cc-section aria-labelledby="concept-map-title">
+<div id="aa-staged-map" lang="en" aria-label="ArticulateArena learning map in three stages">
+
+<div class="am-body">
+  <h2 id="concept-map-title">One idea. Three stages.</h2>
+  <p class="am-intro">Compare how parts can move, then include how they connect.</p>
+  <div class="am-example-bar"><span class="am-example-label">FOLLOW ONE EXAMPLE</span><div class="am-modes" aria-label="Choose an example"><button class="am-mode" id="learn-finite" type="button" aria-pressed="true">Drawer · bounded</button><button class="am-mode" id="learn-infinite" type="button" aria-pressed="false">Wheel · unlimited</button></div></div>
+  <nav class="am-stages" aria-label="Choose a stage of the evaluation">
+    <button type="button" class="am-stage" id="stage-describe" data-stage="describe" aria-pressed="true" aria-controls="learn-focus"><span class="am-stage-no">Stage 1</span><strong>Describe joints</strong><small>Rule + range → endpoints</small></button>
+    <button type="button" class="am-stage" id="stage-measure" data-stage="measure" aria-pressed="false" aria-controls="learn-focus"><span class="am-stage-no">Stage 2</span><strong>Compare motion</strong><small>Endpoints → joint error E</small></button>
+    <button type="button" class="am-stage" id="stage-report" data-stage="report" aria-pressed="false" aria-controls="learn-focus"><span class="am-stage-no">Stage 3</span><strong>Use the score</strong><small>Per joint or whole object</small></button>
+  </nav>
+  <section id="learn-focus" aria-label="Selected stage and explanation">
+    <div class="am-focus-head"><span class="am-focus-title" id="learn-stage-title">Describe joints</span><span class="am-focus-sections" id="learn-stage-sections">Sections 4.1–4.2</span></div>
+    <div class="am-focus-layout">
+      <div>
+        <nav class="am-flow" id="learn-flow" aria-label="Select a step within this stage">
+          <svg class="am-edges" id="learn-edges" aria-hidden="true"></svg>
+          <div class="am-flow-group am-chain" id="group-describe">
+            <button class="am-node" id="learn-input" data-step="input" aria-controls="learn-detail" type="button" aria-pressed="true"><span class="am-node-copy"><strong>Reference + prediction</strong><small>Two descriptions of the object</small></span></button>
+            <button class="am-node" id="learn-motion" data-step="motion" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Describe movement</strong><small>Twist ξ + limits · 4.1</small></span></button>
+            <button class="am-node" id="learn-endpoints" data-step="endpoints" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Keep the two extremes</strong><small>Endpoint vectors · 4.2</small></span></button>
+          </div>
+          <div class="am-flow-group am-chain" id="group-measure" hidden>
+            <button class="am-node" id="learn-norm" data-step="norm" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Choose how to measure</strong><small>Eα or EB · 4.5</small></span></button>
+            <div class="am-routes">
+              <div class="am-node am-route" id="learn-raw" data-used="true"><strong>Keep endpoints</strong><small id="learn-raw-status">Used here</small></div>
+              <button class="am-node am-route" id="learn-compact" data-step="compact" aria-controls="learn-detail" type="button" aria-pressed="false" data-used="false"><strong>Compress φ</strong><small id="learn-compact-status">Skipped here · 4.6</small></button>
+            </div>
+            <button class="am-node" id="learn-matching" data-step="matching" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Try both pairings</strong><small>Direct + swapped · 4.3</small></span></button>
+            <button class="am-node am-score" id="learn-score" data-step="score" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><small>JOINT ERROR · smaller distance</small><strong class="am-score-value" id="learn-score-value">Eα = 0.100</strong></span></button>
+          </div>
+          <div class="am-flow-group" id="group-report" hidden>
+            <div class="am-node am-score" id="learn-context"><span class="am-node-copy"><small>FROM COMPARE MOTION · joint error</small><strong class="am-score-value" id="learn-context-value">Eα = 0.100</strong></span></div>
+            <div class="am-branches">
+              <button class="am-node am-branch" id="learn-joints" data-step="joints" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-branch-tag">PER JOINT</span><strong>Report joint accuracy</strong><small>Individual movements</small></button>
+              <button class="am-node am-branch" id="learn-edits" data-step="edits" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-branch-tag">WHOLE OBJECT</span><strong>Include connections</strong><small>Tree edit costs · 4.7</small></button>
+              <button class="am-node am-score am-branch" id="learn-object" data-step="object" aria-controls="learn-detail" type="button" aria-pressed="false"><small>WHOLE-OBJECT ERROR</small><strong class="am-score-value" id="learn-object-value">Eαᵗʳᵉᵉ = 0.100</strong></button>
+            </div>
+          </div>
+        </nav>
+        <div class="am-flow-legend" id="learn-legend">Click a step to follow the idea.</div>
+      </div>
+      <section class="am-detail" id="learn-detail" aria-live="polite" aria-atomic="false">
+        <div class="am-detail-kicker" id="learn-tag">Selected step · Describe joints</div><h3 id="learn-title">Reference + prediction</h3><p class="am-why" id="learn-why"></p>
+        <a class="am-section-link" id="learn-section-link" data-cc-explanation href="#articulated-object">Read the introduction ↑</a>
+        <div class="am-io"><span class="am-io-label">Input</span><div class="am-io-value" id="learn-input-text"></div></div>
+        <div class="am-io"><span class="am-io-label">Output</span><div class="am-io-value" id="learn-output-text"></div></div>
+        <div class="am-example"><div class="am-figure-title"><span id="learn-figure-title">Drawer travel</span><span id="learn-figure-unit">Meters</span></div><svg class="am-figure" id="learn-figure" role="img" aria-label="Reference and prediction in the current example"></svg><p class="am-caption" id="learn-caption"></p></div>
+        <details class="am-math" id="learn-math"><summary>The notation, when you need it</summary><div class="am-formula" id="learn-formula"></div><p class="am-note" id="learn-note"></p></details>
+      </section>
+    </div>
+  </section>
+</div>
+<footer class="am-bottom"><span class="am-where" id="learn-where">Stage 1 of 3</span><div class="am-actions"><button type="button" class="am-action" id="learn-back" disabled>Previous</button><button type="button" class="am-action" id="learn-next">Twist + limits →</button></div></footer>
+
+</div>
+</section>

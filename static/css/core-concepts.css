@@ -1,0 +1,116 @@
+/* Shared by the Overview and Core Concepts learning pages only. */
+.aa-learning-page .content-inner{max-width:58rem}
+.aa-learning-page .content{min-width:0;padding-left:clamp(1.3rem,3.5vw,3.4rem);padding-right:clamp(1.3rem,3.5vw,3.4rem)}
+.aa-learning-page .page-title{font-weight:400;font-size:clamp(2.3rem,4vw,3.3rem);line-height:1.12;letter-spacing:-.035em;max-width:22ch;border:0;padding-bottom:0}
+/* Illustration colors follow the existing tutorial figures; UI uses the site tokens. */
+.aa-learning{--diagram-reference:#5b8db8;--diagram-prediction:#e5b455;--diagram-reference-soft:color-mix(in srgb,var(--diagram-reference) 28%,var(--paper));--diagram-reference-pale:color-mix(in srgb,var(--diagram-reference) 12%,var(--paper));--diagram-prediction-soft:color-mix(in srgb,var(--diagram-prediction) 30%,var(--paper))}
+.aa-learning .cc-lede{font-size:1.14rem;line-height:1.6;max-width:37rem;color:var(--ink);margin:1.1rem 0 .7rem}
+.aa-learning .cc-reading-help{font-size:.86rem;line-height:1.7;color:var(--ink-2);max-width:38rem;margin:0 0 1rem}
+.aa-learning .cc-reading-help strong{font-weight:500;color:var(--accent)}
+.aa-learning .cc-reading-note{display:flex;gap:.6rem 1.4rem;flex-wrap:wrap;font-size:.7rem;color:var(--ink-3);margin:1rem 0 2rem}
+.aa-learning .cc-reading-note span+span:before{content:'·';margin-right:1.4rem}
+.aa-learning :where(a,summary,button):focus-visible,.cc-sidebar-toc a:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:3px}
+.aa-learning :where(section[id],h2[id]){scroll-margin-top:28px}
+.aa-learning [hidden]{display:none!important}
+.aa-learning .cc-map-section{padding-top:0}
+.aa-learning .cc-section{padding-top:2.5rem;margin-top:3.2rem;border-top:1px solid var(--hairline)}
+.aa-learning .cc-section>h2{font-weight:400;font-size:clamp(1.75rem,2.6vw,2.25rem);line-height:1.2;letter-spacing:-.025em;border:0;padding:0;margin:0 0 1.5rem;max-width:34ch}
+.aa-learning .cc-section-number{display:block;font:500 .69rem/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem}
+.aa-learning .cc-original{max-width:48rem}
+.aa-learning .cc-original>p{line-height:1.85}
+.aa-learning .cc-original table{display:block;overflow-x:auto}
+.aa-learning .cc-original figure.tut{margin-top:1.5rem}
+.aa-learning .cc-original figure.tut figcaption{font:400 .78rem/1.7 var(--sans);color:var(--ink-2);margin-top:.75rem}
+.aa-learning .cc-original .confusion{border:1px solid var(--hairline);border-left:3px solid var(--ink-3);border-radius:0 10px 10px 0;padding:1.1rem 1.25rem;background:var(--panel);margin:1.5rem 0;font-size:.88rem;line-height:1.8}
+.aa-learning .cc-original .confusion p{margin:.6rem 0}
+.aa-learning .cc-original .confusion p:first-child{margin-top:0}
+.aa-learning .cc-original .confusion p:last-child{margin-bottom:0}
+.aa-learning .cc-back-map{display:inline-block;font-size:.76rem;color:var(--accent);margin-top:1.6rem;text-decoration:none}
+.aa-learning .cc-back-map:hover{text-decoration:underline}
+.aa-learning .cc-reference-intro{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--hairline);font-size:.9rem}
+.aa-learning .concept-list{display:grid;grid-template-columns:1fr 1fr;gap:0 1.4rem}
+.aa-learning .cc-table-scroll{overflow-x:auto;margin:1.5rem 0;max-width:100%;border:1px solid var(--hairline);border-radius:8px}
+.aa-learning .cc-table-scroll table{margin:0;min-width:650px}
+/* A section has two views; the explanation is always the initial view. */
+.aa-learning .cc-lesson{container-type:inline-size;overflow-anchor:none}
+.aa-learning .cc-lesson-tabs{display:inline-flex;align-items:center;gap:4px;padding:4px;background:var(--panel);border:1px solid var(--hairline);border-radius:12px;margin:0 0 1.6rem}
+.aa-learning .cc-lesson-tabs button{display:flex;align-items:center;justify-content:center;min-width:96px;min-height:40px;padding:9px 20px;border:1px solid transparent;border-radius:8px;background:transparent;font:500 .82rem/1.4 var(--sans);color:var(--ink-2);cursor:pointer;transition:background .15s,color .15s,box-shadow .15s}
+.aa-learning .cc-lesson-tabs button[aria-selected="true"]{color:var(--accent);background:var(--paper);border-color:var(--hairline);box-shadow:0 1px 3px color-mix(in srgb,var(--ink) 6%,transparent)}
+.aa-learning .cc-lesson-tabs button:hover:not([aria-selected="true"]){color:var(--accent);background:var(--accent-soft)}
+.aa-learning .cc-lesson-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.aa-learning .cc-lesson-panel:focus-visible{outline:2px solid var(--accent);outline-offset:8px}
+.aa-learning .cc-lesson-panel[id$="-demo"]{border:1px solid var(--hairline);border-radius:12px;background:var(--paper);padding:24px}
+.aa-learning .cc-lesson-panel .aa-guide{padding:0;margin:0;border:0;border-radius:0;background:transparent}
+.aa-learning .cc-lesson-panel .aa-guide .aa-guide-title{font-size:clamp(1.65rem,2.7vw,2rem)}
+.aa-learning .cc-lesson-panel .aa-guide .aa-kicker{font-size:10px;letter-spacing:.08em}
+.aa-learning .cc-lesson-panel .aa-guide .aa-intro{font-size:.9rem;line-height:1.7}
+/* A quiet visual introduction: one short clip and four concrete definitions. */
+.aa-learning .cc-intro-lede{max-width:40rem;font-size:1.02rem;line-height:1.8;color:var(--ink-2);margin:0 0 1.5rem}
+.aa-learning .cc-intro-lede strong{font-weight:500;color:var(--ink)}
+.aa-learning .cc-object-intro{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:1.6rem;align-items:center}
+.aa-learning .cc-video{margin:0;background:var(--panel);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.aa-learning .cc-video-label{display:flex;align-items:center;gap:.5rem;padding:.9rem 1rem;font-size:.68rem;color:var(--ink-2);border-bottom:1px solid var(--hairline)}
+.aa-learning .cc-video-label>span:last-child{margin-left:auto;color:var(--ink-3);font-size:.65rem}
+.aa-learning .cc-video-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.aa-learning .cc-video video{display:block;width:100%;aspect-ratio:1;max-height:360px;object-fit:contain;background:white}
+.aa-learning .cc-video figcaption{display:flex;justify-content:center;gap:1.3rem;flex-wrap:wrap;padding:.85rem .75rem;font:400 .7rem/1.5 var(--sans);color:var(--ink-2);background:var(--panel)}
+.aa-learning .cc-video figcaption>span{display:inline-flex;align-items:center;gap:.4rem}
+.aa-learning .cc-swatch{display:inline-block;width:7px;height:7px;border-radius:2px}
+.aa-learning .cc-drawer{background:var(--diagram-reference)}
+.aa-learning .cc-door{background:var(--diagram-prediction)}
+.aa-learning .cc-mini-label{font:500 .64rem/1.5 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin:0 0 .9rem}
+.aa-learning .cc-vocabulary{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:0}
+.aa-learning .cc-vocabulary>div{min-width:0;padding:1rem .9rem .95rem;border:1px solid var(--hairline);border-radius:10px;background:var(--panel)}
+.aa-learning .cc-term-icon{display:block;width:29px;height:29px;margin-bottom:.7rem;fill:none;stroke:var(--accent);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.aa-learning .cc-vocabulary dt{font-size:.8rem;font-weight:600;line-height:1.4;color:var(--ink);margin-bottom:.45rem}
+.aa-learning .cc-vocabulary dd{font-size:.75rem;color:var(--ink);line-height:1.6;margin:0}
+.aa-learning .cc-vocabulary dd span{display:inline-block;margin-top:.3rem;color:var(--ink-2);font-size:.7rem}
+.aa-learning .cc-purpose{border-left:2px solid var(--accent-soft);margin:1.7rem 0 .5rem;padding:.25rem 0 .25rem 1.2rem;max-width:43rem}
+.aa-learning .cc-purpose .cc-mini-label{display:block;margin:0 0 .45rem}
+.aa-learning .cc-purpose p{font:400 clamp(1.2rem,2vw,1.5rem)/1.4 var(--serif);letter-spacing:-.015em;color:var(--ink);margin:0 0 .55rem}
+.aa-learning .cc-purpose p em{font-style:normal;color:var(--accent)}
+.aa-learning .cc-purpose>span:last-child{display:block;font-size:.75rem;line-height:1.7;color:var(--ink-2)}
+/* Section navigation remains available while reading. */
+.aa-learning-page .cc-sidebar-toc{margin-top:1.7rem;padding-top:1rem;border-top:1px solid var(--hairline)}
+.aa-learning-page .cc-sidebar-toc a{display:block;padding:.35rem .6rem;margin:.1rem 0;border-left:2px solid transparent;text-decoration:none;font-size:.74rem;line-height:1.35;color:var(--ink-2)}
+.aa-learning-page .cc-sidebar-toc a:hover{color:var(--accent)}
+.aa-learning-page .cc-sidebar-toc a[aria-current="location"]{border-left-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+@container(max-width:740px){.aa-learning .cc-object-intro{grid-template-columns:1fr;gap:1.5rem}.aa-learning .cc-video video{aspect-ratio:16/10;max-height:310px}.aa-learning .cc-vocabulary>div{padding:1rem}.aa-learning .cc-terms .cc-mini-label{margin-bottom:.75rem}}
+@media(max-width:900px){
+  .aa-learning-page .cc-sidebar-toc{display:none}
+  .aa-learning-page .sidebar .tagline{display:none}
+}
+@media(max-width:650px){
+  .aa-learning .cc-original .math{white-space:normal;overflow-wrap:anywhere}
+  .aa-learning .concept-list{grid-template-columns:1fr}
+  .aa-learning .cc-reading-note{gap:.4rem 1rem}
+  .aa-learning .cc-reading-note span+span:before{display:none}
+  .aa-learning .cc-lesson-panel[id$="-demo"]{padding:18px 12px}
+}
+@media(max-width:360px){.aa-learning .cc-vocabulary{gap:.5rem}.aa-learning .cc-vocabulary>div{padding:.8rem .65rem}.aa-learning .cc-vocabulary dt{font-size:.75rem}}
+@media(prefers-reduced-motion:reduce){html:has(.aa-learning-page){scroll-behavior:auto}.aa-learning *{transition:none!important;scroll-behavior:auto!important}}
+@media print{.aa-learning .cc-lesson-panel[hidden]{display:block!important}.aa-learning .cc-lesson-tabs,.cc-sidebar-toc{display:none!important}}
+
+/* The existing clip plays like a GIF, with a discreet pause control. */
+.aa-learning .cc-animation{position:relative;background:white}
+.aa-learning .cc-motion-toggle{display:inline-flex;align-items:center;gap:6px;position:absolute;right:12px;bottom:12px;min-height:34px;padding:6px 10px;border:1px solid var(--hairline);border-radius:20px;background:var(--paper);color:var(--ink-2);box-shadow:0 1px 4px color-mix(in srgb,var(--ink) 6%,transparent);font:500 11px/1.3 var(--sans);cursor:pointer}
+.aa-learning .cc-motion-toggle:hover{background:var(--panel);color:var(--ink)}
+.aa-learning .cc-motion-icon{display:block;width:8px;height:9px;border-left:2px solid currentColor;border-right:2px solid currentColor}
+.aa-learning .cc-motion-toggle[data-paused="true"] .cc-motion-icon{width:0;height:0;border:5px solid transparent;border-right:0;border-left:7px solid currentColor}
+
+/* Overview connects the physical object, evaluation map and original formula. */
+.aa-learning .cc-overview-path{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:1.5rem 0 2rem;font-size:.8rem}
+.aa-learning .cc-overview-path a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--hairline);padding-bottom:3px}
+.aa-learning .cc-overview-path>span{color:var(--ink-3)}
+.aa-learning .cc-overview-bridge{max-width:46rem;margin:2.4rem 0;font-size:.94rem;line-height:1.8;color:var(--ink-2)}
+.aa-learning .cc-overview-bridge strong{font-weight:500;color:var(--ink)}
+.aa-learning .cc-overview-bridge .cc-map-highlight{color:var(--accent)}
+.aa-learning .cc-next-path{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem}
+.aa-learning .cc-next-path a{display:flex;flex-direction:column;gap:10px;padding:1.3rem;border:1px solid var(--hairline);border-radius:12px;background:var(--panel);text-decoration:none;color:var(--ink)}
+.aa-learning .cc-next-path a:hover{border-color:var(--accent-soft);background:var(--accent-soft)}
+.aa-learning .cc-next-path span{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.aa-learning .cc-next-path strong{font-size:.95rem;font-weight:500;color:var(--accent)}
+.aa-learning .cc-next-path small{font-size:.78rem;line-height:1.6;color:var(--ink-2)}
+.overview-page #articulated-object{margin-top:2rem;padding-top:2rem}
+.aa-learning #metric-summary .display-math{overflow-x:auto;max-width:100%;padding:1rem}
+@media(max-width:650px){.aa-learning .cc-next-path{grid-template-columns:1fr}.aa-learning .cc-overview-path{gap:8px;font-size:.75rem}}

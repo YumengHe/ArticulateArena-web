@@ -1,0 +1,36 @@
+<p class="cc-intro-lede">One cabinet. Parts that move together—and relative to each other. That makes it an <strong>articulated object</strong>.</p>
+<div class="cc-object-intro">
+  <figure class="cc-video">
+    <div class="cc-video-label"><span class="cc-video-dot" aria-hidden="true"></span>Watch the parts move <span>Looping animation</span></div>
+    <div class="cc-animation">
+    <video id="cc-cabinet-video" autoplay muted loop playsinline preload="metadata" poster="../static/demo/GT_poster.png" aria-label="Cabinet demonstration showing the drawer sliding and the door rotating" aria-describedby="cc-video-caption">
+      <source src="../static/demo/GT_motion.mp4" type="video/mp4">
+      <p><a href="../static/demo/GT_motion.mp4">Watch the cabinet motion demonstration.</a></p>
+    </video>
+    <button type="button" class="cc-motion-toggle" id="cc-motion-toggle" aria-controls="cc-cabinet-video" aria-label="Pause cabinet animation" hidden><span class="cc-motion-icon" aria-hidden="true"></span><span id="cc-motion-label">Pause</span></button>
+    </div>
+    <figcaption id="cc-video-caption"><span><i class="cc-swatch cc-drawer" aria-hidden="true"></i>Drawer · slides</span><span><i class="cc-swatch cc-door" aria-hidden="true"></i>Door · rotates</span></figcaption>
+  </figure>
+  <div class="cc-terms">
+    <p class="cc-mini-label">Four ideas to keep with you</p>
+    <dl class="cc-vocabulary">
+      <div>
+        <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 11 16 6l10 5v12l-10 5-10-5Z M6 11l10 5 10-5 M16 16v12"/></svg>
+        <dt>Link</dt><dd>One rigid part.<br><span>The door, the drawer, or the body.</span></dd>
+      </div>
+      <div>
+        <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 23h9V9h13 M14 23 26 12"/><circle cx="14" cy="23" r="3"/></svg>
+        <dt>Joint</dt><dd>A connection with a motion rule.<br><span>A hinge lets the door rotate.</span></dd>
+      </div>
+      <div>
+        <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 19h22 M5 19l4-4 M5 19l4 4 M27 19l-4-4 M27 19l-4 4"/><circle cx="17" cy="19" r="3"/></svg>
+        <dt>One degree of freedom</dt><dd>One number sets the joint’s state.<br><span>A distance for a slide; an angle for a hinge.</span></dd>
+      </div>
+      <div>
+        <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 9v6H7v9 M16 15h9v9"/><circle cx="16" cy="7" r="3"/><rect x="4" y="23" width="6" height="6" rx="1"/><rect x="22" y="23" width="6" height="6" rx="1"/></svg>
+        <dt>Kinematic tree</dt><dd>A map of the connections.<br><span>Parts are nodes. Joints are edges.</span></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+<div class="cc-purpose"><span class="cc-mini-label">The evaluation question</span><p>Does the predicted object <em>move and connect</em> like the reference?</p><span>ArticulateArena measures that difference. This tutorial considers objects whose connections form a tree.</span></div>

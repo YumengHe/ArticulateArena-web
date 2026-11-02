@@ -13,6 +13,7 @@ and commit the generated ``docs/`` folder (the site is static).
 from __future__ import annotations
 
 import html
+import hashlib
 import re
 from pathlib import Path
 
@@ -60,17 +61,90 @@ def nav_html(current: str) -> str:
 
 
 def concept_list_html() -> str:
-    """The list of concept pages shown on the Core concepts landing page."""
+    """In-page links on the continuous Core Concepts tutorial."""
     items = [
-        f'        <li><a href="{slug}.html"><span class="num">{eyebrow}</span><span class="t">{title}</span></a></li>'
+        f'        <li><a href="#{slug.removeprefix("concept-")}"><span class="num">{eyebrow}</span><span class="t">{title}</span></a></li>'
         for slug, eyebrow, title, _label, is_sub in PAGES if is_sub
     ]
     return '      <ol class="concept-list">\n' + "\n".join(items) + "\n      </ol>"
 
 
+def core_partial(name: str) -> str:
+    return (SRC / "core" / f"{name}.html").read_text(encoding="utf-8").rstrip()
+
+
+def core_lesson_tabs(anchor: str, title: str, explanation: str, guide: str) -> str:
+    """Keep the original reading path visible, with an optional interactive view."""
+    label = html.escape(plain(title), quote=True)
+    return (
+        f'<div class="cc-lesson" data-cc-lesson="{anchor}">\n'
+        f'<div class="cc-lesson-tabs" role="tablist" aria-label="{label}: choose a view" hidden>\n'
+        f'<button type="button" role="tab" id="{anchor}-explanation-tab" aria-controls="{anchor}-explanation" aria-selected="true" tabindex="0" data-cc-view="explanation">Read</button>\n'
+        f'<button type="button" role="tab" id="{anchor}-demo-tab" aria-controls="{anchor}-demo" aria-selected="false" tabindex="-1" data-cc-view="demo">Explore</button>\n'
+        '</div>\n'
+        f'<div class="cc-lesson-panel" id="{anchor}-explanation" role="tabpanel" aria-labelledby="{anchor}-explanation-tab" tabindex="0">\n{explanation}\n</div>\n'
+        f'<div class="cc-lesson-panel" id="{anchor}-demo" role="tabpanel" aria-labelledby="{anchor}-demo-tab" tabindex="0">\n{guide}\n</div>\n'
+        '</div>'
+    )
+
+
+def core_sections() -> str:
+    """Reuse the original lessons verbatim; keep their standalone pages intact."""
+    guides = {"twist": "movement", "quotient": "matching", "norms": "norms", "tree": "tree"}
+    sections = []
+    for slug, number, title, _label, is_sub in PAGES:
+        if not is_sub:
+            continue
+        anchor = slug.removeprefix("concept-")
+        original = (SRC / f"{slug}.html").read_text(encoding="utf-8").rstrip()
+        content = f'<div class="cc-original">\n{original}\n</div>'
+        if anchor in guides:
+            content = core_lesson_tabs(anchor, title, content, core_partial(f"guide-{guides[anchor]}"))
+        sections.append(
+            f'<section id="{anchor}" class="cc-section" data-cc-section aria-labelledby="{anchor}-title">\n'
+            f'<h2 id="{anchor}-title"><span class="cc-section-number">{number}</span>{title}</h2>\n'
+            f'{content}\n'
+            '<a class="cc-back-map" href="index.html#concept-map">← Concept map in the Overview</a>\n</section>'
+        )
+    return "\n\n".join(sections)
+
+
+def core_contents() -> str:
+    links = ['<a href="#notation">4.0 · Notation</a>']
+    links.extend(
+        f'<a href="#{slug.removeprefix("concept-")}">{number} · {label}</a>'
+        for slug, number, _title, label, is_sub in PAGES if is_sub
+    )
+    return '\n'.join(links)
+
+
+def overview_contents() -> str:
+    return '\n'.join([
+        '<a href="#articulated-object">What is an articulated object?</a>',
+        '<a href="#concept-map">The concept map</a>',
+        '<a href="#metric-summary">The metric behind the map</a>',
+    ])
+
+
+def learning_assets(include_map: bool) -> str:
+    """Version the shared assets so moved guides cannot use an old cached style."""
+    names = ["core-concepts", "core-guides"] + (["core-map"] if include_map else [])
+    tags = []
+    for extension in ["css", "js"]:
+        for name in names:
+            asset = f"static/{extension}/{name}.{extension}"
+            version = hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()[:10]
+            url = f"../{asset}?v={version}"
+            tags.append(f'  <link rel="stylesheet" href="{url}">' if extension == "css"
+                        else f'  <script src="{url}" defer></script>')
+    return '\n'.join(tags) + '\n'
+
+
 def page_nav(i: int) -> str:
     prev_ = PAGES[i - 1] if i > 0 else None
     next_ = PAGES[i + 1] if i + 1 < len(PAGES) else None
+    if PAGES[i][0] == "concepts":
+        next_ = next(page for page in PAGES if page[0] == "api")
     parts = ['      <nav class="page-nav">']
     if prev_:
         parts.append(
@@ -102,6 +176,13 @@ def main() -> None:
     OUT.mkdir(exist_ok=True)
     for i, (slug, eyebrow, title, _label, _sub) in enumerate(PAGES):
         fragment = (SRC / f"{FRAGMENT.get(slug, slug)}.html").read_text(encoding="utf-8")
+        if slug == "index":
+            fragment = (fragment.replace("{{core_intro}}", core_lesson_tabs(
+                            "articulated-object", "What is an articulated object?",
+                            core_partial("intro"), core_partial("guide-cabinet")))
+                        .replace("{{core_map}}", core_partial("map")))
+        elif slug == "concepts":
+            fragment = fragment.replace("{{concept_sections}}", core_sections())
         content = "\n".join("      " + line if line.strip() else line for line in fragment.rstrip("\n").split("\n"))
         if slug == "concepts":
             content = content.replace("{{concept_list}}", concept_list_html())
@@ -112,6 +193,15 @@ def main() -> None:
             .replace("{{content}}", content)
             .replace("{{pagenav}}", page_nav(i))
         )
+        if slug in {"index", "concepts"}:
+            page_class = "overview-page" if slug == "index" else "core-concepts-page"
+            contents = overview_contents() if slug == "index" else core_contents()
+            page = (page.replace('<body>', f'<body class="aa-learning-page {page_class}">')
+                    .replace('</head>', learning_assets(slug == "index") + '</head>')
+                    .replace('    <a class="backlink"',
+                             '    <nav class="cc-sidebar-toc" aria-label="On this page">\n'
+                             '      <p class="toc-label">On this page</p>\n' + contents + '\n    </nav>\n\n'
+                             '    <a class="backlink"'))
         (OUT / f"{slug}.html").write_text(page, encoding="utf-8")
         print(f"wrote docs/{slug}.html")
 

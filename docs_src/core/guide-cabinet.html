@@ -1,0 +1,15 @@
+<div class="aa-guide" id="aa-panel-1" role="group" aria-labelledby="aa-guide-title-1">
+  <div class="aa-kicker">Start with the physical object</div>
+  <h3 class="aa-guide-title" id="aa-guide-title-1">One cabinet. Four parts. Three joints.</h3>
+  <p class="aa-intro">An <strong>articulated object</strong> has parts that can move relative to each other. Each rigid part is a <strong>link</strong>; each connection that controls their relative movement is a <strong>joint</strong>.</p>
+  <p class="aa-intro">This simplified example adds a turning latch to the drawer, so we can follow a joint attached to another moving part.</p>
+  <div class="aa-two">
+    <div class="aa-stage"><div class="aa-stage-top"><strong>The physical object</strong><span>Select a part</span></div><svg id="aa-cabinet" class="aa-svg" style="height:270px" role="img" aria-label="Cabinet with a drawer, a hinged door, and a turning latch on the drawer. Select the corresponding named part in the tree to highlight it."></svg></div>
+    <div class="aa-stage"><div class="aa-stage-top"><strong>Its connection tree</strong><span>Lines = joints</span></div><div class="aa-tree-wrap"><svg id="aa-intro-tree" class="aa-svg aa-tree-svg" role="img" aria-label="Body connects to door by a hinge and to drawer by a sliding joint. Drawer connects to latch by a turning joint."></svg><button class="aa-node" type="button" data-node="body" aria-pressed="false">Body</button><button class="aa-node" type="button" data-node="door" aria-pressed="false">Door</button><button class="aa-node" type="button" data-node="drawer" aria-pressed="true">Drawer</button><button class="aa-node" type="button" data-node="latch" aria-pressed="false">Latch</button></div></div>
+  </div>
+  <div class="aa-selected" aria-live="polite"><strong id="aa-part-name">Drawer</strong><span id="aa-part-copy">Slides relative to the body. The latch comes along because it is attached to the drawer.</span></div>
+  <div class="aa-controls"><button type="button" class="aa-button aa-button-primary" id="aa-play-part">Play drawer motion</button><span class="aa-caption" style="margin:0">Choose the door or latch to try a different joint.</span></div>
+  <details class="aa-details"><summary>Where does “one degree of freedom” fit?</summary><p>For each moving joint here, one number sets its configuration: the drawer’s opening distance, the door’s angle, or the latch’s angle. The whole cabinet has several joints, so it needs several numbers.</p><p>The tree is a map of these connections. Articulated objects can also have closed loops; this tutorial and the paper’s tree score focus on tree structures.</p></details>
+  <p class="aa-next-note"><strong>Next:</strong> <a href="#concept-map">follow the drawer through the concept map</a> to see how its movement becomes an evaluation score.</p>
+
+</div>

@@ -1,0 +1,48 @@
+<div class="aa-guide" id="aa-panel-5" role="group" aria-labelledby="aa-guide-title-5">
+  <div class="aa-kicker">From one joint to the whole object · 4.7</div>
+  <h3 class="aa-guide-title" id="aa-guide-title-5">Correct joints can still make the wrong mechanism.</h3>
+  <p class="aa-intro">The reference latch is attached to the <strong>drawer</strong>. The original prediction attaches it to the <strong>body</strong>. Pull the drawer: the two objects behave differently even though their joint descriptions match.</p>
+  <div class="aa-step-buttons" aria-label="Step through the cheapest repair"><button class="aa-button" id="aa-edit-0" type="button" data-edit="0" aria-pressed="true">0 · Original</button><button class="aa-button" id="aa-edit-1" type="button" data-edit="1" aria-pressed="false">1 · Contract</button><button class="aa-button" id="aa-edit-2" type="button" data-edit="2" aria-pressed="false">2 · Expand</button></div>
+  <div class="aa-edit-detail" id="aa-edit-copy" aria-live="polite">The latch is connected to the body. Its joint parameters are correct; the connection is not.</div>
+  <div class="aa-controls" style="margin:0 0 17px"><div class="aa-slider-group"><label class="aa-slider-label" for="aa-tree-q"><span>Pull both drawers</span><output id="aa-tree-q-value">35 cm</output></label><input id="aa-tree-q" type="range" min="0" max="50" step="1" value="35" aria-label="Shared drawer opening in centimeters"></div></div>
+  <div class="aa-tree-comparison-scroll" role="region" aria-label="Reference and prediction side-by-side comparison" tabindex="0">
+  <div class="aa-two aa-tree-columns">
+    <div class="aa-stage aa-tree-reference">
+      <div class="aa-stage-top"><strong>Reference</strong><span>Latch on drawer</span></div>
+      <svg id="aa-tree-ref-cab" class="aa-svg aa-tree-scene" role="img" aria-label="Reference drawer. The latch follows the drawer when it slides."></svg>
+      <svg id="aa-tree-ref" class="aa-svg aa-compare-tree" role="img" aria-label="Reference tree: body to drawer, body to door, and drawer to latch."></svg>
+      <div class="aa-tree-result">
+        <div class="aa-metric-label">Reference error</div>
+        <output class="aa-metric-value" id="aa-tree-ref-score" aria-label="Reference tree error compared with itself">0.000</output>
+        <p>Compared with itself, the reference always has zero error.</p>
+      </div>
+    </div>
+    <div class="aa-stage aa-tree-prediction">
+      <div class="aa-stage-top"><strong id="aa-tree-pred-title">Original prediction</strong><span id="aa-tree-pred-sub">Latch on body</span></div>
+      <svg id="aa-tree-pred-cab" class="aa-svg aa-tree-scene" role="img" aria-label="Predicted drawer and latch. The latch stays with the body until the connection is repaired."></svg>
+      <svg id="aa-tree-pred" class="aa-svg aa-compare-tree" role="img" aria-label="Predicted tree, updated by the repair steps."></svg>
+      <div class="aa-tree-result" aria-live="polite" aria-atomic="true">
+        <div class="aa-metric-label">Prediction error vs reference</div>
+        <output class="aa-metric-value" id="aa-tree-score" aria-label="Current prediction tree error compared with reference">0.524</output>
+        <p id="aa-tree-score-note">The latch is attached to the wrong part. Two edits are needed to match the reference.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+  <p class="aa-tree-scroll-hint">Scroll sideways to compare the two trees →</p>
+  <p class="aa-tree-score-key">Both cards use tree error E<sub>α</sub><sup>tree</sup> (dimensionless), with the reference as the target. Zero means the trees match.</p>
+  <p class="aa-pose-note" id="aa-tree-pose-note">Pull the drawers to see whether the latch follows. The scores compare allowed motion and connections, so moving this slider does not change them.</p>
+  <details class="aa-details">
+    <summary>Why compare connections as well as joints?</summary>
+    <p>A joint-list comparison checks the joint descriptions while ignoring which parts they connect. It can miss a structural mistake that the tree error catches.</p>
+    <div class="aa-joint-list-result" aria-live="polite">
+      <div><strong>Prediction error if connections are ignored</strong><p id="aa-tree-joint-note">All three joint descriptions match. Ignoring connections misses the misplaced latch.</p></div>
+      <output class="aa-metric-value" id="aa-tree-joint-score" aria-label="Joint-list comparison error">0.000</output>
+    </div>
+  </details>
+  <details class="aa-details"><summary>How are these edit costs calculated?</summary>
+    <div class="aa-edit-ledger"><span>Original tree error: <strong id="aa-edit-original">0.524</strong></span><span>Repair cost so far: <strong id="aa-edit-paid">0.000</strong></span><span>Error remaining: <strong id="aa-edit-remaining">0.524</strong></span></div>
+    <p>Contracting the latch joint costs E<sub>α</sub>(J<sub>latch</sub>, J₀). Expanding the drawer node to create the correct latch connection costs E<sub>α</sub>(J₀, J<sub>latch</sub>). J₀ = {0, 0} is the fixed joint: no relative movement.</p><p>In this teaching example the latch rotates from 0 to 15° about an axis through the coordinate origin. Each edit costs 15° in radians: π/12 ≈ <strong>0.262</strong>. The total is π/6 ≈ <strong>0.524</strong>.</p><p>With α = 1 m⁻¹, the other fixed-joint costs are 0.500 for the drawer’s 0.50 m travel and 1.640 for the door’s 90° range about a hinge offset by 0.30 m. Changing this four-node star into the reference four-node path requires at least one contraction and one expansion. The latch is the cheapest edge to remove and restore, so the shown repair is minimal.</p><p>Contraction merges two nodes. Expansion splits a node to introduce a new joint. These are edits to the mechanism’s description. One common norm is used for all edits here; we do not switch body-dependent rulers between steps.</p></details>
+  <p class="aa-next-note"><strong>The complete connection:</strong> parts and joints → movement rule and limits → endpoint pair → joint distance E → minimum total edit cost for the tree.</p>
+
+</div>
