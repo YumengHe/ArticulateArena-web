@@ -81,7 +81,6 @@
 @container(max-width:740px){.aa-learning .cc-object-intro{grid-template-columns:1fr;gap:1.5rem}.aa-learning .cc-video video{aspect-ratio:16/10;max-height:310px}.aa-learning .cc-vocabulary>div{padding:1rem}.aa-learning .cc-terms .cc-mini-label{margin-bottom:.75rem}}
 @media(max-width:900px){
   .aa-learning-page .cc-sidebar-toc{display:none}
-  .aa-learning-page .sidebar .tagline{display:none}
 }
 @media(max-width:650px){
   .aa-learning .cc-original .math{white-space:normal;overflow-wrap:anywhere}

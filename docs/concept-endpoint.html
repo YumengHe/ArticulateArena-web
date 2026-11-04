@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The endpoint pair · Articulate Arena Documentation</title>
-  <meta name="description" content="Usage documentation for articulatearena, the reference implementation of the quotient metric E on articulated joints.">
+  <title>The endpoint pair · ArticulateArena Documentation</title>
+  <meta name="description" content="ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.">
   <link rel="stylesheet" href="../static/css/google-fonts-local.css">
   <link rel="icon" type="image/svg+xml" href="../static/images/articulatearena-icon.svg">
   <link rel="apple-touch-icon" href="../static/images/icon.png">
@@ -130,16 +130,34 @@
       font-size: 0.8rem;
     }
 
-    .sidebar .backlink {
-      display: inline-block;
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      color: var(--ink-3);
-      text-decoration: none;
-      border-bottom: 1px dotted var(--ink-3);
+    .project-links {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
     }
 
-    .sidebar .backlink:hover { color: var(--accent); border-bottom-color: var(--accent); }
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.15rem 0;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 500;
+      line-height: 1.5;
+      text-decoration: none;
+    }
+
+    .project-links-secondary { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+    .project-links-secondary > span { color: var(--ink-3); font-size: 0.7rem; }
+    .project-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .project-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    @media (pointer: coarse) {
+      .project-links { gap: 0; }
+      .project-links a { min-height: 44px; }
+    }
 
     /* ---------- content ---------- */
     .content {
@@ -484,10 +502,21 @@
   <aside class="sidebar">
     <a class="brand" href="./index.html">
       <img src="../static/images/articulatearena-icon.svg" alt="">
-      <span class="name">Articulate Arena</span>
+      <span class="name">ArticulateArena</span>
       <span class="version">v0.1.0</span>
     </a>
-    <p class="tagline">A quotient metric on articulated kinematics via Lie-algebra endpoint twists.</p>
+    <p class="tagline">ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.</p>
+
+    <nav class="project-links" aria-label="Project resources">
+      <a href="../index.html">Project page <span aria-hidden="true">↗</span></a>
+      <div class="project-links-secondary">
+        <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>
+      </div>
+    </nav>
 
     <p class="toc-label">Contents</p>
     <nav class="toc" id="toc">
@@ -499,7 +528,7 @@
       <a href="cli.html">Command-line usage</a>
     </nav>
 
-    <a class="backlink" href="../index.html">← Project page</a>
+
   </aside>
 
   <main class="content">
@@ -538,7 +567,7 @@
       </nav>
 
       <footer class="docs-footer">
-        Articulate Arena · <a href="../index.html">project page</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a>
+        ArticulateArena · <a href="../index.html">Project page</a> · <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a> · <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>
       </footer>
 
     </div>

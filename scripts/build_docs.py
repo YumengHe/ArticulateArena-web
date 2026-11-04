@@ -161,7 +161,7 @@ def page_nav(i: int) -> str:
 def header_html(slug: str, eyebrow: str, title: str) -> str:
     if slug == "index":
         return (
-            "      <h1>Articulate Arena</h1>\n"
+            "      <h1>ArticulateArena</h1>\n"
             '      <p class="subtitle-line">Usage documentation for <code>articulatearena</code>, the reference '
             "implementation of the quotient metric <span class=\"math\">E</span> on one-degree-of-freedom "
             "articulated joints and its object-level lifts.</p>\n"
@@ -198,10 +198,11 @@ def main() -> None:
             contents = overview_contents() if slug == "index" else core_contents()
             page = (page.replace('<body>', f'<body class="aa-learning-page {page_class}">')
                     .replace('</head>', learning_assets(slug == "index") + '</head>')
-                    .replace('    <a class="backlink"',
+                    .replace('{{page_contents}}',
                              '    <nav class="cc-sidebar-toc" aria-label="On this page">\n'
-                             '      <p class="toc-label">On this page</p>\n' + contents + '\n    </nav>\n\n'
-                             '    <a class="backlink"'))
+                             '      <p class="toc-label">On this page</p>\n' + contents + '\n    </nav>'))
+        else:
+            page = page.replace('{{page_contents}}', '')
         (OUT / f"{slug}.html").write_text(page, encoding="utf-8")
         print(f"wrote docs/{slug}.html")
 
