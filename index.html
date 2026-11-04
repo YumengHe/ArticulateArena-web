@@ -82,6 +82,12 @@
                   <span>Documentation</span>
                 </a>
               </span>
+              <span class="link-block">
+                <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github" aria-hidden="true"></i></span>
+                  <span>GitHub</span>
+                </a>
+              </span>
             </div>
 
           </div>
@@ -218,9 +224,8 @@
           <h2 class="title is-3">Demonstration of Errors</h2>
           <div class="content has-text-justified">
             <p>
-              The animations below illustrate different articulation errors against the
-              ground-truth motion. Red labels identify the modified joint in each example;
-              each score compares that example with Ground Truth.
+              Ground Truth labels all three joints. Each example labels only the modified
+              joint in red; its score compares it with Ground Truth.
             </p>
           </div>
         </div>
@@ -263,17 +268,19 @@
       <div class="content">
         <p>If you find our work helpful, please consider citing:</p>
       </div>
-      <pre class="bibtex-code"><code>@misc{he2026articulatearenametricarticulatedkinematics,
-  title={ArticulateArena: A Metric for Articulated Kinematics},
-  author={Yumeng He and Yongfei She and Huanyu Chen and Chun Yuan and
-          Peihao Li and Joseph Masterjohn and Yin Yang and Ying Jiang and
-          Chenfanfu Jiang},
-  year={2026},
-  eprint={2609.33931},
-  archivePrefix={arXiv},
-  primaryClass={cs.RO},
-  url={https://arxiv.org/abs/2609.33931}
-}</code></pre>
+      <div class="bibtex-actions">
+        <button class="bibtex-copy" type="button" aria-label="Copy BibTeX citation">Copy BibTeX</button>
+        <span id="bibtex-copy-status" class="is-sr-only" role="status" aria-live="polite"></span>
+      </div>
+      <pre class="bibtex-code" tabindex="0" aria-label="BibTeX citation"><code id="bibtex-content"><span class="bibtex-line">@misc{he2026articulatearenametricarticulatedkinematics,</span>
+<span class="bibtex-line bibtex-field">  title={ArticulateArena: A Metric for Articulated Kinematics},</span>
+<span class="bibtex-line bibtex-field">  author={Yumeng He and Yongfei She and Huanyu Chen and Chun Yuan and Peihao Li and Joseph Masterjohn and Yin Yang and Ying Jiang and Chenfanfu Jiang},</span>
+<span class="bibtex-line bibtex-field">  year={2026},</span>
+<span class="bibtex-line bibtex-field">  eprint={2609.33931},</span>
+<span class="bibtex-line bibtex-field">  archivePrefix={arXiv},</span>
+<span class="bibtex-line bibtex-field">  primaryClass={cs.RO},</span>
+<span class="bibtex-line bibtex-field">  url={https://arxiv.org/abs/2609.33931}</span>
+<span class="bibtex-line">}</span></code></pre>
     </div>
   </section>
 
@@ -1743,6 +1750,18 @@
         );
     }
     .bibtex-section { padding-bottom: 4rem; }
+    .bibtex-actions { display: flex; justify-content: flex-end; margin-bottom: 0.6rem; }
+    .bibtex-copy {
+        padding: 0.45rem 0.8rem;
+        border: 1px solid var(--aa-hairline);
+        background: transparent;
+        color: var(--aa-ink2);
+        font: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    .bibtex-copy:hover { color: var(--aa-accent); border-color: var(--aa-accent); }
+    .bibtex-copy:focus-visible, .bibtex-code:focus-visible { outline: 2px solid var(--aa-accent); outline-offset: 3px; }
     .bibtex-code {
         margin: 0;
         padding: 1.5rem;
@@ -1756,11 +1775,15 @@
         overflow-wrap: anywhere;
     }
     .bibtex-code code {
+        display: block;
         padding: 0;
         background: transparent;
         color: inherit;
         font: inherit;
+        white-space: normal;
     }
+    .bibtex-line { display: block; white-space: pre-wrap; }
+    .bibtex-field { padding-inline-start: 2ch; text-indent: -2ch; }
     @media (max-width: 768px) {
         .case-render-table {
             grid-template-columns: 92px repeat(4, 220px);
@@ -1771,10 +1794,39 @@
 </style>
 
 <!-- Demonstration of Errors data (loaded as a global so it also works when opening index.html directly via file://) -->
-<script src="./static/demo/demo.js?v=5"></script>
+<script src="./static/demo/demo.js?v=6"></script>
 <script src="./static/case-renders/cases.js"></script>
 
 <script>
+  function setupBibtexCopy() {
+      const button = document.querySelector('.bibtex-copy');
+      const citation = document.getElementById('bibtex-content');
+      const status = document.getElementById('bibtex-copy-status');
+      if (!button || !citation || !status) return;
+      let resetTimer;
+      button.addEventListener('click', async () => {
+          clearTimeout(resetTimer);
+          const text = citation.textContent.trim();
+          let copied = false;
+          try {
+              await navigator.clipboard.writeText(text);
+              copied = true;
+          } catch (_) {
+              const selection = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(citation);
+              selection.removeAllRanges();
+              selection.addRange(range);
+              try { copied = document.execCommand('copy'); } catch (_) { /* Leave the citation selected. */ }
+              if (copied) selection.removeAllRanges();
+          }
+          button.textContent = copied ? 'Copied!' : 'Citation selected';
+          status.textContent = copied ? 'BibTeX copied to clipboard.' : 'Copy the selected citation with your keyboard.';
+          resetTimer = setTimeout(() => { button.textContent = 'Copy BibTeX'; }, 2500);
+      });
+  }
+  window.addEventListener('DOMContentLoaded', setupBibtexCopy);
+
   // Strip trailing digits and replace underscores so folder keys like "bread11" or
   // "monstera_tree" become "bread" / "monstera tree" for display. CSS capitalizes the
   // first letter via text-transform on the label classes.
@@ -2220,10 +2272,10 @@
           const params = rows.length ? `<div class="demo-params">${rows.join('')}</div>` : '';
           const media = /\.mp4$/i.test(it.file)
               ? `<video autoplay muted loop playsinline preload="metadata"
-                        poster="static/demo/${esc(it.poster || '')}?v=5" aria-label="${esc(it.title)}">
-                   <source src="static/demo/${esc(it.file)}?v=5" type="video/mp4">
+                        poster="static/demo/${esc(it.poster || '')}?v=6" aria-label="${esc(it.title)}">
+                   <source src="static/demo/${esc(it.file)}?v=6" type="video/mp4">
                  </video>`
-              : `<img src="static/demo/${esc(it.file)}?v=5" alt="${esc(it.title)}" loading="lazy">`;
+              : `<img src="static/demo/${esc(it.file)}?v=6" alt="${esc(it.title)}" loading="lazy">`;
           return `
           <div class="error-demo-item">
             ${media}

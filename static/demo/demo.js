@@ -1,6 +1,7 @@
 // Demonstration of Errors data.
 // Original cases: ArticulateMetrics scripts/generate_error_cases.py.
 // Labeled renders and the negative-270-degree case: 2026-11-02 server package.
+// 2026-11-03: variants show only the modified joint; GT keeps all three labels.
 //   file  = filename inside static/demo/ (mp4 clip, or gif for the old renderer)
 //   poster = still shown before the clip plays                 (mp4 only)
 //   title = card heading
