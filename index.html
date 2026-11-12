@@ -245,19 +245,23 @@
           <div class="content has-text-justified">
             <p>
               Qualitative comparison over four benchmark cases rendered with the viewer's
-              per-part palette, so every part keeps its own flat color. Columns are object
-              instances and rows are the methods, starting from the ground truth, each cell
-              animating that method's articulated output over its predicted joints. The label
-              under each cell counts the movable joints the method predicts, and hovering a
-              cell magnifies its clip. The quantitative evaluation aggregates all valid
-              outputs in the evaluation set, not only these examples.
+              per-part palette, so every part keeps its own flat color. Rows are object
+              instances and columns are methods. Each card shows the method's articulated
+              output, animated over its predicted joints, with the movable joint count below.
+              The quantitative evaluation aggregates all valid outputs in the evaluation set,
+              not only these examples. Drag the grid sideways to see the remaining methods.
             </p>
           </div>
         </div>
       </div>
       <!-- Populated dynamically from static/case-renders/cases.js -->
-      <div class="case-render-scroll">
-        <div class="case-render-table" id="case-render-table"></div>
+      <div class="case-render-matrix">
+        <div class="case-render-scroll case-render-methods" aria-label="Methods">
+          <div class="case-render-header-track" id="case-render-header-track"></div>
+        </div>
+        <div class="case-render-scroll">
+          <div class="case-render-table" id="case-render-table"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -1662,101 +1666,73 @@
         transform: translateY(-3px) scale(1.01);
         box-shadow: 0 6px 18px rgba(31, 30, 27, 0.12);
     }
-    /* Qualitative results: part-color motion clips, one per (case, method).
-       Horizontal pan only, mirroring the qualitative-results grid. */
+    /* Original case/method matrix, with the error demonstrations' card styling. */
     .case-render-scroll {
         overflow-x: auto;
         overflow-y: hidden;
-        padding-bottom: 8px;
         cursor: grab;
         user-select: none;
         touch-action: pan-y;
         scrollbar-gutter: stable;
     }
-    .case-render-scroll.is-dragging {
-        cursor: grabbing;
+    .case-render-scroll.is-dragging { cursor: grabbing; }
+    .case-render-methods {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        overflow-x: hidden;
+        background: var(--aa-paper);
     }
-    .case-render-table {
+    .case-render-table,
+    .case-render-header-track {
         display: grid;
-        /* column template + min-width are set from cases.js (one column per object) */
-        grid-template-columns: 132px repeat(4, minmax(180px, 1fr));
-        gap: 1px;
-        overflow: hidden;
-        border: 1px solid var(--aa-hairline);
-        border-radius: 8px;
-        background: var(--aa-hairline);
-    }
-    .case-render-header,
-    .case-render-label,
-    .case-render-cell {
-        background: #fff;
+        grid-template-columns: repeat(10, 260px);
+        gap: 20px;
+        width: max-content;
+        padding: 5px 5px 12px;
     }
     .case-render-header {
-        padding: 12px 10px;
-        color: var(--aa-ink);
-        font-size: 0.86rem;
-        font-weight: 700;
-        text-align: center;
-    }
-    /* Case column: warm panel + serif name and ID pill, like the table label. */
-    .case-render-label {
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         padding: 12px 8px;
-        background: #f7f5f0;
+        border: 1px solid var(--aa-hairline);
+        border-radius: 10px;
+        background: #fff;
+        color: var(--aa-ink);
         text-align: center;
     }
-    .case-render-label strong {
-        color: var(--aa-ink);
-        font-family: var(--aa-serif);
-        font-size: 0.98rem;
-        font-weight: 600;
-        line-height: 1.2;
-        overflow-wrap: anywhere;
+    .case-render-header {
+        font-size: 0.86rem;
+        font-weight: 700;
     }
-    .case-render-header:first-child { background: #f7f5f0; }
-    .case-render-cell {
+    .case-render-card {
         min-width: 0;
-        padding: 8px;
-        position: relative;
     }
-    /* Hovering a cell zooms its clip above the neighbors. */
-    .case-render-cell:hover { z-index: 6; }
-    .case-render-cell video {
+    .case-render-card video {
         display: block;
         width: 100%;
         aspect-ratio: 720 / 522;
         object-fit: contain;
         background: #fff;
         border-radius: 4px;
-        pointer-events: none;
-        transition: transform 0.18s ease, box-shadow 0.18s ease;
-        transform-origin: center;
-        position: relative;
-    }
-    .case-render-cell:hover video {
-        transform: scale(1.5);
-        box-shadow: 0 6px 24px rgba(31, 30, 27, 0.25);
-        background: #fff;
     }
     .case-render-meta {
-        min-height: 18px;
+        min-height: 1.4em;
         margin-top: 6px;
         color: var(--aa-ink2);
-        font-size: 0.72rem;
-        line-height: 18px;
+        font-size: 0.88em;
+        line-height: 1.4;
         text-align: center;
     }
-    .case-render-cell.empty {
-        background: repeating-linear-gradient(
-            45deg,
-            #f7f5f0,
-            #f7f5f0 8px,
-            #efece4 8px,
-            #efece4 16px
-        );
+    .case-render-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 720 / 522;
+        color: var(--aa-ink2);
+        background: #f7f5f0;
+        border-radius: 4px;
     }
     .bibtex-section { padding-bottom: 4rem; }
     .bibtex-actions { display: flex; justify-content: flex-end; margin-bottom: 0.6rem; }
@@ -1794,11 +1770,12 @@
     .bibtex-line { display: block; white-space: pre-wrap; }
     .bibtex-field { padding-inline-start: 2ch; text-indent: -2ch; }
     @media (max-width: 768px) {
-        .case-render-table {
-            grid-template-columns: 92px repeat(4, 220px);
+        .case-render-table,
+        .case-render-header-track {
+            grid-template-columns: repeat(10, 285px);
+            gap: 12px;
         }
-        .case-render-label { padding: 8px; }
-        .case-render-cell { padding: 7px; }
+        .case-render-meta { font-size: 0.8em; }
     }
 </style>
 
@@ -2299,7 +2276,8 @@
   // Edit static/case-renders/cases.js to add cases or sources.
   function loadCaseRenders() {
       const table = document.getElementById('case-render-table');
-      if (!table) return;
+      const header = document.getElementById('case-render-header-track');
+      if (!table || !header) return;
       const items = window.CASE_RENDER_ITEMS;
       const sources = window.CASE_RENDER_SOURCES;
       if (!Array.isArray(items) || items.length === 0
@@ -2312,43 +2290,34 @@
           .replace(/"/g, '&quot;');
       const cell = (item, source) => {
           const missing = Array.isArray(item.missing) && item.missing.includes(source.key);
-          if (missing) return '<div class="case-render-cell empty"></div>';
           const src = `static/case-renders/${encodeURIComponent(item.id)}/`
-              + `${encodeURIComponent(source.key)}_motion.mp4?v=1`;
+              + `${encodeURIComponent(source.key)}_motion.mp4?v=2`;
           const poster = `static/case-renders/${encodeURIComponent(item.id)}/`
-              + `${encodeURIComponent(source.key)}_poster.png?v=1`;
+              + `${encodeURIComponent(source.key)}_poster.png?v=2`;
           const joints = item.joints && item.joints[source.key];
           const meta = joints == null
               ? ''
               : `${joints} movable joint${joints === 1 ? '' : 's'}`;
           return `
-            <div class="case-render-cell">
-              <video muted loop playsinline preload="none"
-                     data-src="${src}" data-poster="${poster}"
-                     aria-label="${esc(item.category)} ${esc(source.label)} motion">
-              </video>
-              <div class="case-render-meta">${esc(meta)}</div>
-            </div>`;
+            <article class="error-demo-item case-render-card">
+              ${missing
+                  ? '<div class="case-render-placeholder">Result unavailable</div>'
+                  : `<video muted loop playsinline preload="none"
+                            data-src="${src}" data-poster="${poster}"
+                            aria-label="${esc(item.category)} ${esc(source.label)} motion">
+                     </video>`}
+              <div class="case-render-meta">${missing ? '' : esc(meta)}</div>
+            </article>`;
       };
-      // Transposed: one COLUMN per object, one ROW per method, so a page
-      // width shows every object at once and rows scroll with the page.
-      table.style.gridTemplateColumns = `132px repeat(${items.length}, minmax(180px, 1fr))`;
-      table.style.minWidth = `${132 + items.length * 190}px`;
-      table.innerHTML = [
-          '<div class="case-render-header">Method</div>',
-          ...items.map((item) =>
-              `<div class="case-render-header">${esc(item.category)
-                  .replace(/([a-z])([A-Z])/g, '$1\u200b$2')}</div>`),
-          ...sources.flatMap((source) => [
-              `<div class="case-render-label"><strong>${esc(source.label)}</strong></div>`,
-              ...items.map((item) => cell(item, source))
-          ])
-      ].join('');
+      header.innerHTML = sources.map((source) =>
+          `<div class="case-render-header">${esc(source.label)}</div>`).join('');
+      table.innerHTML = items.flatMap((item) =>
+          sources.map((source) => cell(item, source))).join('');
   }
   window.addEventListener('DOMContentLoaded', loadCaseRenders);
 
   // Clips load lazily: nothing is fetched until a cell comes near the viewport,
-  // and playback pauses again once it leaves. 36 eagerly-loaded, looping videos
+  // and playback pauses again once it leaves. 40 eagerly-loaded, looping videos
   // otherwise stall each other on a slow connection.
   function enableCaseRenderLazyPlayback() {
       const videos = [...document.querySelectorAll('#case-render-table video')];
@@ -2395,6 +2364,16 @@
   function enableArticulationResultsDrag() {
       const scrollers = document.querySelectorAll('.case-render-scroll');
       scrollers.forEach((scroller) => {
+          // Keep the sticky method row aligned with the horizontally scrolled cards.
+          const peers = scroller.closest('.case-render-matrix')
+              .querySelectorAll('.case-render-scroll');
+          scroller.addEventListener('scroll', () => {
+              peers.forEach((peer) => {
+                  if (peer !== scroller && peer.scrollLeft !== scroller.scrollLeft) {
+                      peer.scrollLeft = scroller.scrollLeft;
+                  }
+              });
+          }, { passive: true });
           let pointerId = null;
           let startX = 0;
           let startScrollLeft = 0;

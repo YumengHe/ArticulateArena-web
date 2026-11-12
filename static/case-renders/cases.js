@@ -9,8 +9,11 @@
 // Files live at static/case-renders/<case id>/<source key>_motion.mp4, so this
 // file only lists the cases and the source columns. "joints" is the number of
 // movable joints that source's URDF predicts (shown under each clip). A source
-// listed in a case's "missing" array renders as an empty cell; delete the entry
+// listed in a case's "missing" array renders as an unavailable card; delete the entry
 // once its clip is rendered.
+// PhysX-Omni uses the URDFs recorded in
+// Resources/ArticulateMetrics/table4_physx200_20261111/reports/<id>.json;
+// Bottle and Fan contain only fixed joints, so their clips remain static.
 window.CASE_RENDER_SOURCES = [
   {"key": "GT", "label": "GT"},
   {"key": "SPARK", "label": "SPARK"},
@@ -21,6 +24,7 @@ window.CASE_RENDER_SOURCES = [
   {"key": "Articraft", "label": "Articraft"},
   {"key": "Particulate", "label": "Particulate"},
   {"key": "Articulate-Anymesh", "label": "Articulate-Anymesh"},
+  {"key": "PhysX-Omni", "label": "PhysX-Omni"},
 ];
 
 window.CASE_RENDER_ITEMS = [
@@ -36,7 +40,8 @@ window.CASE_RENDER_ITEMS = [
       "Ditto": 1,
       "Articraft": 1,
       "Particulate": 1,
-      "Articulate-Anymesh": 1
+      "Articulate-Anymesh": 1,
+      "PhysX-Omni": 0
     },
     "missing": []
   },
@@ -52,7 +57,8 @@ window.CASE_RENDER_ITEMS = [
       "Ditto": 1,
       "Articraft": 1,
       "Particulate": 1,
-      "Articulate-Anymesh": 2
+      "Articulate-Anymesh": 2,
+      "PhysX-Omni": 6
     },
     "missing": []
   },
@@ -68,7 +74,8 @@ window.CASE_RENDER_ITEMS = [
       "Ditto": 1,
       "Articraft": 2,
       "Particulate": 1,
-      "Articulate-Anymesh": 1
+      "Articulate-Anymesh": 1,
+      "PhysX-Omni": 1
     },
     "missing": []
   },
@@ -84,7 +91,8 @@ window.CASE_RENDER_ITEMS = [
       "Ditto": 1,
       "Articraft": 2,
       "Particulate": 1,
-      "Articulate-Anymesh": 7
+      "Articulate-Anymesh": 7,
+      "PhysX-Omni": 0
     },
     "missing": []
   }
