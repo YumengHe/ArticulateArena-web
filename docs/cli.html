@@ -495,6 +495,7 @@
       .content { padding: 2rem 1.3rem 3rem; }
     }
   </style>
+<link rel="stylesheet" href="../static/css/docs-refinement.css?v=ffaeb0388e">
 </head>
 
 <body>
@@ -503,7 +504,6 @@
     <a class="brand" href="./index.html">
       <img src="../static/images/articulatearena-icon.svg" alt="">
       <span class="name">ArticulateArena</span>
-      <span class="version">v0.1.0</span>
     </a>
     <p class="tagline">ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.</p>
 
@@ -518,14 +518,19 @@
       </div>
     </nav>
 
-    <p class="toc-label">Contents</p>
     <nav class="toc" id="toc">
-      <a href="index.html">Overview</a>
-      <a href="installation.html">Installation</a>
-      <a href="quickstart.html">Quickstart</a>
-      <a href="concepts.html">Core concepts</a>
-      <a href="api.html">API reference</a>
-      <a class="active" href="cli.html">Command-line usage</a>
+<div class="nav-group"><h2 class="nav-group-title">Knowledge</h2>
+<a href="index.html">Overview</a>
+<span class="nav-placeholder" aria-disabled="true">Articulated objects</span>
+<a href="concepts.html">Core concepts</a>
+<a href="evaluation.html">Other evaluation methods</a>
+</div>
+<div class="nav-group"><h2 class="nav-group-title">Code</h2>
+<a href="installation.html">Installation</a>
+<a href="quickstart.html">Quickstart</a>
+<a href="api.html">API reference</a>
+<a class="active" aria-current="page" href="cli.html">Command-line usage</a>
+</div>
     </nav>
 
 
@@ -534,8 +539,7 @@
   <main class="content">
     <div class="content-inner">
 
-      <p class="eyebrow">Section 6</p>
-      <h1 class="page-title">Command-line usage</h1>
+<h1 class="page-title">Command-line usage</h1>
 
         <p>The repository entry point evaluates a prediction/ground-truth case end to end. It loads the config, runs
           the pure metric functions, and writes a report:</p>
@@ -556,9 +560,7 @@
           a URDF, <code>scripts/run_previous_metrics.py</code> scores the same cases with the baseline component
           metrics, and <code>examples/run_real_cases.py</code> evaluates real PartNet-Mobility objects.</p>
 
-      <nav class="page-nav">
-        <a class="prev" href="api.html"><span class="label">Previous</span>← API reference</a>
-      </nav>
+
 
       <footer class="docs-footer">
         ArticulateArena · <a href="../index.html">Project page</a> · <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a> · <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>

@@ -497,10 +497,11 @@
   </style>
   <link rel="stylesheet" href="../static/css/core-concepts.css?v=4d461613d9">
   <link rel="stylesheet" href="../static/css/core-guides.css?v=1c1da4baaa">
-  <link rel="stylesheet" href="../static/css/core-map.css?v=a3544e8d77">
-  <script src="../static/js/core-concepts.js?v=a6a276b7bc" defer></script>
+  <link rel="stylesheet" href="../static/css/core-map.css?v=39fcefe451">
+  <script src="../static/js/core-concepts.js?v=a8ab10b888" defer></script>
   <script src="../static/js/core-guides.js?v=99e78b65ee" defer></script>
-  <script src="../static/js/core-map.js?v=1fc5d63742" defer></script>
+  <script src="../static/js/core-map.js?v=7210975de9" defer></script>
+<link rel="stylesheet" href="../static/css/docs-refinement.css?v=ffaeb0388e">
 </head>
 
 <body class="aa-learning-page overview-page">
@@ -509,7 +510,6 @@
     <a class="brand" href="./index.html">
       <img src="../static/images/articulatearena-icon.svg" alt="">
       <span class="name">ArticulateArena</span>
-      <span class="version">v0.1.0</span>
     </a>
     <p class="tagline">ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.</p>
 
@@ -524,173 +524,150 @@
       </div>
     </nav>
 
-    <p class="toc-label">Contents</p>
     <nav class="toc" id="toc">
-      <a class="active" href="index.html">Overview</a>
-      <a href="installation.html">Installation</a>
-      <a href="quickstart.html">Quickstart</a>
-      <a href="concepts.html">Core concepts</a>
-      <a href="api.html">API reference</a>
-      <a href="cli.html">Command-line usage</a>
+<div class="nav-group"><h2 class="nav-group-title">Knowledge</h2>
+<a class="active" aria-current="page" href="index.html">Overview</a>
+<span class="nav-placeholder" aria-disabled="true">Articulated objects</span>
+<a href="concepts.html">Core concepts</a>
+<a href="evaluation.html">Other evaluation methods</a>
+</div>
+<div class="nav-group"><h2 class="nav-group-title">Code</h2>
+<a href="installation.html">Installation</a>
+<a href="quickstart.html">Quickstart</a>
+<a href="api.html">API reference</a>
+<a href="cli.html">Command-line usage</a>
+</div>
     </nav>
 
-    <nav class="cc-sidebar-toc" aria-label="On this page">
-      <p class="toc-label">On this page</p>
-<a href="#articulated-object">What is an articulated object?</a>
-<a href="#concept-map">The concept map</a>
-<a href="#metric-summary">The metric behind the map</a>
-    </nav>
+
   </aside>
 
   <main class="content">
     <div class="content-inner">
 
-      <h1>ArticulateArena</h1>
-      <p class="subtitle-line">Usage documentation for <code>articulatearena</code>, the reference implementation of the quotient metric <span class="math">E</span> on one-degree-of-freedom articulated joints and its object-level lifts.</p>
-      <p class="eyebrow">Section 1</p>
-      <h1 class="page-title">Overview</h1>
+<h1 class="page-title">Overview</h1>
 
       <div id="aa-overview" class="aa-learning">
-        <p class="cc-lede">How well does a predicted object move?</p>
-        <p class="cc-reading-help">ArticulateArena evaluates the motion and connections of articulated objects. Start with a cabinet, follow one example through the concept map, then connect it to the metric below.</p>
-        <nav class="cc-overview-path" aria-label="Overview reading path">
-          <a href="#articulated-object">The object</a><span aria-hidden="true">→</span>
-          <a href="#concept-map">The evaluation</a><span aria-hidden="true">→</span>
-          <a href="#metric-summary">The metric</a>
-        </nav>
-        <noscript><p>The interactive controls need JavaScript. The explanations and links remain available.</p></noscript>
+      <p class="cc-lede">ArticulateArena compares how joints move and how parts connect.</p>
+      <p>A prediction can have the right shape and still open in the wrong direction, stop too early, or attach a part to the wrong parent. ArticulateArena measures the difference between the predicted and reference motion descriptions.</p>
+      <section id="concept-map" class="cc-section cc-map-section" aria-labelledby="concept-map-title">
+        <h2 id="concept-map-title">Three stages of articulation evaluation</h2>
+        <div id="aa-staged-map">
+          <nav class="am-stage-grid" aria-label="Evaluation stages and steps">
+            <div class="am-stage-group">
+              <h3><a href="#describe-joints"><span>1</span> Describe joints</a></h3>
+              <div class="am-step-links"><a href="#step-input">Reference + prediction</a><a href="#step-motion">Movement rule</a><a href="#step-endpoints">Endpoint pair</a></div>
+            </div>
+            <div class="am-stage-group">
+              <h3><a href="#compare-motion"><span>2</span> Compare motion</a></h3>
+              <div class="am-step-links"><a href="#step-norm">Choose a norm</a><a href="#step-compact">Unlimited ranges</a><a href="#step-matching">Pair endpoints</a><a href="#step-score">Joint error</a></div>
+            </div>
+            <div class="am-stage-group">
+              <h3><a href="#use-score"><span>3</span> Use the score</a></h3>
+              <div class="am-step-links"><a href="#step-joints">Per-joint score</a><a href="#step-edits">Tree edits</a><a href="#step-object">Object error</a></div>
+            </div>
+          </nav>
 
-      <section id="articulated-object" class="cc-section" data-cc-section aria-labelledby="articulated-object-title">
-        <h2 id="articulated-object-title"><span class="cc-section-number">Start with something familiar</span>What is an articulated object?</h2>
-        <p class="cc-reading-help">Watch the parts move, or choose <strong>Explore</strong> to connect each part to its place in the tree.</p>
-      <div class="cc-lesson" data-cc-lesson="articulated-object">
-      <div class="cc-lesson-tabs" role="tablist" aria-label="What is an articulated object?: choose a view" hidden>
-      <button type="button" role="tab" id="articulated-object-explanation-tab" aria-controls="articulated-object-explanation" aria-selected="true" tabindex="0" data-cc-view="explanation">Read</button>
-      <button type="button" role="tab" id="articulated-object-demo-tab" aria-controls="articulated-object-demo" aria-selected="false" tabindex="-1" data-cc-view="demo">Explore</button>
-      </div>
-      <div class="cc-lesson-panel" id="articulated-object-explanation" role="tabpanel" aria-labelledby="articulated-object-explanation-tab" tabindex="0">
-      <p class="cc-intro-lede">This cabinet is an <strong>articulated object</strong> with three main parts: the body, drawer, and door. The drawer slides and the door rotates relative to the body.</p>
-      <div class="cc-object-intro">
-        <figure class="cc-video">
-          <div class="cc-video-label"><span class="cc-video-dot" aria-hidden="true"></span>Watch the parts move <span>Looping animation</span></div>
-          <div class="cc-animation">
-          <video id="cc-cabinet-video" autoplay muted loop playsinline preload="metadata" poster="../static/demo/GT_poster.png" aria-label="Cabinet demonstration showing the drawer sliding and the door rotating" aria-describedby="cc-video-caption">
-            <source src="../static/demo/GT_motion.mp4" type="video/mp4">
-            <p><a href="../static/demo/GT_motion.mp4">Watch the cabinet motion demonstration.</a></p>
-          </video>
-          <button type="button" class="cc-motion-toggle" id="cc-motion-toggle" aria-controls="cc-cabinet-video" aria-label="Pause cabinet animation" hidden><span class="cc-motion-icon" aria-hidden="true"></span><span id="cc-motion-label">Pause</span></button>
-          </div>
-          <figcaption id="cc-video-caption"><span><i class="cc-swatch cc-drawer" aria-hidden="true"></i>Drawer · slides</span><span><i class="cc-swatch cc-door" aria-hidden="true"></i>Door · rotates</span></figcaption>
-        </figure>
-        <div class="cc-terms">
-          <p class="cc-mini-label">Four ideas to keep with you</p>
-          <dl class="cc-vocabulary">
-            <div>
-              <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 11 16 6l10 5v12l-10 5-10-5Z M6 11l10 5 10-5 M16 16v12"/></svg>
-              <dt>Link</dt><dd>One rigid part.<br><span>The door, the drawer, or the body.</span></dd>
+          <section class="am-expanded-stage" id="describe-joints">
+            <h3><span class="am-stage-number">1</span> Describe joints</h3>
+            <div class="am-step" id="step-input">
+              <h4>Reference + prediction</h4>
+              <p>Start with two descriptions of the same object in the same stored pose. Each description gives the links, joints, motion limits, and connections. URDF is one way to store them.</p>
+              <div class="am-example-pair">
+                <figure>
+                  <h5>Drawer · bounded</h5>
+                  <svg viewBox="0 0 360 150" role="img" aria-label="Reference drawer opens 0 to 50 centimeters; prediction opens 0 to 40 centimeters.">
+                    <text x="18" y="25">Reference</text><path d="M28 54H328" class="am-reference"/><circle cx="28" cy="54" r="5" class="am-ref-point"/><circle cx="328" cy="54" r="5" class="am-ref-point"/><text x="24" y="77">0</text><text x="328" y="77" text-anchor="end">50 cm</text>
+                    <text x="18" y="106">Prediction</text><path d="M28 127H268" class="am-prediction"/><circle cx="28" cy="127" r="5" class="am-pred-point"/><circle cx="268" cy="127" r="5" class="am-pred-point"/><text x="268" y="149" text-anchor="end">40 cm</text>
+                  </svg>
+                  <figcaption>The prediction stops 10 cm short.</figcaption>
+                </figure>
+                <figure>
+                  <h5>Wheel · unlimited</h5>
+                  <svg viewBox="0 0 360 150" role="img" aria-label="Reference wheel turns without limit; predicted joint stops at minus and plus pi radians.">
+                    <text x="18" y="25">Reference</text><path d="M28 54H328 M38 46L28 54L38 62 M318 46L328 54L318 62" class="am-reference"/><text x="28" y="77">−∞</text><text x="328" y="77" text-anchor="end">+∞</text>
+                    <text x="18" y="106">Prediction</text><path d="M77 127H279" class="am-prediction"/><circle cx="77" cy="127" r="5" class="am-pred-point"/><circle cx="279" cy="127" r="5" class="am-pred-point"/><text x="77" y="149" text-anchor="middle">−π</text><text x="279" y="149" text-anchor="middle">+π rad</text>
+                  </svg>
+                  <figcaption>The axis agrees; the permitted accumulated angle does not.</figcaption>
+                </figure>
+              </div>
             </div>
-            <div>
-              <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 23h9V9h13 M14 23 26 12"/><circle cx="14" cy="23" r="3"/></svg>
-              <dt>Joint</dt><dd>A connection with a motion rule.<br><span>A hinge lets the door rotate.</span></dd>
+            <div class="am-step" id="step-motion">
+              <h4>Movement rule + limits</h4>
+              <p>A twist <span class="math">ξ = (ω, v)</span> combines the joint type, direction, and axis location into one movement rule. The coordinate <span class="math">q</span> gives the amount; the limits say which amounts are allowed.</p>
+              <div class="am-example-pair am-text-pair">
+                <div><h5>Drawer</h5><p class="am-formula">ξ = (0, 0, 0; 1, 0, 0)</p><p>Reference: [0, 0.50] m<br>Prediction: [0, 0.40] m</p></div>
+                <div><h5>Wheel</h5><p class="am-formula">ξ = (0, 0, 1; 0, 0, 0)</p><p>Reference: (−∞, +∞)<br>Prediction: [−π, π] rad</p></div>
+              </div>
+              <p>The first three twist entries describe rotation and the last three translation. Both examples keep the same axis and zero pose on both sides. <a href="concepts.html#twist">Twist definition →</a></p>
             </div>
-            <div>
-              <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 19h22 M5 19l4-4 M5 19l4 4 M27 19l-4-4 M27 19l-4 4"/><circle cx="17" cy="19" r="3"/></svg>
-              <dt>One degree of freedom</dt><dd>One number sets the joint’s state.<br><span>A distance for a slide; an angle for a hinge.</span></dd>
+            <div class="am-step" id="step-endpoints">
+              <h4>Keep the two endpoints</h4>
+              <p>Multiply the twist by each limit: <span class="math">z⁻ = l⁻ξ</span> and <span class="math">z⁺ = l⁺ξ</span>. These are two six-dimensional vectors, not points on the object.</p>
+              <div class="am-example-pair am-text-pair">
+                <div><h5>Drawer</h5><p>Reference: {0, 0.50ξ}<br>Prediction: {0, 0.40ξ}</p></div>
+                <div><h5>Wheel</h5><p>Reference: directional limits along −ξ and +ξ<br>Prediction: {−πξ, +πξ}</p></div>
+              </div>
+              <p>Infinite ends are directional limits, not ordinary vectors filled with infinities. Optional full-turn wrapping is a separate choice made before constructing endpoints. <a href="concepts.html#endpoint">Endpoint representation →</a></p>
             </div>
-            <div>
-              <svg class="cc-term-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 9v6H7v9 M16 15h9v9"/><circle cx="16" cy="7" r="3"/><rect x="4" y="23" width="6" height="6" rx="1"/><rect x="22" y="23" width="6" height="6" rx="1"/></svg>
-              <dt>Kinematic tree</dt><dd>A map of the connections.<br><span>Parts are nodes. Joints are edges.</span></dd>
+          </section>
+
+          <section class="am-expanded-stage" id="compare-motion">
+            <h3><span class="am-stage-number">2</span> Compare motion</h3>
+            <div class="am-step" id="step-norm">
+              <h4>Choose one norm</h4>
+              <p>The split norm combines rotation and translation with a shared scale <span class="math">α</span>. Both examples use <span class="math">α = 1 m⁻¹</span>, so their split scores are dimensionless.</p>
+              <p class="am-formula">‖Δz‖<sub>α</sub>² = ‖Δω‖² + α² ‖Δv‖²</p>
+              <p>The alternative body norm uses the reference part’s mass distribution and gives <span class="math">E<sub>B</sub></span> in meters before compactification. For this drawer, <span class="math">E<sub>B</sub> = 0.10 m</span>. Equal numbers need not have equal units. <a href="concepts.html#norms">Compare the two norms →</a></p>
             </div>
-          </dl>
+            <div class="am-step" id="step-compact">
+              <h4>Handle unlimited motion</h4>
+              <div class="am-example-pair am-text-pair">
+                <div><h5>Drawer · raw endpoints</h5><p>This finite-only example keeps {0, 0.50ξ} and {0, 0.40ξ} unchanged.</p></div>
+                <div><h5>Wheel · compactified endpoints</h5><p>Apply the same radial map to both sides. With <span class="math">κ = π</span> and <span class="math">‖ξ‖ = 1</span>:</p><p>Reference: {−ξ, +ξ}<br>Prediction: {−0.7616ξ, +0.7616ξ}</p></div>
+              </div>
+              <p class="am-formula">ϕ(z) = tanh(‖z‖ / κ) z / ‖z‖,&ensp;ϕ(0) = 0</p>
+              <p>Finite endpoints stay inside the unit ball; infinite ends reach its boundary. A benchmark including unlimited joints can apply this map consistently to every joint. Compactification does not wrap an angle to one turn. <a href="concepts.html#compact">Continuous joints →</a></p>
+            </div>
+            <div class="am-step" id="step-matching">
+              <h4>Compare both pairings</h4>
+              <p>Reversing an axis and its limits can exchange the endpoint labels without changing the motion. Compute both pairings using the same norm.</p>
+              <div class="am-example-pair am-text-pair">
+                <div><h5>Drawer</h5><p>Direct: √(0² + 0.10²) = <strong>0.100</strong><br>Swapped: √(0.40² + 0.50²) ≈ 0.640</p></div>
+                <div><h5>Wheel</h5><p>Direct: √2 (1 − tanh 1) ≈ <strong>0.337</strong><br>Swapped: √2 (1 + tanh 1) ≈ 2.491</p></div>
+              </div>
+            </div>
+            <div class="am-step" id="step-score">
+              <h4>Keep the smaller error</h4>
+              <div class="am-result-pair"><p>Drawer <strong>E<sub>α</sub> = 0.100</strong></p><p>Wheel <strong>E<sub>α</sub><sup>ϕ</sup> ≈ 0.337</strong></p></div>
+              <p>These are two different protocols: raw endpoints for the drawer, compactified endpoints for the wheel. Do not rank them against each other. Neither score is an average of finite point displacements over every possible pose. <a href="concepts.html#quotient">Endpoint matching →</a></p>
+            </div>
+          </section>
+
+          <section class="am-expanded-stage" id="use-score">
+            <h3><span class="am-stage-number">3</span> Use the score</h3>
+            <div class="am-step" id="step-joints">
+              <h4>Report per-joint accuracy</h4>
+              <p>The joint error is already an evaluation result. Report it directly, or aggregate matched-joint scores under a stated protocol. The drawer has one score of 0.100; the wheel has one compactified score of approximately 0.337.</p>
+              <p>To evaluate connections as well, use the tree branch below. A joint average does not become a tree metric merely by summing the scores.</p>
+            </div>
+            <div class="am-step" id="step-edits">
+              <h4>Include the connections</h4>
+              <p>Turn the predicted tree into the reference tree using substitutions, contractions, and expansions. Each edit is priced by the same chosen joint-distance rule; <span class="math">J₀ = {0, 0}</span> is a fixed joint.</p>
+              <div class="am-edit-costs"><p><strong>Substitute</strong><span class="math">E(J, J′)</span></p><p><strong>Contract</strong><span class="math">E(J, J₀)</span></p><p><strong>Expand</strong><span class="math">E(J₀, J′)</span></p></div>
+              <p>Both examples have one correctly connected joint, so the only required edit is to substitute its motion description.</p>
+            </div>
+            <div class="am-step" id="step-object">
+              <h4>Find the least expensive valid edit sequence</h4>
+              <p class="am-formula">E<sup>tree</sup> = min Σ edit costs</p>
+              <p>Here, the tree error equals the joint error: 0.100 for the drawer and approximately 0.337 for the compactified wheel. Larger mechanisms require structural matching; an extra joint or a wrong parent can add cost.</p>
+              <p><a href="concepts.html#tree">See the cabinet with a misplaced latch →</a></p>
+            </div>
+          </section>
         </div>
-      </div>
-      <div class="cc-purpose"><span class="cc-mini-label">The evaluation question</span><p>Does the predicted object <em>move and connect</em> like the reference?</p><span>ArticulateArena measures that difference. This tutorial considers objects whose connections form a tree.</span></div>
-      </div>
-      <div class="cc-lesson-panel" id="articulated-object-demo" role="tabpanel" aria-labelledby="articulated-object-demo-tab" tabindex="0">
-      <div class="aa-guide" id="aa-panel-1" role="group" aria-labelledby="aa-guide-title-1">
-        <div class="aa-kicker">Start with the physical object</div>
-        <h3 class="aa-guide-title" id="aa-guide-title-1">How the cabinet’s parts are connected</h3>
-        <p class="aa-intro">An <strong>articulated object</strong> has parts that can move relative to each other. Each rigid part is a <strong>link</strong>; each connection that controls their relative movement is a <strong>joint</strong>.</p>
-        <p class="aa-intro">This simplified example adds a turning latch to the drawer, so we can follow a joint attached to another moving part.</p>
-        <div class="aa-two">
-          <div class="aa-stage"><div class="aa-stage-top"><strong>The physical object</strong><span>Select a part</span></div><svg id="aa-cabinet" class="aa-svg" style="height:270px" role="img" aria-label="Cabinet with a drawer, a hinged door, and a turning latch on the drawer. Select the corresponding named part in the tree to highlight it."></svg></div>
-          <div class="aa-stage"><div class="aa-stage-top"><strong>Its connection tree</strong><span>Lines = joints</span></div><div class="aa-tree-wrap"><svg id="aa-intro-tree" class="aa-svg aa-tree-svg" role="img" aria-label="Body connects to door by a hinge and to drawer by a sliding joint. Drawer connects to latch by a turning joint."></svg><button class="aa-node" type="button" data-node="body" aria-pressed="false">Body</button><button class="aa-node" type="button" data-node="door" aria-pressed="false">Door</button><button class="aa-node" type="button" data-node="drawer" aria-pressed="true">Drawer</button><button class="aa-node" type="button" data-node="latch" aria-pressed="false">Latch</button></div></div>
-        </div>
-        <div class="aa-selected" aria-live="polite"><strong id="aa-part-name">Drawer</strong><span id="aa-part-copy">Slides relative to the body. The latch comes along because it is attached to the drawer.</span></div>
-        <div class="aa-controls"><button type="button" class="aa-button aa-button-primary" id="aa-play-part">Play drawer motion</button><span class="aa-caption" style="margin:0">Choose the door or latch to try a different joint.</span></div>
-        <details class="aa-details"><summary>Where does “one degree of freedom” fit?</summary><p>For each moving joint here, one number sets its configuration: the drawer’s opening distance, the door’s angle, or the latch’s angle. The whole cabinet has several joints, so it needs several numbers.</p><p>The tree is a map of these connections. Articulated objects can also have closed loops; this tutorial and the paper’s tree score focus on tree structures.</p></details>
-        <p class="aa-next-note"><strong>Next:</strong> <a href="#concept-map">follow the drawer through the concept map</a> to see how its movement becomes an evaluation score.</p>
-
-      </div>
-      </div>
-      </div>
       </section>
-
-      <div class="cc-overview-bridge">
-        <p>Now imagine a model predicts this cabinet. Its drawer might stop too early, or its latch might be attached to the wrong part. We need to compare both <strong>how each joint moves</strong> and <strong>how the parts connect</strong>.</p>
-        <p>The <strong class="cc-map-highlight">map below</strong> follows that comparison from an object to a score. Choose an example first; each stage shows what goes in, what comes out, and where to read the details.</p>
-      </div>
-      <section id="concept-map" class="cc-section cc-map-section" data-cc-section aria-labelledby="concept-map-title">
-        <h2 id="concept-map-title"><span class="cc-section-number">The evaluation process</span>Three stages of articulation evaluation</h2>
-        <p class="cc-reading-help">Compare how parts can move, then include how they connect.</p>
-      <div id="aa-staged-map" lang="en" aria-label="ArticulateArena learning map in three stages">
-
-      <div class="am-body">
-        <div class="am-example-bar"><span class="am-example-label">FOLLOW ONE EXAMPLE</span><div class="am-modes" aria-label="Choose an example"><button class="am-mode" id="learn-finite" type="button" aria-pressed="true">Drawer · bounded</button><button class="am-mode" id="learn-infinite" type="button" aria-pressed="false">Wheel · unlimited</button></div></div>
-        <nav class="am-stages" aria-label="Choose a stage of the evaluation">
-          <button type="button" class="am-stage" id="stage-describe" data-stage="describe" aria-pressed="true" aria-controls="learn-focus"><span class="am-stage-no">Stage 1</span><strong>Describe joints</strong><small>Rule + range → endpoints</small></button>
-          <button type="button" class="am-stage" id="stage-measure" data-stage="measure" aria-pressed="false" aria-controls="learn-focus"><span class="am-stage-no">Stage 2</span><strong>Compare motion</strong><small>Endpoints → joint error E</small></button>
-          <button type="button" class="am-stage" id="stage-report" data-stage="report" aria-pressed="false" aria-controls="learn-focus"><span class="am-stage-no">Stage 3</span><strong>Use the score</strong><small>Per joint or whole object</small></button>
-        </nav>
-        <section id="learn-focus" aria-label="Selected stage and explanation">
-          <div class="am-focus-head"><span class="am-focus-title" id="learn-stage-title">Describe joints</span><span class="am-focus-sections" id="learn-stage-sections">Sections 4.1–4.2</span></div>
-          <div class="am-focus-layout">
-            <div>
-              <nav class="am-flow" id="learn-flow" aria-label="Select a step within this stage">
-                <svg class="am-edges" id="learn-edges" aria-hidden="true"></svg>
-                <div class="am-flow-group am-chain" id="group-describe">
-                  <button class="am-node" id="learn-input" data-step="input" aria-controls="learn-detail" type="button" aria-pressed="true"><span class="am-node-copy"><strong>Reference + prediction</strong><small>Two descriptions of the object</small></span></button>
-                  <button class="am-node" id="learn-motion" data-step="motion" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Describe movement</strong><small>Twist ξ + limits · 4.1</small></span></button>
-                  <button class="am-node" id="learn-endpoints" data-step="endpoints" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Keep the two extremes</strong><small>Endpoint vectors · 4.2</small></span></button>
-                </div>
-                <div class="am-flow-group am-chain" id="group-measure" hidden>
-                  <button class="am-node" id="learn-norm" data-step="norm" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Choose how to measure</strong><small>Eα or EB · 4.5</small></span></button>
-                  <div class="am-routes">
-                    <div class="am-node am-route" id="learn-raw" data-used="true"><strong>Keep endpoints</strong><small id="learn-raw-status">Used here</small></div>
-                    <button class="am-node am-route" id="learn-compact" data-step="compact" aria-controls="learn-detail" type="button" aria-pressed="false" data-used="false"><strong>Compress φ</strong><small id="learn-compact-status">Skipped here · 4.6</small></button>
-                  </div>
-                  <button class="am-node" id="learn-matching" data-step="matching" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><strong>Try both pairings</strong><small>Direct + swapped · 4.3</small></span></button>
-                  <button class="am-node am-score" id="learn-score" data-step="score" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-node-copy"><small>JOINT ERROR · smaller distance</small><strong class="am-score-value" id="learn-score-value">Eα = 0.100</strong></span></button>
-                </div>
-                <div class="am-flow-group" id="group-report" hidden>
-                  <div class="am-node am-score" id="learn-context"><span class="am-node-copy"><small>FROM COMPARE MOTION · joint error</small><strong class="am-score-value" id="learn-context-value">Eα = 0.100</strong></span></div>
-                  <div class="am-branches">
-                    <button class="am-node am-branch" id="learn-joints" data-step="joints" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-branch-tag">PER JOINT</span><strong>Report joint accuracy</strong><small>Individual movements</small></button>
-                    <button class="am-node am-branch" id="learn-edits" data-step="edits" aria-controls="learn-detail" type="button" aria-pressed="false"><span class="am-branch-tag">WHOLE OBJECT</span><strong>Include connections</strong><small>Tree edit costs · 4.7</small></button>
-                    <button class="am-node am-score am-branch" id="learn-object" data-step="object" aria-controls="learn-detail" type="button" aria-pressed="false"><small>WHOLE-OBJECT ERROR</small><strong class="am-score-value" id="learn-object-value">Eαᵗʳᵉᵉ = 0.100</strong></button>
-                  </div>
-                </div>
-              </nav>
-              <div class="am-flow-legend" id="learn-legend">Click a step to follow the idea.</div>
-            </div>
-            <section class="am-detail" id="learn-detail" aria-live="polite" aria-atomic="false">
-              <div class="am-detail-kicker" id="learn-tag">Selected step · Describe joints</div><h3 id="learn-title">Reference + prediction</h3><p class="am-why" id="learn-why"></p>
-              <a class="am-section-link" id="learn-section-link" data-cc-explanation href="#articulated-object">Read the introduction ↑</a>
-              <div class="am-io"><span class="am-io-label">Input</span><div class="am-io-value" id="learn-input-text"></div></div>
-              <div class="am-io"><span class="am-io-label">Output</span><div class="am-io-value" id="learn-output-text"></div></div>
-              <div class="am-example"><div class="am-figure-title"><span id="learn-figure-title">Drawer travel</span><span id="learn-figure-unit">Meters</span></div><svg class="am-figure" id="learn-figure" role="img" aria-label="Reference and prediction in the current example"></svg><p class="am-caption" id="learn-caption"></p></div>
-              <details class="am-math" id="learn-math"><summary>The notation, when you need it</summary><div class="am-formula" id="learn-formula"></div><p class="am-note" id="learn-note"></p></details>
-            </section>
-          </div>
-        </section>
-      </div>
-      <footer class="am-bottom"><span class="am-where" id="learn-where">Stage 1 of 3</span><div class="am-actions"><button type="button" class="am-action" id="learn-back" disabled>Previous</button><button type="button" class="am-action" id="learn-next">Twist + limits →</button></div></footer>
-
-      </div>
-      </section>
-
       <section id="metric-summary" class="cc-section" data-cc-section aria-labelledby="metric-summary-title">
-        <h2 id="metric-summary-title"><span class="cc-section-number">From the map to the mathematics</span>The metric behind the map</h2>
+        <h2 id="metric-summary-title">The joint metric</h2>
         <p class="cc-reading-help">The map turns a joint’s movement rule and limits into two endpoint vectors. The formula below compares those endpoints in both pairings and keeps the smaller distance: the joint error <span class="math">E</span>.</p>
         <div class="cc-original">
         <p>
@@ -714,21 +691,12 @@
           metric continuously to unbounded (continuous) joints, and two object-level lifts: an optimal-assignment
           skeleton distance and a motion-aware tree edit distance with a certified assignment relaxation.
         </p>
-        <p>
-          All functions are pure: norms, weights, and tolerances are passed in by the caller and never hardcoded.
-          The library depends only on <code>numpy</code>, <code>scipy</code>, and <code>pyyaml</code>.
-        </p>
         </div>
       </section>
-      <nav class="cc-next-path" aria-label="Continue from the overview">
-        <a href="concepts.html#twist"><span>Understand the method</span><strong>Continue to Core Concepts →</strong><small>Start with a joint’s movement rule, then work through the metric.</small></a>
-        <a href="quickstart.html"><span>Use the library</span><strong>Open the Quickstart →</strong><small>See how the same ideas are represented and evaluated in code.</small></a>
-      </nav>
+      <p><a href="concepts.html">Core concepts</a> develops the mathematics and interactive examples. <a href="evaluation.html">Other evaluation methods</a> covers shape, appearance, and component-wise joint scores.</p>
       </div>
 
-      <nav class="page-nav">
-        <a class="next" href="installation.html"><span class="label">Next</span>Installation →</a>
-      </nav>
+
 
       <footer class="docs-footer">
         ArticulateArena · <a href="../index.html">Project page</a> · <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a> · <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>

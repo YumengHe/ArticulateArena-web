@@ -1,0 +1,72 @@
+/* Shared reading layout, preserving the existing serif headings and warm palette. */
+.nav-group + .nav-group { margin-top:25px; }
+.sidebar nav.toc { border-left:0; margin-top:27px; }
+.sidebar .nav-group-title { margin:0 0 8px; padding:0; border:0; font:600 .93rem/1.5 var(--sans); color:var(--ink); }
+.sidebar nav.toc a, .sidebar .nav-placeholder { display:block; font-size:.89rem; padding:8px 0 8px 14px; margin:0; border-left:2px solid var(--hairline); line-height:1.4; }
+.sidebar nav.toc a.active { border-left-color:var(--accent); }
+.sidebar .nav-placeholder { color:var(--ink-3); cursor:default; }
+.sidebar .tagline { font-size:.92rem; }
+.project-links a { font-size:.88rem; }
+.content-inner { max-width:54rem; }
+.aa-learning .cc-lede { font-size:1.12rem; max-width:none; }
+.aa-learning .cc-reading-help { font-size:.96rem; max-width:none; }
+.aa-learning .cc-reference-intro { padding-top:10px; margin-top:25px; border-top:0; }
+.aa-learning .cc-section-number { display:inline; font:inherit; color:var(--ink-3); margin-right:12px; text-transform:none; letter-spacing:0; }
+.aa-learning .cc-example { margin-top:36px; padding-top:25px!important; border-top:1px solid var(--hairline)!important; }
+.aa-learning .cc-back-map { font-size:.9rem; }
+.aa-learning .cc-original .confusion, .aa-learning .cc-lesson-panel .aa-guide .aa-details { font-size:.96rem; border-radius:0; }
+.aa-details h4 { margin:0 0 12px; color:var(--ink); font:600 1rem/1.5 var(--sans); }
+.aa-learning .cc-lesson-panel .aa-guide .aa-intro { font-size:1rem; }
+.aa-learning .aa-guide .aa-stage-top,.aa-learning .aa-guide .aa-legend,.aa-learning .aa-guide .aa-metric p,.aa-learning .aa-guide .aa-pose-note { font-size:.9rem; }
+.aa-learning .aa-guide .aa-stage-top > span { font-size:.85rem; }
+.aa-learning .aa-guide .aa-metric-label { font-size:.9rem; letter-spacing:0; text-transform:none; }
+.aa-learning .aa-guide .aa-tree-score-key { font-size:.9rem; }
+.example-index { display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; padding:16px 0; border-bottom:1px solid var(--hairline); }
+.example-index a { font-size:.92rem; }
+.qs-codebar { justify-content:flex-end; background:var(--panel); }
+.qs-example { scroll-margin-top:24px; }
+.qs-example pre { margin-top:0; border-radius:0; }
+/* Evaluation lessons: concrete examples before technical terminology. */
+.eval-topic-links { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin:26px 0 0; }
+.eval-topic-links a { display:block; border-bottom:1px solid var(--hairline); padding:0 0 17px; text-decoration:none; }
+.eval-topic-links strong { display:block; font-size:1.02rem; margin-bottom:5px; }
+.eval-topic-links span { display:block; font-size:.94rem; color:var(--ink-2); }
+.eval-explanations { display:grid; grid-template-columns:1fr 1fr; gap:34px; margin-top:24px; }
+.eval-explanations h3 { margin:0 0 14px; }
+.eval-explanations p { margin:10px 0; }
+.eval-example { margin:30px 0; padding:26px; background:var(--panel); border-top:2px solid var(--hairline); }
+.eval-example > h3 { margin:0 0 14px; }
+.eval-example > p { margin:12px 0; }
+#eval-surface { width:100%; max-width:430px; display:block; margin:8px auto; }
+.eval-controls { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.eval-controls label { display:grid; grid-template-columns:1fr auto; font-size:1rem; }
+.eval-controls output { color:var(--accent); font-variant-numeric:tabular-nums; }
+.eval-controls input { grid-column:1/-1; width:100%; accent-color:var(--accent); min-height:32px; cursor:pointer; }
+.eval-missing-control { display:flex; align-items:center; gap:10px; margin-top:17px; cursor:pointer; font-size:1rem; }
+.eval-missing-control input { width:18px; height:18px; flex-shrink:0; accent-color:var(--accent); }
+.eval-results { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:22px 0 18px; border-top:1px solid var(--hairline); padding-top:18px; }
+.eval-results div { font-size:.95rem; }
+.eval-results strong { display:block; font:600 1.8rem/1.5 var(--serif); color:var(--ink); }
+.eval-match-counts p { margin:7px 0; font-size:.96rem; }
+.eval-example .eval-explanation { padding-top:16px; margin:18px 0 0; border-top:1px solid var(--hairline); }
+.eval-joint-grid { display:grid; grid-template-columns:1fr 1fr; gap:34px; margin-top:28px; }
+.eval-joint-grid article { min-width:0; padding-top:20px; border-top:1px solid var(--hairline); }
+.eval-joint-grid h3 { margin:0 0 12px; }
+.eval-joint-grid h3 span { font:400 .95rem var(--sans); color:var(--ink-2); white-space:nowrap; }
+.eval-joint-grid svg { display:block; width:100%; max-width:360px; margin:auto; }
+.eval-joint-grid p { margin:12px 0 0; }
+.eval-motion-figure { margin:25px 0; }
+.eval-motion-panels { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.eval-motion-figure svg { display:block; width:100%; background:var(--panel); }
+.eval-motion-figure figcaption { font-size:1rem; color:var(--ink-2); margin-top:14px; }
+.eval-appearance-example { margin:24px 0; background:var(--panel); padding:20px; }
+.eval-appearance-images { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.eval-appearance-example svg { width:100%; max-width:320px; display:block; margin:auto; }
+.eval-appearance-example p { margin:10px 0 0; }
+.eval-appearance-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px; margin:24px 0; }
+.eval-appearance-metrics article { border-top:1px solid var(--hairline); padding-top:18px; }
+.eval-appearance-metrics h3 { margin:0 0 12px; }
+.eval-appearance-metrics p { margin:0; }
+@media(max-width:900px){.sidebar nav.toc{display:grid;grid-template-columns:1fr 1fr;gap:24px}.nav-group + .nav-group{margin-top:0}}
+@media(max-width:650px){.example-index,.eval-controls,.eval-explanations,.eval-joint-grid,.eval-appearance-metrics{grid-template-columns:1fr}.eval-topic-links{grid-template-columns:1fr;gap:14px}.eval-topic-links a{padding-bottom:12px}.eval-joint-grid{gap:22px}.eval-appearance-example{padding:14px}.eval-example{padding:18px 14px}.eval-results{grid-template-columns:1fr 1fr}.eval-results strong{font-size:1.5rem}.eval-motion-panels,.eval-appearance-images{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

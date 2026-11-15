@@ -1,85 +1,212 @@
-  <p>Pick the norm and what you want to measure. The snippet updates to a complete, runnable program that
-    reads joints from URDF files, and every combination is executed against the sample data before it is
-    published. To score joints from another format, build the endpoint pairs with <code>screw_twist</code> and
-    <code>make_endpoint_pair</code> instead of <code>load_joint</code> (see the <a href="api.html">API reference</a>).</p>
+<p>Each example reads joints from URDF files. Replace the two file paths and joint names with your own. For other formats, use <code>screw_twist</code> and <code>make_endpoint_pair</code>; see the <a href="api.html">API reference</a>.</p>
+<nav class="example-index" aria-label="Quickstart examples">
+<a href="#example-alpha-joint">E<sub>α</sub> split norm · One joint: E</a>
+<a href="#example-alpha-phi">E<sub>α</sub> split norm · Continuous joints: E<sup>ϕ</sup></a>
+<a href="#example-alpha-tree">E<sub>α</sub> split norm · Whole object: E<sup>tree</sup></a>
+<a href="#example-B-joint">E<sub>B</sub> kinetic-energy norm · One joint: E</a>
+<a href="#example-B-phi">E<sub>B</sub> kinetic-energy norm · Continuous joints: E<sup>ϕ</sup></a>
+<a href="#example-B-tree">E<sub>B</sub> kinetic-energy norm · Whole object: E<sup>tree</sup></a>
+</nav>
+<section class="qs-example" id="example-alpha-joint"><h2>E<sub>α</sub> split norm · One joint: E</h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-alpha-joint">Copy code</button></div><pre><code id="code-alpha-joint">import numpy as np
+from articulatearena import (
+    joint_metric,
+    joint_to_endpoint_pair,
+    load_joint,
+    make_split_norm,
+)
 
-  <div class="qs" id="quickstart">
-    <div class="qs-options">
-      <div class="qs-row">
-        <span class="qs-label">Norm</span>
-        <div class="qs-pills" data-dim="norm"><button type="button" data-value="alpha">E<sub>α</sub> split norm</button><button type="button" data-value="B">E<sub>B</sub> kinetic-energy norm</button></div>
-      </div>
-      <div class="qs-row">
-        <span class="qs-label">Measure</span>
-        <div class="qs-pills" data-dim="scope"><button type="button" data-value="joint">One joint: E</button><button type="button" data-value="phi">Continuous joints: E<sup>ϕ</sup></button><button type="button" data-value="tree">Whole object: E<sup>tree</sup></button></div>
-      </div>
-    </div>
-    <div class="qs-codewrap">
-      <div class="qs-codebar"><span class="qs-filename">quickstart.py</span><button type="button" class="qs-copy" id="qs-copy">Copy</button></div>
-<pre><code id="qs-code"></code></pre>
-    </div>
-    <p class="qs-note" id="qs-note"></p>
-  </div>
+# The loader resolves each axis into the world frame by forward kinematics.
+gt = joint_to_endpoint_pair(load_joint(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;))
+pred = joint_to_endpoint_pair(load_joint(&quot;prediction.urdf&quot;, &quot;joint_0&quot;))
 
-  <p>The distance is <code>0</code> exactly when the two sides induce the same motion, and it is a true metric:
-    symmetric, with the triangle inequality, and invariant to the sign of the axis and to which limit is called
-    lower. <span class="math">E<sub>α</sub></span> is dimensionless, <span class="math">E<sub>B</sub></span> is in
-    meters, <span class="math">E<sup>ϕ</sup></span> is dimensionless and bounded, and
-    <span class="math">E<sup>tree</sup></span> sums joint costs over an optimal matching. The
-    <a href="concepts.html">core concepts</a> pages explain each choice with a figure, and the
-    <a href="api.html">API reference</a> lists every function.</p>
+# alpha is an inverse length that weighs translation against rotation.
+# It is injected, never hardcoded. Benchmark default: 1.0 per meter.
+norm = make_split_norm(alpha=1.0)
 
+E = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)
+print(E)   # 0 exactly when the two joints induce the same motion
+</code></pre></section>
+<section class="qs-example" id="example-alpha-phi"><h2>E<sub>α</sub> split norm · Continuous joints: E<sup>ϕ</sup></h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-alpha-phi">Copy code</button></div><pre><code id="code-alpha-phi">import math
+import numpy as np
+from articulatearena import (
+    compactified_joint_metric,
+    continuous_joint_repr,
+    joint_metric,
+    joint_to_endpoint_pair,
+    load_joint,
+    make_split_norm,
+    radial_compactify,
+)
+
+# The loader resolves each axis into the world frame by forward kinematics.
+gt = joint_to_endpoint_pair(load_joint(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;))
+pred = joint_to_endpoint_pair(load_joint(&quot;prediction.urdf&quot;, &quot;joint_0&quot;))
+
+# alpha is an inverse length that weighs translation against rotation.
+# It is injected, never hardcoded. Benchmark default: 1.0 per meter.
+norm = make_split_norm(alpha=1.0)
+
+kappa = math.pi   # compactification scale, benchmark default
+
+# Two bounded joints: E after mapping all four endpoints into the unit ball.
+E_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)
+
+# A continuous joint has no finite endpoints. It enters as its antipodal
+# boundary pair, and the bounded joint is compactified to meet it.
+cont = load_joint(&quot;prediction.urdf&quot;, &quot;lid&quot;)          # a continuous joint: limits are +-inf
+u_c, v_c = continuous_joint_repr(cont.xi_hat.data, norm)
+gt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]
+E_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)
+print(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))
+</code></pre></section>
+<section class="qs-example" id="example-alpha-tree"><h2>E<sub>α</sub> split norm · Whole object: E<sup>tree</sup></h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-alpha-tree">Copy code</button></div><pre><code id="code-alpha-tree">import numpy as np
+from articulatearena import (
+    assignment_tree_distance,
+    exact_tree_distance,
+    joint_metric,
+    joint_to_endpoint_pair,
+    load_joint,
+    make_split_norm,
+)
+
+# The loader resolves each axis into the world frame by forward kinematics.
+gt = joint_to_endpoint_pair(load_joint(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;))
+pred = joint_to_endpoint_pair(load_joint(&quot;prediction.urdf&quot;, &quot;joint_0&quot;))
+
+# Every moving joint of each object (fixed joints carry no motion and are left out).
+gt_joints = [load_joint(&quot;ground_truth.urdf&quot;, n) for n in (&quot;joint_0&quot;, &quot;joint_1&quot;)]
+pred_joints = [load_joint(&quot;prediction.urdf&quot;, n) for n in (&quot;joint_0&quot;, &quot;joint_1&quot;)]
+
+# alpha is an inverse length that weighs translation against rotation.
+# It is injected, never hardcoded. Benchmark default: 1.0 per meter.
+norm = make_split_norm(alpha=1.0)
+
+# Endpoint pairs of every moving joint, all expressed in one common frame.
+to_pair = lambda j: (joint_to_endpoint_pair(j).u.data, joint_to_endpoint_pair(j).v.data)
+gt_pairs = [to_pair(j) for j in gt_joints]
+pred_pairs = [to_pair(j) for j in pred_joints]
+
+# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),
+# the cost of contracting it to the fixed joint J_0 = {0, 0}.
+D = assignment_tree_distance(gt_pairs, pred_pairs, norm)
+
+# Exact tree edit distance over (parent, child, pair) edges. `certified` is True
+# when the relaxation already found an isomorphism of the trees (the common case).
+# load_joint returns the joint alone, so name the links of each edge yourself
+# (the parent and child attributes of the URDF &lt;joint&gt; elements).
+gt_edges = [(&quot;base&quot;, &quot;link_0&quot;, gt_pairs[0]), (&quot;base&quot;, &quot;link_1&quot;, gt_pairs[1])]
+pred_edges = [(&quot;base&quot;, &quot;link_0&quot;, pred_pairs[0]), (&quot;base&quot;, &quot;link_1&quot;, pred_pairs[1])]
+D_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)
+print(D, D_exact, certified)
+</code></pre></section>
+<section class="qs-example" id="example-B-joint"><h2>E<sub>B</sub> kinetic-energy norm · One joint: E</h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-B-joint">Copy code</button></div><pre><code id="code-B-joint">import numpy as np
+from articulatearena import (
+    joint_metric,
+    joint_to_endpoint_pair,
+    load_joint,
+    make_kinetic_energy_norm,
+)
+# mesh-derived inertia needs the optional extra: pip install &quot;articulatearena[mesh]&quot;
+from articulatearena.read.inertia_loader import load_joint_child_inertia
+
+# The loader resolves each axis into the world frame by forward kinematics.
+gt = joint_to_endpoint_pair(load_joint(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;))
+pred = joint_to_endpoint_pair(load_joint(&quot;prediction.urdf&quot;, &quot;joint_0&quot;))
+
+# (m, c, I) of the ground-truth child link, computed from its meshes
+# as a uniform solid. E_B then has units of meters.
+link = load_joint_child_inertia(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;)
+norm = make_kinetic_energy_norm(link)
+
+E = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)
+print(E)   # 0 exactly when the two joints induce the same motion
+</code></pre></section>
+<section class="qs-example" id="example-B-phi"><h2>E<sub>B</sub> kinetic-energy norm · Continuous joints: E<sup>ϕ</sup></h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-B-phi">Copy code</button></div><pre><code id="code-B-phi">import math
+import numpy as np
+from articulatearena import (
+    compactified_joint_metric,
+    continuous_joint_repr,
+    joint_metric,
+    joint_to_endpoint_pair,
+    load_joint,
+    make_kinetic_energy_norm,
+    radial_compactify,
+)
+# mesh-derived inertia needs the optional extra: pip install &quot;articulatearena[mesh]&quot;
+from articulatearena.read.inertia_loader import load_joint_child_inertia
+
+# The loader resolves each axis into the world frame by forward kinematics.
+gt = joint_to_endpoint_pair(load_joint(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;))
+pred = joint_to_endpoint_pair(load_joint(&quot;prediction.urdf&quot;, &quot;joint_0&quot;))
+
+# (m, c, I) of the ground-truth child link, computed from its meshes
+# as a uniform solid. E_B then has units of meters.
+link = load_joint_child_inertia(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;)
+norm = make_kinetic_energy_norm(link)
+
+kappa = math.pi   # compactification scale, benchmark default
+
+# Two bounded joints: E after mapping all four endpoints into the unit ball.
+E_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)
+
+# A continuous joint has no finite endpoints. It enters as its antipodal
+# boundary pair, and the bounded joint is compactified to meet it.
+cont = load_joint(&quot;prediction.urdf&quot;, &quot;lid&quot;)          # a continuous joint: limits are +-inf
+u_c, v_c = continuous_joint_repr(cont.xi_hat.data, norm)
+gt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]
+E_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)
+print(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))
+</code></pre></section>
+<section class="qs-example" id="example-B-tree"><h2>E<sub>B</sub> kinetic-energy norm · Whole object: E<sup>tree</sup></h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-B-tree">Copy code</button></div><pre><code id="code-B-tree">import numpy as np
+from articulatearena import (
+    assignment_tree_distance,
+    exact_tree_distance,
+    joint_metric,
+    joint_to_endpoint_pair,
+    load_joint,
+    make_kinetic_energy_norm,
+)
+# mesh-derived inertia needs the optional extra: pip install &quot;articulatearena[mesh]&quot;
+from articulatearena.read.inertia_loader import load_joint_child_inertia
+
+# The loader resolves each axis into the world frame by forward kinematics.
+gt = joint_to_endpoint_pair(load_joint(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;))
+pred = joint_to_endpoint_pair(load_joint(&quot;prediction.urdf&quot;, &quot;joint_0&quot;))
+
+# Every moving joint of each object (fixed joints carry no motion and are left out).
+gt_joints = [load_joint(&quot;ground_truth.urdf&quot;, n) for n in (&quot;joint_0&quot;, &quot;joint_1&quot;)]
+pred_joints = [load_joint(&quot;prediction.urdf&quot;, n) for n in (&quot;joint_0&quot;, &quot;joint_1&quot;)]
+
+# (m, c, I) of the ground-truth child link, computed from its meshes
+# as a uniform solid. E_B then has units of meters.
+link = load_joint_child_inertia(&quot;ground_truth.urdf&quot;, &quot;joint_0&quot;)
+norm = make_kinetic_energy_norm(link)
+
+# Endpoint pairs of every moving joint, all expressed in one common frame.
+to_pair = lambda j: (joint_to_endpoint_pair(j).u.data, joint_to_endpoint_pair(j).v.data)
+gt_pairs = [to_pair(j) for j in gt_joints]
+pred_pairs = [to_pair(j) for j in pred_joints]
+
+# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),
+# the cost of contracting it to the fixed joint J_0 = {0, 0}.
+D = assignment_tree_distance(gt_pairs, pred_pairs, norm)
+
+# Exact tree edit distance over (parent, child, pair) edges. `certified` is True
+# when the relaxation already found an isomorphism of the trees (the common case).
+# load_joint returns the joint alone, so name the links of each edge yourself
+# (the parent and child attributes of the URDF &lt;joint&gt; elements).
+gt_edges = [(&quot;base&quot;, &quot;link_0&quot;, gt_pairs[0]), (&quot;base&quot;, &quot;link_1&quot;, gt_pairs[1])]
+pred_edges = [(&quot;base&quot;, &quot;link_0&quot;, pred_pairs[0]), (&quot;base&quot;, &quot;link_1&quot;, pred_pairs[1])]
+D_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)
+print(D, D_exact, certified)
+</code></pre></section>
 <script>
-(function () {
-  var SNIPPETS = {
- "alpha-joint": "import numpy as np\nfrom articulatearena import (\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_split_norm,\n)\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\nE = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)\nprint(E)   # 0 exactly when the two joints induce the same motion\n",
- "alpha-phi": "import math\nimport numpy as np\nfrom articulatearena import (\n    compactified_joint_metric,\n    continuous_joint_repr,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_split_norm,\n    radial_compactify,\n)\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\nkappa = math.pi   # compactification scale, benchmark default\n\n# Two bounded joints: E after mapping all four endpoints into the unit ball.\nE_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)\n\n# A continuous joint has no finite endpoints. It enters as its antipodal\n# boundary pair, and the bounded joint is compactified to meet it.\ncont = load_joint(\"prediction.urdf\", \"lid\")          # a continuous joint: limits are +-inf\nu_c, v_c = continuous_joint_repr(cont.xi_hat.data, norm)\ngt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]\nE_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)\nprint(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))\n",
- "alpha-tree": "import numpy as np\nfrom articulatearena import (\n    assignment_tree_distance,\n    exact_tree_distance,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_split_norm,\n)\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# Every moving joint of each object (fixed joints carry no motion and are left out).\ngt_joints = [load_joint(\"ground_truth.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\npred_joints = [load_joint(\"prediction.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\n\n# alpha is an inverse length that weighs translation against rotation.\n# It is injected, never hardcoded. Benchmark default: 1.0 per meter.\nnorm = make_split_norm(alpha=1.0)\n\n# Endpoint pairs of every moving joint, all expressed in one common frame.\nto_pair = lambda j: (joint_to_endpoint_pair(j).u.data, joint_to_endpoint_pair(j).v.data)\ngt_pairs = [to_pair(j) for j in gt_joints]\npred_pairs = [to_pair(j) for j in pred_joints]\n\n# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),\n# the cost of contracting it to the fixed joint J_0 = {0, 0}.\nD = assignment_tree_distance(gt_pairs, pred_pairs, norm)\n\n# Exact tree edit distance over (parent, child, pair) edges. `certified` is True\n# when the relaxation already found an isomorphism of the trees (the common case).\n# load_joint returns the joint alone, so name the links of each edge yourself\n# (the parent and child attributes of the URDF <joint> elements).\ngt_edges = [(\"base\", \"link_0\", gt_pairs[0]), (\"base\", \"link_1\", gt_pairs[1])]\npred_edges = [(\"base\", \"link_0\", pred_pairs[0]), (\"base\", \"link_1\", pred_pairs[1])]\nD_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)\nprint(D, D_exact, certified)\n",
- "B-joint": "import numpy as np\nfrom articulatearena import (\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_kinetic_energy_norm,\n)\n# mesh-derived inertia needs the optional extra: pip install \"articulatearena[mesh]\"\nfrom articulatearena.read.inertia_loader import load_joint_child_inertia\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# (m, c, I) of the ground-truth child link, computed from its meshes\n# as a uniform solid. E_B then has units of meters.\nlink = load_joint_child_inertia(\"ground_truth.urdf\", \"joint_0\")\nnorm = make_kinetic_energy_norm(link)\n\nE = joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm)\nprint(E)   # 0 exactly when the two joints induce the same motion\n",
- "B-phi": "import math\nimport numpy as np\nfrom articulatearena import (\n    compactified_joint_metric,\n    continuous_joint_repr,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_kinetic_energy_norm,\n    radial_compactify,\n)\n# mesh-derived inertia needs the optional extra: pip install \"articulatearena[mesh]\"\nfrom articulatearena.read.inertia_loader import load_joint_child_inertia\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# (m, c, I) of the ground-truth child link, computed from its meshes\n# as a uniform solid. E_B then has units of meters.\nlink = load_joint_child_inertia(\"ground_truth.urdf\", \"joint_0\")\nnorm = make_kinetic_energy_norm(link)\n\nkappa = math.pi   # compactification scale, benchmark default\n\n# Two bounded joints: E after mapping all four endpoints into the unit ball.\nE_phi = compactified_joint_metric(gt.u.data, gt.v.data, pred.u.data, pred.v.data, norm, kappa)\n\n# A continuous joint has no finite endpoints. It enters as its antipodal\n# boundary pair, and the bounded joint is compactified to meet it.\ncont = load_joint(\"prediction.urdf\", \"lid\")          # a continuous joint: limits are +-inf\nu_c, v_c = continuous_joint_repr(cont.xi_hat.data, norm)\ngt_ball = [radial_compactify(z, kappa, norm) for z in (gt.u.data, gt.v.data)]\nE_phi_c = joint_metric(*gt_ball, u_c, v_c, norm)\nprint(E_phi, E_phi_c)   # both dimensionless, in [0, 2 * sqrt(2))\n",
- "B-tree": "import numpy as np\nfrom articulatearena import (\n    assignment_tree_distance,\n    exact_tree_distance,\n    joint_metric,\n    joint_to_endpoint_pair,\n    load_joint,\n    make_kinetic_energy_norm,\n)\n# mesh-derived inertia needs the optional extra: pip install \"articulatearena[mesh]\"\nfrom articulatearena.read.inertia_loader import load_joint_child_inertia\n\n# The loader resolves each axis into the world frame by forward kinematics.\ngt = joint_to_endpoint_pair(load_joint(\"ground_truth.urdf\", \"joint_0\"))\npred = joint_to_endpoint_pair(load_joint(\"prediction.urdf\", \"joint_0\"))\n\n# Every moving joint of each object (fixed joints carry no motion and are left out).\ngt_joints = [load_joint(\"ground_truth.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\npred_joints = [load_joint(\"prediction.urdf\", n) for n in (\"joint_0\", \"joint_1\")]\n\n# (m, c, I) of the ground-truth child link, computed from its meshes\n# as a uniform solid. E_B then has units of meters.\nlink = load_joint_child_inertia(\"ground_truth.urdf\", \"joint_0\")\nnorm = make_kinetic_energy_norm(link)\n\n# Endpoint pairs of every moving joint, all expressed in one common frame.\nto_pair = lambda j: (joint_to_endpoint_pair(j).u.data, joint_to_endpoint_pair(j).v.data)\ngt_pairs = [to_pair(j) for j in gt_joints]\npred_pairs = [to_pair(j) for j in pred_joints]\n\n# Assignment relaxation: match joints by E, an unmatched joint pays E(J, J_0),\n# the cost of contracting it to the fixed joint J_0 = {0, 0}.\nD = assignment_tree_distance(gt_pairs, pred_pairs, norm)\n\n# Exact tree edit distance over (parent, child, pair) edges. `certified` is True\n# when the relaxation already found an isomorphism of the trees (the common case).\n# load_joint returns the joint alone, so name the links of each edge yourself\n# (the parent and child attributes of the URDF <joint> elements).\ngt_edges = [(\"base\", \"link_0\", gt_pairs[0]), (\"base\", \"link_1\", gt_pairs[1])]\npred_edges = [(\"base\", \"link_0\", pred_pairs[0]), (\"base\", \"link_1\", pred_pairs[1])]\nD_exact, certified = exact_tree_distance(gt_edges, pred_edges, norm)\nprint(D, D_exact, certified)\n"
-};
-  var NOTES = {"joint": "<strong>E</strong> compares one predicted joint with one ground-truth joint through their endpoint twists.", "phi": "<strong>E<sup>ϕ</sup></strong> maps every endpoint into the unit ball with the radial map ϕ, so continuous joints and bounded joints share one bounded score.", "tree": "<strong>E<sup>tree</sup></strong> lifts E to whole kinematic trees: joints are matched optimally and surplus joints pay their own motion.", "alpha": "The split norm needs only <code>alpha</code>, so it works without meshes or masses.", "B": "The kinetic-energy norm weighs each twist by the moving link, which is what the paper's E<sub>B</sub> column reports.", "urdf": "<code>load_joint</code> reads one named joint. Continuous joints load with infinite limits."};
-  var state = { norm: "alpha", scope: "joint" };
-  var code = document.getElementById("qs-code");
-  var note = document.getElementById("qs-note");
-
-  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-  function highlight(src) {
-    // Comments and strings first, keywords on the remainder.
-    return esc(src).split("\n").map(function (line) {
-      var m = line.match(/^(.*?)(#.*)$/);
-      var body = m ? m[1] : line, cm = m ? m[2] : "";
-      body = body.replace(/(&quot;|")(.*?)(\1)/g, function (all) { return '<span class="st">' + all + "</span>"; });
-      body = body.replace(/\b(import|from|as|for|in|lambda|print)\b/g, '<span class="kw">$1</span>');
-      return body + (cm ? '<span class="cm">' + cm + "</span>" : "");
-    }).join("\n");
-  }
-  function render() {
-    var key = state.norm + "-" + state.scope;
-    code.innerHTML = highlight(SNIPPETS[key]);
-    note.innerHTML = NOTES[state.scope] + " " + NOTES[state.norm] + " " + NOTES.urdf;
-    document.querySelectorAll(".qs-pills").forEach(function (row) {
-      var dim = row.getAttribute("data-dim");
-      row.querySelectorAll("button").forEach(function (b) {
-        b.classList.toggle("active", b.getAttribute("data-value") === state[dim]);
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+          button.textContent = 'Copied';
+        } catch { button.textContent = 'Select code to copy'; }
       });
     });
-  }
-  document.querySelectorAll(".qs-pills button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      state[b.parentNode.getAttribute("data-dim")] = b.getAttribute("data-value");
-      render();
-    });
-  });
-  document.getElementById("qs-copy").addEventListener("click", function () {
-    var key = state.norm + "-" + state.scope;
-    var btn = this;
-    navigator.clipboard.writeText(SNIPPETS[key]).then(function () {
-      btn.textContent = "Copied";
-      setTimeout(function () { btn.textContent = "Copy"; }, 1400);
-    });
-  });
-  render();
-})();
-</script>
+    </script>

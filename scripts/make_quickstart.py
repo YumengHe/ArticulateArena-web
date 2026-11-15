@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate docs_src/quickstart.html: an interactive quickstart.
+"""Generate docs_src/quickstart.html: an expanded quickstart.
 
-Two option rows (norm, scope) select one of six code snippets, all reading
-joints from URDF files.
+Six visible examples cover both norms and all three scopes, reading joints
+from URDF files.
 The snippets are assembled here from shared pieces, so that every
 combination can be executed against the sample data before it is published:
 
@@ -208,98 +208,29 @@ def verify(repo: Path) -> None:
 
 # ---------------------------------------------------------------- fragment
 
-FRAGMENT = """  <p>Pick the norm and what you want to measure. The snippet updates to a complete, runnable program that
-    reads joints from URDF files, and every combination is executed against the sample data before it is
-    published. To score joints from another format, build the endpoint pairs with <code>screw_twist</code> and
-    <code>make_endpoint_pair</code> instead of <code>load_joint</code> (see the <a href="api.html">API reference</a>).</p>
-
-  <div class="qs" id="quickstart">
-    <div class="qs-options">
-      <div class="qs-row">
-        <span class="qs-label">Norm</span>
-        <div class="qs-pills" data-dim="norm">{norms}</div>
-      </div>
-      <div class="qs-row">
-        <span class="qs-label">Measure</span>
-        <div class="qs-pills" data-dim="scope">{scopes}</div>
-      </div>
-    </div>
-    <div class="qs-codewrap">
-      <div class="qs-codebar"><span class="qs-filename">quickstart.py</span><button type="button" class="qs-copy" id="qs-copy">Copy</button></div>
-<pre><code id="qs-code"></code></pre>
-    </div>
-    <p class="qs-note" id="qs-note"></p>
-  </div>
-
-  <p>The distance is <code>0</code> exactly when the two sides induce the same motion, and it is a true metric:
-    symmetric, with the triangle inequality, and invariant to the sign of the axis and to which limit is called
-    lower. <span class="math">E<sub>α</sub></span> is dimensionless, <span class="math">E<sub>B</sub></span> is in
-    meters, <span class="math">E<sup>ϕ</sup></span> is dimensionless and bounded, and
-    <span class="math">E<sup>tree</sup></span> sums joint costs over an optimal matching. The
-    <a href="concepts.html">core concepts</a> pages explain each choice with a figure, and the
-    <a href="api.html">API reference</a> lists every function.</p>
-
-<script>
-(function () {{
-  var SNIPPETS = {snippets};
-  var NOTES = {notes};
-  var state = {{ norm: "alpha", scope: "joint" }};
-  var code = document.getElementById("qs-code");
-  var note = document.getElementById("qs-note");
-
-  function esc(s) {{ return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }}
-  function highlight(src) {{
-    // Comments and strings first, keywords on the remainder.
-    return esc(src).split("\\n").map(function (line) {{
-      var m = line.match(/^(.*?)(#.*)$/);
-      var body = m ? m[1] : line, cm = m ? m[2] : "";
-      body = body.replace(/(&quot;|")(.*?)(\\1)/g, function (all) {{ return '<span class="st">' + all + "</span>"; }});
-      body = body.replace(/\\b(import|from|as|for|in|lambda|print)\\b/g, '<span class="kw">$1</span>');
-      return body + (cm ? '<span class="cm">' + cm + "</span>" : "");
-    }}).join("\\n");
-  }}
-  function render() {{
-    var key = state.norm + "-" + state.scope;
-    code.innerHTML = highlight(SNIPPETS[key]);
-    note.innerHTML = NOTES[state.scope] + " " + NOTES[state.norm] + " " + NOTES.urdf;
-    document.querySelectorAll(".qs-pills").forEach(function (row) {{
-      var dim = row.getAttribute("data-dim");
-      row.querySelectorAll("button").forEach(function (b) {{
-        b.classList.toggle("active", b.getAttribute("data-value") === state[dim]);
-      }});
-    }});
-  }}
-  document.querySelectorAll(".qs-pills button").forEach(function (b) {{
-    b.addEventListener("click", function () {{
-      state[b.parentNode.getAttribute("data-dim")] = b.getAttribute("data-value");
-      render();
-    }});
-  }});
-  document.getElementById("qs-copy").addEventListener("click", function () {{
-    var key = state.norm + "-" + state.scope;
-    var btn = this;
-    navigator.clipboard.writeText(SNIPPETS[key]).then(function () {{
-      btn.textContent = "Copied";
-      setTimeout(function () {{ btn.textContent = "Copy"; }}, 1400);
-    }});
-  }});
-  render();
-}})();
-</script>
-"""
-
-NOTES = {
-    "joint": "<strong>E</strong> compares one predicted joint with one ground-truth joint through their endpoint twists.",
-    "phi": "<strong>E<sup>ϕ</sup></strong> maps every endpoint into the unit ball with the radial map ϕ, so continuous joints and bounded joints share one bounded score.",
-    "tree": "<strong>E<sup>tree</sup></strong> lifts E to whole kinematic trees: joints are matched optimally and surplus joints pay their own motion.",
-    "alpha": "The split norm needs only <code>alpha</code>, so it works without meshes or masses.",
-    "B": "The kinetic-energy norm weighs each twist by the moving link, which is what the paper's E<sub>B</sub> column reports.",
-    "urdf": "<code>load_joint</code> reads one named joint. Continuous joints load with infinite limits.",
-}
-
-
-def pills(options) -> str:
-    return "".join(f'<button type="button" data-value="{v}">{label}</button>' for v, label in options)
+def expanded_fragment() -> str:
+    parts = ['<p>Each example reads joints from URDF files. Replace the two file paths and joint names with your own. For other formats, use <code>screw_twist</code> and <code>make_endpoint_pair</code>; see the <a href="api.html">API reference</a>.</p>']
+    parts.append('<nav class="example-index" aria-label="Quickstart examples">')
+    for n, label in NORMS:
+        for scope, scope_label in SCOPES:
+            parts.append(f'<a href="#example-{n}-{scope}">{label} · {scope_label}</a>')
+    parts.append('</nav>')
+    for n, label in NORMS:
+        for scope, scope_label in SCOPES:
+            key = f"{n}-{scope}"
+            code = html.escape(snippet("urdf", n, scope))
+            parts.append(f'<section class="qs-example" id="example-{key}"><h2>{label} · {scope_label}</h2><div class="qs-codebar"><button type="button" class="qs-copy" data-copy="code-{key}">Copy code</button></div><pre><code id="code-{key}">{code}</code></pre></section>')
+    parts.append("""<script>
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+          button.textContent = 'Copied';
+        } catch { button.textContent = 'Select code to copy'; }
+      });
+    });
+    </script>""")
+    return "\n".join(parts) + "\n"
 
 
 def main() -> None:
@@ -308,14 +239,8 @@ def main() -> None:
     args = ap.parse_args()
     if args.verify:
         verify(args.verify.resolve())
-    snippets = {f"{n}-{s}": snippet("urdf", n, s) for n, _ in NORMS for s, _ in SCOPES}
-    frag = FRAGMENT.format(
-        norms=pills(NORMS), scopes=pills(SCOPES),
-        snippets=json.dumps(snippets, indent=1, ensure_ascii=False),
-        notes=json.dumps(NOTES, ensure_ascii=False),
-    )
-    OUT.write_text(frag, encoding="utf-8")
-    print(f"wrote {OUT.relative_to(ROOT)} with {len(snippets)} snippets")
+    OUT.write_text(expanded_fragment(), encoding="utf-8")
+    print(f"wrote {OUT.relative_to(ROOT)} with six expanded snippets")
 
 
 if __name__ == "__main__":

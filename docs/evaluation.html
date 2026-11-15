@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Other evaluation methods · ArticulateArena Documentation</title>
+  <meta name="description" content="ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.">
+  <link rel="stylesheet" href="../static/css/google-fonts-local.css">
+  <link rel="icon" type="image/svg+xml" href="../static/images/articulatearena-icon.svg">
+  <link rel="apple-touch-icon" href="../static/images/icon.png">
+
+<style>
+    :root {
+      --paper: #fefdfb;
+      --panel: #f9f8f5;
+      --ink: #1f1e1b;
+      --ink-2: #55524b;
+      --ink-3: #8a867d;
+      --hairline: #e8e5de;
+      --accent: #9a7422;
+      --accent-soft: #f0e7d4;
+      --code-bg: #f7f6f2;
+      --code-border: #e9e6df;
+      --serif: Georgia, 'Times New Roman', 'Songti SC', serif;
+      --sans: 'Noto Sans', -apple-system, 'Segoe UI', sans-serif;
+      --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+      --sidebar-w: 272px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.7;
+      /* The sidebar stays at the left edge; the text column is centered in the
+         remaining width, so a wide screen does not push everything to the left. */
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: var(--sidebar-w);
+      padding: 2.2rem 1.6rem 2rem 2rem;
+      background: var(--panel);
+      border-right: 1px solid var(--hairline);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.6rem;
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand img { width: 30px; height: 30px; }
+
+    .brand .name {
+      font-family: var(--serif);
+      font-size: 1.16rem;
+      font-weight: 600;
+      letter-spacing: -0.005em;
+    }
+
+    .brand .version {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink-3);
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      padding: 0.05rem 0.5rem;
+      background: var(--paper);
+    }
+
+    .sidebar .tagline {
+      margin: 0.9rem 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.86rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    .toc-label {
+      margin: 1.8rem 0 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    nav.toc { border-left: 1px solid var(--hairline); }
+
+    nav.toc a {
+      display: block;
+      padding: 0.32rem 0 0.32rem 0.9rem;
+      margin-left: -1px;
+      border-left: 2px solid transparent;
+      color: var(--ink-2);
+      text-decoration: none;
+      font-size: 0.86rem;
+      line-height: 1.35;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    nav.toc a:hover { color: var(--ink); }
+
+    nav.toc a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      font-weight: 600;
+    }
+
+    nav.toc a.sub {
+      padding-left: 1.9rem;
+      font-size: 0.8rem;
+    }
+
+    .project-links {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
+    }
+
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.15rem 0;
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 500;
+      line-height: 1.5;
+      text-decoration: none;
+    }
+
+    .project-links-secondary { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+    .project-links-secondary > span { color: var(--ink-3); font-size: 0.7rem; }
+    .project-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .project-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    @media (pointer: coarse) {
+      .project-links { gap: 0; }
+      .project-links a { min-height: 44px; }
+    }
+
+    /* ---------- content ---------- */
+    .content {
+      min-width: 0;
+      padding: 3.4rem 3.4rem 5rem;
+    }
+
+    .content-inner { max-width: 48rem; margin: 0 auto; }
+
+    h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.25; }
+
+    h1 {
+      font-size: 2.15rem;
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    h1.page-title {
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    nav.page-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 3.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--hairline);
+    }
+
+    nav.page-nav a {
+      display: block;
+      max-width: 48%;
+      font-size: 0.9rem;
+      color: var(--ink-2);
+    }
+
+    nav.page-nav a:hover { color: var(--accent); text-decoration: none; }
+    nav.page-nav a.next { margin-left: auto; text-align: right; }
+
+    nav.page-nav .label {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 0.15rem;
+    }
+
+    .subtitle-line {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-2);
+      font-size: 1.06rem;
+      margin: 0 0 2.6rem;
+    }
+
+    section { padding-top: 1.2rem; }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 2.4rem 0 0.9rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    h2 .sec-no {
+      color: var(--ink-3);
+      font-size: 0.95rem;
+      font-family: var(--sans);
+      font-weight: 400;
+      margin-right: 0.65rem;
+      letter-spacing: 0.05em;
+    }
+
+    h3 { font-size: 1.12rem; margin: 1.8rem 0 0.5rem; }
+
+    p { margin: 0.7rem 0; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    em.math, span.math { font-family: var(--serif); font-style: italic; white-space: nowrap; }
+    span.math sub, span.math sup { font-style: normal; font-size: 0.72em; }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.84em;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 4px;
+      padding: 0.08em 0.35em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      padding: 0.95rem 1.15rem;
+      overflow-x: auto;
+      line-height: 1.55;
+      margin: 0.9rem 0 1.2rem;
+    }
+
+    pre code { background: none; border: none; padding: 0; font-size: 0.83rem; color: var(--ink); }
+
+    pre .cm { color: var(--ink-3); }           /* comment */
+    pre .kw { color: #7a5a1e; font-weight: 600; } /* keyword */
+    pre .st { color: #5b6e3a; }                /* string */
+    pre .pr { color: var(--ink-3); }           /* prompt $ */
+
+    .display-math {
+      font-family: var(--serif);
+      font-style: italic;
+      text-align: center;
+      margin: 1.25rem 0;
+      font-size: 1.08rem;
+      color: var(--ink);
+    }
+
+    .display-math sub, .display-math sup { font-style: normal; font-size: 0.7em; }
+
+    /* ---------- tables ---------- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.9rem 0 1.4rem;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      border-bottom: 1.5px solid var(--ink-2);
+      padding: 0.45rem 0.9rem 0.45rem 0;
+    }
+
+    td {
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.5rem 0.9rem 0.5rem 0;
+      vertical-align: top;
+    }
+
+    /* Long call signatures wrap at spaces; keep the column from swallowing the row. */
+    td:first-child { max-width: 24rem; }
+
+    figure.tut { margin: 1.1rem 0 1.5rem; }
+    figure.tut img {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--hairline);
+      border-radius: 8px;
+      background: #fff;
+    }
+    figure.tut figcaption {
+      margin-top: 0.45rem;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.86rem;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+    .confusion {
+      border-left: 3px solid var(--ink-3);
+      padding: 0.15rem 0 0.15rem 1rem;
+      margin: 0.9rem 0;
+      color: var(--ink-2);
+      font-size: 0.94rem;
+    }
+    .confusion strong { color: var(--ink); }
+    table.notation td:first-child { white-space: nowrap; max-width: none; }
+
+    .note {
+      background: var(--accent-soft);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 0.7rem 1rem;
+      margin: 1.1rem 0;
+      font-size: 0.92rem;
+    }
+
+    /* ---------- concept list on the Core concepts page ---------- */
+    ol.concept-list {
+      list-style: none;
+      margin: 0.8rem 0 1.6rem;
+      padding: 0;
+      border-top: 1px solid var(--hairline);
+    }
+
+    ol.concept-list li { border-bottom: 1px solid var(--hairline); }
+
+    ol.concept-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 0.9rem;
+      padding: 0.55rem 0.2rem;
+      color: var(--ink);
+    }
+
+    ol.concept-list a:hover { color: var(--accent); text-decoration: none; }
+
+    ol.concept-list .num {
+      flex: 0 0 2.2rem;
+      font-size: 0.78rem;
+      color: var(--ink-3);
+      letter-spacing: 0.05em;
+    }
+
+    /* ---------- interactive quickstart ---------- */
+    .qs { margin: 1.4rem 0 1.6rem; }
+
+    .qs-options {
+      display: grid;
+      gap: 0.55rem;
+      padding: 0.9rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--hairline);
+      border-radius: 8px 8px 0 0;
+      border-bottom: none;
+    }
+
+    .qs-row { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+
+    .qs-label {
+      flex: 0 0 4.2rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    .qs-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .qs-pills button {
+      font: inherit;
+      font-size: 0.84rem;
+      line-height: 1.3;
+      padding: 0.28rem 0.75rem;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .qs-pills button:hover { color: var(--ink); border-color: var(--ink-3); }
+
+    .qs-pills button.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .qs-pills button sub, .qs-pills button sup { font-size: 0.72em; }
+
+    .qs-codewrap {
+      border: 1px solid var(--code-border);
+      border-radius: 0 0 8px 8px;
+      background: var(--code-bg);
+    }
+
+    .qs-codebar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 1.15rem 0.4rem;
+      border-bottom: 1px solid var(--code-border);
+      font-size: 0.74rem;
+      color: var(--ink-3);
+    }
+
+    .qs-filename { font-family: var(--mono); }
+
+    .qs-copy {
+      font: inherit;
+      font-size: 0.74rem;
+      padding: 0.15rem 0.6rem;
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      background: var(--paper);
+      color: var(--ink-2);
+      cursor: pointer;
+    }
+
+    .qs-copy:hover { color: var(--accent); border-color: var(--accent); }
+
+    .qs-codewrap pre { margin: 0; border: none; border-radius: 0 0 8px 8px; background: none; }
+
+    .qs-note { font-size: 0.9rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+
+    @media (max-width: 600px) {
+      .qs-label { flex-basis: 100%; }
+    }
+
+    footer.docs-footer {
+      margin-top: 4rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--hairline);
+      color: var(--ink-3);
+      font-size: 0.82rem;
+    }
+
+    /* ---------- narrow screens ---------- */
+    @media (max-width: 900px) {
+      body { display: block; }
+      .sidebar {
+        position: static;
+        width: auto;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--hairline);
+        padding: 1.4rem 1.4rem 1.2rem;
+      }
+      nav.toc { display: flex; flex-wrap: wrap; gap: 0 1rem; border-left: none; }
+      nav.toc a, nav.toc a.active { border-left: none; padding: 0.15rem 0; }
+      nav.toc a.sub { display: none; }
+      .content { padding: 2rem 1.3rem 3rem; }
+    }
+  </style>
+  <link rel="stylesheet" href="../static/css/core-concepts.css?v=4d461613d9">
+  <link rel="stylesheet" href="../static/css/core-guides.css?v=1c1da4baaa">
+  <script src="../static/js/core-concepts.js?v=a8ab10b888" defer></script>
+  <script src="../static/js/core-guides.js?v=99e78b65ee" defer></script>
+<link rel="stylesheet" href="../static/css/docs-refinement.css?v=ffaeb0388e">
+</head>
+
+<body class="aa-learning-page evaluation-page">
+
+  <aside class="sidebar">
+    <a class="brand" href="./index.html">
+      <img src="../static/images/articulatearena-icon.svg" alt="">
+      <span class="name">ArticulateArena</span>
+    </a>
+    <p class="tagline">ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.</p>
+
+    <nav class="project-links" aria-label="Project resources">
+      <a href="../index.html">Project page <span aria-hidden="true">↗</span></a>
+      <div class="project-links-secondary">
+        <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a>
+        <span aria-hidden="true">·</span>
+        <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>
+      </div>
+    </nav>
+
+    <nav class="toc" id="toc">
+<div class="nav-group"><h2 class="nav-group-title">Knowledge</h2>
+<a href="index.html">Overview</a>
+<span class="nav-placeholder" aria-disabled="true">Articulated objects</span>
+<a href="concepts.html">Core concepts</a>
+<a class="active" aria-current="page" href="evaluation.html">Other evaluation methods</a>
+</div>
+<div class="nav-group"><h2 class="nav-group-title">Code</h2>
+<a href="installation.html">Installation</a>
+<a href="quickstart.html">Quickstart</a>
+<a href="api.html">API reference</a>
+<a href="cli.html">Command-line usage</a>
+</div>
+    </nav>
+
+
+  </aside>
+
+  <main class="content">
+    <div class="content-inner">
+
+<h1 class="page-title">Other evaluation methods</h1>
+
+      <div id="aa-evaluation" class="aa-learning">
+      <p class="cc-lede">A reconstructed cabinet should have the right shape, move correctly, and look like the original.</p>
+      <p>Different metrics check these different properties. Here, <strong>reference</strong> means the correct object, and <strong>prediction</strong> means the reconstructed model we want to evaluate.</p>
+      <nav class="eval-topic-links" aria-label="Evaluation topics">
+        <a href="#shape"><strong>Shape</strong><span>Chamfer distance · F-score</span></a>
+        <a href="#joint-parameters"><strong>Movement</strong><span>Axis · Pivot · Type · Limits</span></a>
+        <a href="#appearance"><strong>Appearance</strong><span>LPIPS · CLIP · DINOv2</span></a>
+      </nav>
+
+      <section id="shape" class="cc-section">
+      <h2>Compare the shape</h2>
+      <p>Imagine placing dots all over both objects’ surfaces. If the shapes agree, the dots on one object should be close to dots on the other.</p>
+      <div class="eval-explanations">
+        <div><h3>Chamfer distance (CD)</h3><p>For each dot, measure the gap to the nearest dot on the other object. Average these gaps in both directions, so missing pieces also matter.</p><p><strong>Lower is better.</strong> Zero means the two sets of sampled dots coincide. A missing handle or a misplaced surface can increase the distance.</p></div>
+        <div><h3>F-score</h3><p>Two dots count as a match when their distance is no more than an allowed gap. F-score combines two checks: how much of the prediction matches, and how much of the reference it covers.</p><p><strong>Higher is better.</strong> A score of 100% means all sampled dots have a match within the allowed gap. The shapes can still differ slightly.</p></div>
+      </div>
+
+      <div class="eval-example" id="surface-example">
+        <h3>Move the model and watch its scores</h3>
+        <p>These flat outlines stand in for two surfaces. Each is 1 meter wide. Blue is the reference; gold is the prediction.</p>
+        <svg id="eval-surface" viewBox="165 -20 380 310" role="img" aria-label="Blue reference outline and gold predicted outline, sampled with dots. Lines show gaps to nearest reference dots."></svg>
+        <div class="eval-controls">
+          <label for="eval-offset">Shift the prediction <output id="eval-offset-value">0 cm</output><input id="eval-offset" type="range" min="0" max="20" step="1" value="0"></label>
+          <label for="eval-tolerance">Allowed gap for a match <output id="eval-tolerance-value">8 cm</output><input id="eval-tolerance" type="range" min="1" max="20" step="1" value="8"></label>
+        </div>
+        <label class="eval-missing-control"><input type="checkbox" id="eval-missing"> Remove part of the prediction’s bottom edge</label>
+        <div class="eval-results" aria-live="polite">
+          <div><span>Chamfer distance · lower is better</span><strong id="eval-cd">0.0 cm</strong></div>
+          <div><span>F-score · higher is better</span><strong id="eval-fscore">100%</strong></div>
+        </div>
+        <div class="eval-match-counts" aria-live="polite">
+          <p><strong>Precision:</strong> <span id="eval-precision">40 of 40</span> predicted dots match the reference.</p>
+          <p><strong>Recall:</strong> <span id="eval-recall">40 of 40</span> reference dots are covered by the prediction.</p>
+        </div>
+        <p id="eval-explanation" class="eval-explanation" aria-live="polite">The outlines match. Every dot is covered, so CD is zero and F-score is 100%.</p>
+      </div>
+      <p>A larger allowed gap makes F-score more forgiving, even though the shape has not improved. For a fair comparison, line up the objects and use the same scale and allowed gap. Here, CD adds the two average gaps, one in each direction.</p>
+      </section>
+
+      <section id="joint-parameters" class="cc-section">
+      <h2>Check how the parts move</h2>
+      <p>A joint connects two parts and lets them move relative to each other. A door hinge lets the door rotate; a drawer joint lets the drawer slide. These four errors check different aspects of that movement.</p>
+      <div class="eval-joint-grid">
+        <article>
+          <h3>Axis error <span>(AxisErr)</span></h3>
+          <svg viewBox="0 0 360 190" role="img" aria-label="A correct vertical hinge axis in blue and a predicted axis tilted 15 degrees in gold."><path d="M160 155V28" stroke="#5b8db8" stroke-width="5"/><path d="M160 155L193 32" stroke="#cf9d39" stroke-width="5"/><path d="M160 97A58 58 0 0 1 175 99" fill="none" stroke="#55524b" stroke-width="1.5"/><circle cx="160" cy="155" r="5" fill="#292724"/><g fill="#55524b" font-size="16" font-family="sans-serif"><text x="114" y="27" text-anchor="end">Correct</text><text x="205" y="44">Predicted</text><text x="186" y="108">15° tilt</text></g></svg>
+          <p>Checks the <strong>direction</strong> of the joint. A door hinge should be vertical; predicting it at a 15° tilt gives a 15° axis error. <strong>Lower is better.</strong></p>
+        </article>
+        <article>
+          <h3>Pivot error <span>(PivotErr)</span></h3>
+          <svg viewBox="0 0 360 190" role="img" aria-label="Two parallel hinge axes, with the predicted axis displaced five centimeters from the correct one."><path d="M135 38V158" stroke="#5b8db8" stroke-width="5"/><path d="M205 38V158" stroke="#cf9d39" stroke-width="5"/><path d="M135 104H205 M135 96V112 M205 96V112" stroke="#55524b" stroke-width="1.5" fill="none"/><g fill="#55524b" font-size="16" font-family="sans-serif"><text x="135" y="25" text-anchor="middle">Correct</text><text x="235" y="25" text-anchor="middle">Predicted</text><text x="170" y="90" text-anchor="middle">5 cm</text></g></svg>
+          <p>Checks the <strong>location</strong> of the hinge. Here it points in the right direction but sits 5 cm away from the correct line. <strong>Lower is better.</strong></p>
+        </article>
+        <article>
+          <h3>Type error <span>(TypeErr)</span></h3>
+          <svg viewBox="0 0 360 190" role="img" aria-label="A drawer should slide in a straight line, but the predicted joint makes it rotate."><g fill="none" stroke-linecap="round"><path d="M30 90H142 M30 90L39 82 M30 90L39 98 M142 90L133 82 M142 90L133 98" stroke="#5b8db8" stroke-width="3"/><rect x="56" y="110" width="60" height="30" fill="#e2ebf1" stroke="#5b8db8" stroke-width="2"/><path d="M224 141L283 63" stroke="#cf9d39" stroke-width="5"/><path d="M303 141A79 79 0 0 0 272 79" stroke="#cf9d39" stroke-width="2"/><path d="M272 79L284 81 M272 79L275 91" stroke="#cf9d39" stroke-width="2"/><circle cx="224" cy="141" r="5" fill="#292724"/></g><g fill="#55524b" font-size="16" font-family="sans-serif"><text x="87" y="30" text-anchor="middle">Should slide</text><text x="267" y="30" text-anchor="middle">Predicted rotation</text></g></svg>
+          <p>Checks the <strong>kind of movement</strong>. A drawer should slide; a rotating hinge is the wrong type. Often reported as the percentage of joints with the wrong type. <strong>Lower is better.</strong></p>
+        </article>
+        <article>
+          <h3>Limit error <span>(Limit Err.)</span></h3>
+          <svg viewBox="0 0 360 190" role="img" aria-label="The correct door range ends at ninety degrees; the prediction stops at forty-five degrees."><path d="M106 151H281" stroke="#aaa69c" stroke-dasharray="5 5" stroke-width="2"/><path d="M106 151V28" stroke="#5b8db8" stroke-width="5"/><path d="M106 151L193 64" stroke="#cf9d39" stroke-width="5"/><circle cx="106" cy="151" r="5" fill="#292724"/><g fill="#55524b" font-size="16" font-family="sans-serif"><text x="88" y="27" text-anchor="end">90°</text><text x="205" y="63">45°</text><text x="274" y="176" text-anchor="end">Closed: 0°</text></g></svg>
+          <p>Checks <strong>how far the part can move</strong>. This door should open to 90°, but stops at 45°. An error rate counts joints whose limits fail the chosen tolerance. <strong>Lower is better.</strong></p>
+        </article>
+      </div>
+      </section>
+
+      <section id="motion" class="cc-section">
+      <h2>A correct shape can still move incorrectly</h2>
+      <p>These doors look identical when closed. A shape score at that pose cannot tell that one opens only halfway.</p>
+      <figure class="eval-motion-figure">
+      <div class="eval-motion-panels">
+      <svg viewBox="0 0 380 260" role="img" aria-label="At rest, the reference and predicted door surfaces coincide.">
+      <g stroke-linecap="round" fill="none"><path d="M105 202H265" stroke="#5b8db8" stroke-width="12"/><path d="M105 202H265" stroke="#ce9c38" stroke-width="5"/><circle cx="105" cy="202" r="7" fill="#1f1e1b"/></g>
+      <g fill="#55524b" font-size="17" font-family="sans-serif"><text x="195" y="28" text-anchor="middle">At rest</text><text x="195" y="242" text-anchor="middle">Same surface</text></g>
+      </svg>
+      <svg viewBox="380 0 380 260" role="img" aria-label="At the upper limit, the reference opens 90 degrees and the prediction opens only 45 degrees.">
+      <g stroke-linecap="round" fill="none"><path d="M480 202H640" stroke="#ccc6b9" stroke-width="2" stroke-dasharray="5 5"/><path d="M480 202V42" stroke="#5b8db8" stroke-width="8"/><path d="M480 202L593 89" stroke="#ce9c38" stroke-width="8"/><path d="M480 150A52 52 0 0 1 517 165" stroke="#8a867d" stroke-width="1.5"/><circle cx="480" cy="202" r="7" fill="#1f1e1b"/></g>
+      <g fill="#55524b" font-size="17" font-family="sans-serif"><text x="575" y="28" text-anchor="middle">At the upper limit</text><text x="456" y="68" text-anchor="end">90°</text><text x="606" y="91">45°</text><text x="575" y="242" text-anchor="middle">Different allowed motion</text></g>
+      </svg>
+      </div>
+      <figcaption>Blue: reference. Gold: prediction. A surface score at rest cannot detect this range error.</figcaption>
+      </figure>
+      <p><strong>ArticulateArena</strong> compares the movement rules and allowed ranges together. Its whole-object tree metric also checks how parts connect. The four errors above help identify which individual parameter is wrong.</p>
+      <p><a href="index.html#concept-map">See how ArticulateArena compares motion →</a></p>
+      </section>
+
+      <section id="appearance" class="cc-section">
+      <h2>Compare how it looks</h2>
+      <p>Take a picture of the reconstructed model from the same viewpoint as the reference image. These metrics compare the two pictures, including their visible shape, color, and texture.</p>
+      <div class="eval-appearance-example">
+        <div class="eval-appearance-images">
+        <svg viewBox="0 0 320 230" role="img" aria-label="Reference cabinet image with plain blue doors.">
+          <g stroke="#577e89" stroke-width="2"><rect x="95" y="40" width="140" height="145" fill="#d3e4e5"/><rect x="106" y="51" width="118" height="32" fill="#aac8dc"/><rect x="106" y="92" width="118" height="81" fill="#aac8dc"/><path d="M153 67H177 M208 119V140" stroke="#51636b" stroke-width="4"/></g>
+          <text x="165" y="215" text-anchor="middle" fill="#55524b" font-size="18" font-family="sans-serif">Reference image</text>
+        </svg>
+        <svg viewBox="320 0 320 230" role="img" aria-label="Reconstructed cabinet image with the same geometry, but a gold striped door.">
+          <defs><pattern id="eval-door-stripes" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#e9c77d"/><path d="M0 0V12" stroke="#c59539" stroke-width="3"/></pattern></defs>
+          <g stroke="#577e89" stroke-width="2"><rect x="405" y="40" width="140" height="145" fill="#d3e4e5"/><rect x="416" y="51" width="118" height="32" fill="#aac8dc"/><rect x="416" y="92" width="118" height="81" fill="url(#eval-door-stripes)"/><path d="M463 67H487 M518 119V140" stroke="#51636b" stroke-width="4"/></g>
+          <text x="475" y="215" text-anchor="middle" fill="#55524b" font-size="18" font-family="sans-serif">Model image</text>
+        </svg>
+        </div>
+        <p>The outline is unchanged, but the door has a different finish. Image similarity can change even when the geometry agrees.</p>
+      </div>
+      <div class="eval-appearance-metrics">
+        <article><h3>LPIPS</h3><p>Compares visual details using features learned by an image model. Changes to edges, textures, or colors can affect it. <strong>Lower means more visually similar.</strong></p></article>
+        <article><h3>CLIP similarity</h3><p>Compares the images’ overall content. Two different cabinets can score well because both depict a cabinet. <strong>Higher means more similar.</strong></p></article>
+        <article><h3>DINOv2 similarity</h3><p>Compares learned visual features of the two images, which can capture object shape and parts. <strong>Higher means more similar.</strong></p></article>
+      </div>
+      <p>None of these scores proves that the door opens correctly or that hidden parts exist. Use the same camera and lighting when you want to compare the models rather than their rendering conditions.</p>
+      </section>
+
+      <section id="coverage" class="cc-section">
+      <h2>Check for missing joints</h2>
+      <p>A cabinet should have a rotating door and a sliding drawer. The prediction gets the door right but leaves the drawer fixed. The door’s error can be zero, even though the drawer’s sliding joint is missing.</p>
+      <ul>
+        <li><strong>Matched:</strong> a corresponding joint was found, such as the door hinge. Its accuracy still needs to be checked.</li>
+        <li><strong>Missing:</strong> an expected joint was left out, such as the drawer’s sliding joint.</li>
+        <li><strong>Extra:</strong> a joint was added where none should exist, such as making the fixed cabinet body rotate.</li>
+      </ul>
+      </section>
+      </div>
+      <script src="../static/js/evaluation.js" defer></script>
+
+
+
+      <footer class="docs-footer">
+        ArticulateArena · <a href="../index.html">Project page</a> · <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a> · <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>
+      </footer>
+
+    </div>
+  </main>
+
+</body>
+</html>

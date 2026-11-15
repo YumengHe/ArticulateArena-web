@@ -495,6 +495,7 @@
       .content { padding: 2rem 1.3rem 3rem; }
     }
   </style>
+<link rel="stylesheet" href="../static/css/docs-refinement.css?v=ffaeb0388e">
 </head>
 
 <body>
@@ -503,7 +504,6 @@
     <a class="brand" href="./index.html">
       <img src="../static/images/articulatearena-icon.svg" alt="">
       <span class="name">ArticulateArena</span>
-      <span class="version">v0.1.0</span>
     </a>
     <p class="tagline">ArticulateArena provides a unified metric for evaluating articulated motion across joint types and kinematic trees.</p>
 
@@ -518,14 +518,19 @@
       </div>
     </nav>
 
-    <p class="toc-label">Contents</p>
     <nav class="toc" id="toc">
-      <a href="index.html">Overview</a>
-      <a href="installation.html">Installation</a>
-      <a href="quickstart.html">Quickstart</a>
-      <a class="active" href="concepts.html">Core concepts</a>
-      <a href="api.html">API reference</a>
-      <a href="cli.html">Command-line usage</a>
+<div class="nav-group"><h2 class="nav-group-title">Knowledge</h2>
+<a href="index.html">Overview</a>
+<span class="nav-placeholder" aria-disabled="true">Articulated objects</span>
+<a class="active" aria-current="page" href="concepts.html">Core concepts</a>
+<a href="evaluation.html">Other evaluation methods</a>
+</div>
+<div class="nav-group"><h2 class="nav-group-title">Code</h2>
+<a href="installation.html">Installation</a>
+<a href="quickstart.html">Quickstart</a>
+<a href="api.html">API reference</a>
+<a href="cli.html">Command-line usage</a>
+</div>
     </nav>
 
 
@@ -534,8 +539,7 @@
   <main class="content">
     <div class="content-inner">
 
-      <p class="eyebrow">4.4</p>
-      <h1 class="page-title">Wrap and gauge symmetries</h1>
+<h1 class="page-title">Wrap and gauge symmetries</h1>
 
         <figure class="tut">
           <img src="../static/tutorial/revolute_wrap.png" alt="The 2 pi orbit of revolute limits and E against a shift of both limits">
@@ -572,10 +576,7 @@
           which is the physically right behavior: a hinge on a different line moves the door differently.
         </p>
 
-      <nav class="page-nav">
-        <a class="prev" href="concept-quotient.html"><span class="label">Previous</span>← The metric E and the ℤ₂ swap</a>
-        <a class="next" href="concept-norms.html"><span class="label">Next</span>Which norm: E<sub>α</sub> versus E<sub>B</sub> →</a>
-      </nav>
+
 
       <footer class="docs-footer">
         ArticulateArena · <a href="../index.html">Project page</a> · <a href="https://arxiv.org/abs/2609.33931" target="_blank" rel="noopener">Paper</a> · <a href="https://pypi.org/project/articulatearena/" target="_blank" rel="noopener">PyPI</a> · <a href="https://github.com/YumengHe/ArticulateArena" target="_blank" rel="noopener">Code</a>
