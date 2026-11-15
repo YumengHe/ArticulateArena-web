@@ -51,7 +51,7 @@ def plain(text: str) -> str:
 
 def nav_html(current: str) -> str:
     current_group = "concepts" if current.startswith("concept-") else current
-    groups = [("Knowledge", [("index", "Overview"), (None, "Articulated objects"),
+    groups = [("Background", [("index", "Overview"), (None, "Articulated objects"),
                ("concepts", "Core concepts"), ("evaluation", "Other evaluation methods")]),
               ("Code", [("installation", "Installation"), ("quickstart", "Quickstart"),
                ("api", "API reference"), ("cli", "Command-line usage")])]
