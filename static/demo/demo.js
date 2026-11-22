@@ -115,8 +115,8 @@ window.DEMO_ERROR_ITEMS = [
     file: "labeled/mobility_1_limit_neg270_motion.mp4",
     title: "Joint 1 Limit Error: −270°",
     poster: "labeled/mobility_1_limit_neg270_poster.png",
-    gt: "0° to +90°",
-    wrong: "0° to −270°",
+    gt: "axis [0 -1 0], 0° to +90°",
+    wrong: "axis [0 -1 0], 0° to −270°",
     error: "5.813"
   },
   {
